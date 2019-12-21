@@ -24,7 +24,7 @@ jobs:
           ${{ runner.os }}-node-
           
     - name: Install dependencies
-      run: node v
+      run: node -v
     #- name: Install CI
       #run: npm install -g @angular/cli > /dev/null  
     - name: Version test
