@@ -28,4 +28,4 @@ jobs:
     - name: Install CI
       run: npm install -g @angular/cli > /dev/null  
     - name: Build
-      run: ng build -- --prod
+      run: ng build --prod
