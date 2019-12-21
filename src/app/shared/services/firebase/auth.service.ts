@@ -54,13 +54,12 @@ export class AuthService implements OnInit {
     ngOnInit(): void {
 
     }
-    /*getLoggedUser = async ()=> {
-        try {
-            this.currentUser = await JSON.parse(this.cookieService.get('userLogged'));
-            console.log(this.currentUser);
-        }
-        catch(ex) {
-            console.error('Set User Error : ',ex);
+
+    /*getUserLogged() {
+        if (localStorage.getItem('userLogged')) {
+            this.currentUser = JSON.parse(localStorage.getItem('userLogged'));
+        } else {
+            this.currentUser = { name: 'No name' };
         }
     }*/
 
@@ -72,6 +71,10 @@ export class AuthService implements OnInit {
                     this.SetUserData(result.user, this);
                     this.SendVerificationMail();
                     this.showLoader = true;
+                } else if (result.user.emailVerified === true) {
+                    this.toster.success('Authentication successful.');
+                    this.router.navigateByUrl('/dashboard/default');
+                    this.showLoader = true;
                 } else {
                     this.showLoader = false;
                     this.ngZone.run(() => {
@@ -79,6 +82,7 @@ export class AuthService implements OnInit {
                     });
                 }
             }).catch((error) => {
+                console.error(error);
                 this.toster.error('You have enter Wrong Email or Password.');
             });
     }
@@ -87,6 +91,7 @@ export class AuthService implements OnInit {
     SendVerificationMail() {
         return this.afAuth.auth.currentUser.sendEmailVerification()
             .then(() => {
+                this.toster.warning('Please check your email.');
                 this.toster.success('Authentication successful.');
                 this.router.navigateByUrl('/dashboard/default');
             });
@@ -103,14 +108,11 @@ export class AuthService implements OnInit {
     }
 
     // Set user
-   async SetUserData(user, ref) {
+    SetUserData(user, ref) {
         const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-        await userRef.get().subscribe(function (doc) {
-            ref.cookieService.set('userLogged', JSON.stringify(doc.data()));
-            JSON.parse(ref.cookieService.get('userLogged'));
-            localStorage.setItem('userLogged', JSON.stringify(doc.data()));
-            JSON.parse(localStorage.getItem('userLogged'));
-            ref.currentUser = JSON.parse(ref.cookieService.get('userLogged'));
+        return userRef.get().subscribe((doc) => {
+            ref.currentUser = doc.data();
+            console.log('User: ' + user.uid, ref.currentUser);
             const userData: User = {
                 name: doc.data().name,
                 email: user.email,
@@ -126,7 +128,6 @@ export class AuthService implements OnInit {
                 merge: true
             });
         });
-
     }
 
     // Sign out
@@ -137,15 +138,15 @@ export class AuthService implements OnInit {
         return this.afAuth.auth.signOut().then(() => {
             this.showLoader = false;
             localStorage.clear();
+            this.currentUser = null;
             this.cookieService.deleteAll('user', '/auth/login');
-            this.cookieService.deleteAll('userLogged', '/auth/login');
             this.router.navigate(['/auth/login']);
         });
     }
 
     get isLoggedIn(): boolean {
         const user = JSON.parse(localStorage.getItem('user'));
-        return (user != null && user.emailVerified != false) ? true : false;
+        return (user != null && user.emailVerified !== false) ? true : false;
     }
 
 }
