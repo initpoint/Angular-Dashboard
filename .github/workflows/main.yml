@@ -8,19 +8,24 @@ jobs:
     # Machine environment:
     # https://help.github.com/en/articles/software-in-virtual-environments-for-github-actions#ubuntu-1804-lts
     # We specify the Node.js version manually below, and use versioned Chrome from Puppeteer.
-    runs-on: ubuntu-18.04
-
+    runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js 12.8
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1 #this installs node and npm for us
       with:
-        node-version: 12.8
+        node-version: '10.x'
+ 
+    - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+          
     - name: Install dependencies
       run: npm install
+    - name: Install CI
+      run: npm install -g @angular/cli > /dev/null  
     - name: Build
-      run: npm run build -- --prod
-    - name: Test
-      run: npm test -- --configuration=ci
-    - name: E2E
-      run: npm run e2e -- --configuration=ci
+      run: ng build -- --prod
