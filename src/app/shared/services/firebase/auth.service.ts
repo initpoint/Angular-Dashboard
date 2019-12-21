@@ -64,7 +64,7 @@ export class AuthService implements OnInit {
         }
     }*/
 
-    //sign in function
+    // sign in function
     SignIn(email, password) {
         return this.afAuth.auth.signInWithEmailAndPassword(email, password)
             .then((result) => {
@@ -80,16 +80,16 @@ export class AuthService implements OnInit {
                 }
             }).catch((error) => {
                 this.toster.error('You have enter Wrong Email or Password.');
-            })
+            });
     }
 
-    //main verification function
+    // main verification function
     SendVerificationMail() {
         return this.afAuth.auth.currentUser.sendEmailVerification()
             .then(() => {
                 this.toster.success('Authentication successful.');
                 this.router.navigateByUrl('/dashboard/default');
-            })
+            });
     }
 
 
@@ -102,10 +102,10 @@ export class AuthService implements OnInit {
             });
     }
 
-    //Set user
-    SetUserData(user, ref) {
+    // Set user
+   async SetUserData(user, ref) {
         const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-        userRef.get().subscribe(function (doc) {
+        await userRef.get().subscribe(function (doc) {
             ref.cookieService.set('userLogged', JSON.stringify(doc.data()));
             JSON.parse(ref.cookieService.get('userLogged'));
             localStorage.setItem('userLogged', JSON.stringify(doc.data()));
@@ -119,7 +119,7 @@ export class AuthService implements OnInit {
                 avatar: doc.data().avatar,
                 userType: doc.data().userType,
             };
-            if (user.displayName == null || user.displayName == undefined) {
+            if (user.displayName == null || user.displayName === undefined) {
                 userData.name = doc.data().name;
             }
             userRef.set(userData, {

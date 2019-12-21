@@ -29,13 +29,7 @@ export class NavService {
 			this.collapseSidebar = true
 		}
 	}
-    // getLoggedUser()
-    // {
-    //     this.userService.getUser(JSON.parse(localStorage.getItem('user')).uid).subscribe(result => {
-    //         this.loggedUser = result.payload.data();
-	// 		console.log(result.payload.data());
-    //     });
-    // }
+
 	// Windows width
 	@HostListener('window:resize', ['$event'])
 	onResize(event?) {
