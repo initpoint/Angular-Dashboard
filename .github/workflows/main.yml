@@ -27,5 +27,5 @@ jobs:
       run: npm install
     - name: Install CI
       run: npm install -g @angular/cli > /dev/null  
-    - name: Version test
-      run: ng version
+    - name: Building
+      run: ng build --prod
