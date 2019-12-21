@@ -26,6 +26,8 @@ jobs:
     - name: Install dependencies
       run: npm install
     - name: Install CI
-      run: npm install -g @angular/cli > /dev/null  
+      run: npm install -g @angular/cli > /dev/null 
+    - name: extend memory
+      run: export NODE_OPTIONS=--max_old_space_size=8192 
     - name: Building
       run: ng build --prod
