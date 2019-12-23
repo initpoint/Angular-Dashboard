@@ -15,7 +15,5 @@ jobs:
           frozen-lockfile: true
       - name: Setup
         run: yarn global add @angular/cli
-      - name: Test
-        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       - name: Build
         run: npm run build --prod
