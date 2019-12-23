@@ -39,15 +39,7 @@
                                 Invalid email
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-form-label pt-0">Password</label>
-                            <input class="form-control" formControlName="password" type="password" required="">
-                            <div *ngIf="editcustomerForm.controls.password.touched && editcustomerForm.controls.password.errors?.required"
-                                 class="text text-danger mt-1">
-                                Password is required
-                            </div>
 
-                        </div>
                         <div class="form-group">
                             <label class="col-form-label">Mobile</label>
                             <input class="form-control" type="number" formControlName="mobile" required="">

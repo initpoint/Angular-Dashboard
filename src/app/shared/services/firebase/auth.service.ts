@@ -36,16 +36,23 @@ export class AuthService implements OnInit {
 
         this.afAuth.authState.subscribe(user => {
             if (user) {
-                this.userData = user;
-                this.SetUserData(user, this);
-                this._sessionId = this.userData;
-                cookieService.set('user', JSON.stringify(this.userData));
-                JSON.parse(cookieService.get('user'));
-                localStorage.setItem('user', JSON.stringify(this.userData));
-                JSON.parse(localStorage.getItem('user'));
-            } else {
-                localStorage.setItem('user', null);
-                JSON.parse(localStorage.getItem('user'));
+                const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+                userRef.get().subscribe((doc) => {
+                    if (doc.data().userType == 'user') {
+                        this.userData = user;
+                        this.SetUserData(user, this);
+                        this._sessionId = this.userData;
+                        cookieService.set('user', JSON.stringify(this.userData));
+                        JSON.parse(cookieService.get('user'));
+                        localStorage.setItem('user', JSON.stringify(this.userData));
+                        JSON.parse(localStorage.getItem('user'));
+                    } else {
+                        localStorage.setItem('user', null);
+                        JSON.parse(localStorage.getItem('user'));
+                        this.currentUser = null;
+                        this.toster.error('Permission denied.');
+                    }
+                });
             }
         });
 
@@ -55,34 +62,35 @@ export class AuthService implements OnInit {
 
     }
 
-    /*getUserLogged() {
-        if (localStorage.getItem('userLogged')) {
-            this.currentUser = JSON.parse(localStorage.getItem('userLogged'));
-        } else {
-            this.currentUser = { name: 'No name' };
-        }
-    }*/
+
 
     // sign in function
     SignIn(email, password) {
+        this.showLoader = true;
         return this.afAuth.auth.signInWithEmailAndPassword(email, password)
             .then((result) => {
-                if (result.user.emailVerified !== true) {
-                    this.SetUserData(result.user, this);
-                    this.SendVerificationMail();
-                    this.showLoader = true;
-                } else if (result.user.emailVerified === true) {
-                    this.toster.success('Authentication successful.');
-                    this.router.navigateByUrl('/dashboard/default');
-                    this.showLoader = true;
-                } else {
-                    this.showLoader = false;
-                    this.ngZone.run(() => {
-                        this.router.navigate(['/auth/login']);
-                    });
-                }
+                const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${result.user.uid}`);
+                userRef.get().subscribe((doc) => {
+                    if (doc.data().userType == 'user') {
+                        if (result.user.emailVerified !== true) {
+                            this.SetUserData(result.user, this);
+                            this.SendVerificationMail();
+                        } else if (result.user.emailVerified === true) {
+                            this.toster.success('Authentication successful.');
+                            this.router.navigateByUrl('/dashboard/default');
+                        } else {
+                            this.showLoader = false;
+                            this.ngZone.run(() => {
+                                this.router.navigate(['/auth/login']);
+                            });
+                        }
+                    } else {
+                        this.showLoader = false;
+                        this.toster.error('You don\'t have the permission to login.');
+                    }
+                });
             }).catch((error) => {
-                console.error(error);
+                this.showLoader = false;
                 this.toster.error('You have enter Wrong Email or Password.');
             });
     }
@@ -101,9 +109,13 @@ export class AuthService implements OnInit {
     ForgotPassword(passwordResetEmail) {
         return this.afAuth.auth.sendPasswordResetEmail(passwordResetEmail)
             .then(() => {
-                window.alert('Password reset email sent, check your inbox.');
+                this.showLoader = true;
+                this.toster.success('Password reset email sent, check your inbox.');
+                this.router.navigateByUrl('auth/login');
+                this.showLoader = false;
             }).catch((error) => {
-                window.alert(error);
+                this.showLoader = false;
+                this.toster.error(error);
             });
     }
 

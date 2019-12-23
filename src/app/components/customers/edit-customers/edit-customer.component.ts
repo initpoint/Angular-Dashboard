@@ -23,13 +23,15 @@ export class EditCustomerComponent implements OnInit {
     this.editcustomerForm = this.fb.group({
       name: [this.item.name, Validators.required],
       email: [this.item.email, [Validators.required,Validators.email]],
-      mobile: [this.item.mobile, Validators.required],
-      password: [this.item.password, Validators.required]
+      mobile: [this.item.mobile, Validators.required]
     });
   }
 
   save(value) {
     value.avatar = this.avatar;
+    // if (this.item.email != value.email) {
+    //   this.customerService.afAuth.auth.
+    // }
     this.customerService.updateCustomer(this.item.id, value)
       .then(
         res => {

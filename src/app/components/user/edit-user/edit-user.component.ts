@@ -23,8 +23,7 @@ export class EditUserComponent implements OnInit {
     this.editUserForm = this.fb.group({
       name: [this.item.name, Validators.required],
       email: [this.item.email, [Validators.required,Validators.email]],
-      mobile: [this.item.mobile, Validators.required],
-      password: [this.item.password, Validators.required]
+      mobile: [this.item.mobile, Validators.required]
     });
   }
 
@@ -68,7 +67,7 @@ export class EditUserComponent implements OnInit {
     this.route.data.subscribe(routeData => {
       let data = routeData['data'];
       if (data) {
-        this.avatar = data.payload.data().photoURL;
+        this.avatar = data.payload.data().avatar;
         this.item = data.payload.data();
         this.item.id = data.payload.id;
         this.createForm();

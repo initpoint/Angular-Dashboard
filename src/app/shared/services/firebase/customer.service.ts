@@ -54,9 +54,6 @@ export class CustomerService {
             .snapshotChanges()
     }
 
-    /*searchUsersByAge(value) {
-      return this.db.collection('users', ref => ref.orderBy('age').startAt(value)).snapshotChanges();
-    }*/
 
     getCustomer(userKey) {
         return this.db.collection('users',ref => ref.where('userType','==','customer')).doc(userKey).snapshotChanges();
