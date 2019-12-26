@@ -139,7 +139,7 @@ var CalenderComponent = /** @class */ (function () {
         Component({
             selector: 'app-calender',
             templateUrl: './calender.component.html',
-            styleUrls: ['./calender.component.scss'],
+            styleUrls: ['./alender.component.scss'],
             encapsulation: ViewEncapsulation.None
         }),
         __metadata("design:paramtypes", [NgbModal])

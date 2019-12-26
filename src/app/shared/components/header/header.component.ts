@@ -20,13 +20,15 @@ export class HeaderComponent implements OnInit {
   public openNav: boolean = false
   public right_sidebar: boolean = false
   public text: string
+  public lang: string;
   public isOpenMobile: boolean = false
   @Output() rightSidebarEvent = new EventEmitter<boolean>();
 
   constructor(public navServices: NavService,
     private translate: TranslateService,
     public authService: AuthService) {
-    translate.setDefaultLang('en');
+    this.lang = localStorage.getItem('lang') != null ? localStorage.getItem('lang') : 'en';
+    translate.setDefaultLang(this.lang);
   }
 
 
@@ -49,7 +51,10 @@ export class HeaderComponent implements OnInit {
   }
 
   public changeLanguage(lang) {
-    this.translate.use(lang)
+    this.translate.use(lang);
+    this.authService.cookieService.set('lang', lang);
+    localStorage.setItem('lang', lang);
+    document.getElementById("lang").innerText = lang.toUpperCase();
   }
 
   searchTerm(term: any) {
