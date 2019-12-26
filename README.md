@@ -1,7 +1,7 @@
 # Angular Dashboard
 
-[![build status](https://github.com/initpoint/Angular-Dashboard/workflows/Build and Deploy/badge.svg)](https://github.com/initpoint/Angular-Dashboard/actions)
-[![deploy status](https://github.com/initpoint/Angular-Dashboard/workflows/Build and Deploy/badge.svg)](https://github.com/initpoint/Angular-Dashboard/actions)
+[![build status](https://github.com/initpoint/Angular-Dashboard/workflows/Build%20and%20Deploy/badge.svg)](https://github.com/initpoint/Angular-Dashboard/actions)
+[![deploy status](https://github.com/initpoint/Angular-Dashboard/workflows/Build%20and%20Deploy/badge.svg)](https://github.com/initpoint/Angular-Dashboard/actions)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.0-rc.2.
 
