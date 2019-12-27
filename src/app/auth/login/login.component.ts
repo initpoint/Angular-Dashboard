@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
 
     loginTest(user) {
     this.loginForm.setValue({email:`user${user}@mailinator.com`,password:'12345678'});
-    console.log(this.loginForm.value['email']);
     this.login();
     }
 

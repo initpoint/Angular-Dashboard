@@ -73,12 +73,12 @@ export class AuthService implements OnInit {
                 const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${result.user.uid}`);
                 userRef.get().subscribe((doc) => {
                     if (doc.data().userType == 'user') {
-                        if (result.user.emailVerified !== true) {
+                        if (result.user.emailVerified == true) {
                             this.SetUserData(result.user, this);
                             this.SendVerificationMail();
-                        } else if (result.user.emailVerified === true) {
+                        } else if (result.user.emailVerified == false) {
                             this.toster.success('Authentication successful.');
-                            this.router.navigateByUrl('/dashboard/default');
+                            this.router.navigateByUrl('/user/show');
                         } else {
                             this.showLoader = false;
                             this.ngZone.run(() => {
@@ -102,7 +102,7 @@ export class AuthService implements OnInit {
             .then(() => {
                 this.toster.warning('Please check your email.');
                 this.toster.success('Authentication successful.');
-                this.router.navigateByUrl('/dashboard/default');
+                this.router.navigateByUrl('/user/show');
             });
     }
 
@@ -125,7 +125,7 @@ export class AuthService implements OnInit {
         const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
         return userRef.get().subscribe((doc) => {
             ref.currentUser = doc.data();
-            console.log('User: ' + user.uid, ref.currentUser);
+            //console.log('User: ' + user.uid, ref.currentUser);
             const userData: User = {
                 name: doc.data().name,
                 email: user.email,
@@ -135,7 +135,6 @@ export class AuthService implements OnInit {
                 code: doc.data().code,
                 lastLoginAt: user.metadata.b
             };
-            console.log(user);
             if (user.displayName == null || user.displayName === undefined) {
                 userData.name = doc.data().name;
             }

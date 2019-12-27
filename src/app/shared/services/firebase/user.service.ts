@@ -2,23 +2,27 @@ import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {ToastrService} from 'ngx-toastr';
-
+import {environment} from '../../../../environments/environment';
+import { User, auth , initializeApp } from 'firebase/app';
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
+    app;
     constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth,
-                private toastr: ToastrService
+                private toastr: ToastrService,
     ) {
     }
 
-
-
     async createUser(value) {
+        if(!this.app){
+            this.app = initializeApp(environment.firebase,"secondary");
+        }
         const ref = this.db.collection('users');
-        return this.afAuth.auth.createUserWithEmailAndPassword(value.email, value.password)
+        return  this.app.auth().createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
+
                 ref.doc(userData.user.uid).set({
                     uid: userData.user.uid,
                     email: value.email,
@@ -44,6 +48,7 @@ export class UserService {
                 }
                 return false;
             });
+        this.app.auth().signOut();
     }
 
     updateUser(userKey, value) {

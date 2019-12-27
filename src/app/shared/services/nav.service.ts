@@ -37,12 +37,7 @@ export class NavService {
 	}
 
 	MENUITEMS: Menu[] = [
-		{
-			title: 'Dashboard', icon: 'home', type: 'sub', badgeType: 'primary', badgeValue: 'new', active: false, children: [
-				{ path: '/dashboard/default', title: 'Default', type: 'link' },
-				//{ path: '/dashboard/e-commerce', title: 'E-Commerce', type: 'link', },
-			]
-		},
+
 		/*{
 			title: 'Tables', icon: 'server', type: 'sub', active: false, children: [
 				{
