@@ -27,28 +27,14 @@ export class LoginComponent implements OnInit {
                 private afauth: AngularFireAuth, private fb: FormBuilder,
                 private router: Router) {
         this.loginForm = fb.group({
-            email: ['test@gmail.com', [Validators.required, Validators.email]],
-            password: ['123456', Validators.required]
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', Validators.required]
         });
     }
 
     ngOnInit() {
     }
 
-    // Login With Google
-    // loginGoogle() {
-    //   this.authService.GoogleAuth();
-    // }
-    //
-    // // Login With Twitter
-    // loginTwitter(): void {
-    //   this.authService.signInTwitter();
-    // }
-    //
-    // // Login With Facebook
-    // loginFacebook() {
-    //   this.authService.signInFacebok();
-    // }
     loginTest(user) {
     this.loginForm.setValue({email:`user${user}@mailinator.com`,password:'12345678'});
     console.log(this.loginForm.value['email']);
