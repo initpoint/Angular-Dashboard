@@ -1,19 +1,43 @@
-name: Build
+name: Build and Deploy
 on:
   push:
     branches:
       - master
 
 jobs:
-  quality:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v1
-      - uses: sergioramos/yarn-actions/install@master
-        with:
-          frozen-lockfile: true
-      - name: Setup
-        run: yarn global add @angular/cli
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Install Dependencies
+        run: npm install
+      - name: TypeScript Version
+        run: npm install typescript@">=3.4.0 <3.5.0"
       - name: Build
         run: npm run build --prod
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: dist
+          path: dist
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: dist
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+     
+    
