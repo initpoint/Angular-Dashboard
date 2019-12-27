@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {AngularFireAuth} from "@angular/fire/auth";
+import {AngularFireAuth} from '@angular/fire/auth';
+import {ToastrService} from 'ngx-toastr';
 
 @Injectable({
     providedIn: 'root'
@@ -8,50 +9,53 @@ import {AngularFireAuth} from "@angular/fire/auth";
 export class UserService {
     constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth,
+                private toastr: ToastrService
     ) {
     }
 
-    async createUser(value, avatar) {
+
+
+    async createUser(value) {
         const ref = this.db.collection('users');
-         return this.afAuth.auth.createUserWithEmailAndPassword(value.email, value.password)
+        return this.afAuth.auth.createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
                 ref.doc(userData.user.uid).set({
                     uid: userData.user.uid,
                     email: value.email,
                     mobile: parseInt(value.mobile),
                     name: value.name,
-                    avatar: avatar ? avatar : 'assets/images/user/user.png',
-                    nameToSearch: value.name.toLowerCase(),
+                    // avatar: avatar ? avatar : 'assets/images/user/user.png',
+                    code: value.code,
                     userType: 'user'
                 });
                 return true;
-            }).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            if (errorCode == 'auth/weak-password') {
-                alert('The password is too weak.');
-            } else if (errorCode == 'auth/email-already-in-use') {
-                alert('This email is already in use.');
-            } else if (errorCode == 'auth/invalid-email') {
-                alert('email address is not valid.');
-            } else {
-                alert(errorMessage);
-            }
-            return false;
-        });
+            }).catch(function (err) {
+                // Handle Errors here.
+                var errorCode = err.code;
+                var errorMessage = err.message;
+                if (errorCode == 'auth/weak-password') {
+                    alert('The password is too weak.');
+                } else if (errorCode == 'auth/email-already-in-use') {
+                    alert('This email is already in use.');
+                } else if (errorCode == 'auth/invalid-email') {
+                    alert('email address is not valid.');
+                } else {
+                    alert(errorMessage);
+                }
+                return false;
+            });
     }
 
     updateUser(userKey, value) {
-        value.nameToSearch = value.name.toLowerCase();
+        // value.nameToSearch = value.name.toLowerCase();
         value.userType = 'user';
         return this.db.collection('users').doc(userKey).set(value);
     }
 
     searchUsers(searchValue) {
-        return this.db.collection('users', ref => ref.where('nameToSearch', '>=', searchValue)
-            .where('nameToSearch', '<=', searchValue + '\uf8ff'))
-            .snapshotChanges()
+        return this.db.collection('users', ref => ref.where('name', '>=', searchValue)
+            .where('name', '<=', searchValue + '\uf8ff'))
+            .snapshotChanges();
     }
 
     /*searchUsersByAge(value) {
@@ -63,7 +67,7 @@ export class UserService {
     }
 
     getUsers() {
-        return this.db.collection('users', ref => ref.where('userType','==','user')).snapshotChanges();
+        return this.db.collection('users', ref => ref.where('userType', '==', 'user')).snapshotChanges();
     }
 
     deleteUser(contactKey) {

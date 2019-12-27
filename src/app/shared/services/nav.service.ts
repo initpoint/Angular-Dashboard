@@ -40,10 +40,10 @@ export class NavService {
 		{
 			title: 'Dashboard', icon: 'home', type: 'sub', badgeType: 'primary', badgeValue: 'new', active: false, children: [
 				{ path: '/dashboard/default', title: 'Default', type: 'link' },
-				{ path: '/dashboard/e-commerce', title: 'E-Commerce', type: 'link', },
+				//{ path: '/dashboard/e-commerce', title: 'E-Commerce', type: 'link', },
 			]
 		},
-		{
+		/*{
 			title: 'Tables', icon: 'server', type: 'sub', active: false, children: [
 				{
 					title: 'Bootstrap Tables', type: 'sub', active: false, children: [
@@ -65,20 +65,14 @@ export class NavService {
 				},
 				{ path: '/table/smart-table', title: 'Smart Table', type: 'link' },
 			]
+		},*/
+		{
+			title: 'Users', path:'/user/show',icon: 'users', type: 'link', active: false,
 		},
 		{
-			title: 'Users', icon: 'users', type: 'sub', active: false, children: [
-				{ path: '/user/show', title: 'Users', type: 'link' },
-				{ path: '/user/new-user', title: 'Add User', type: 'link' },
-			]
+			title: 'Customers', icon: 'user', type: 'link',path:'/customers/show', active: false,
 		},
-		{
-			title: 'Customers', icon: 'user', type: 'sub', active: false, children: [
-				{ path: '/customers/show', title: 'Customers', type: 'link' },
-				{ path: '/customers/new-customer', title: 'Add Customer', type: 'link' },
-			]
-		},
-
+/*
 		{
 			path: '/support-ticket', title: 'Support Ticket', icon: 'headphones', type: 'link'
 		},
@@ -125,7 +119,7 @@ export class NavService {
 		},
 		{
 			path: '/maintenance', title: 'Maintenance', icon: 'settings', type: 'link'
-		},
+		},*/
 	]
 	// Array
 	items = new BehaviorSubject<Menu[]>(this.MENUITEMS);

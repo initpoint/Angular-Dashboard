@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit {
   public right_sidebar: boolean = false
   public text: string
   public lang: string;
+  public direction:string;
   public isOpenMobile: boolean = false
   @Output() rightSidebarEvent = new EventEmitter<boolean>();
 
@@ -29,6 +30,13 @@ export class HeaderComponent implements OnInit {
     public authService: AuthService) {
     this.lang = localStorage.getItem('lang') != null ? localStorage.getItem('lang') : 'en';
     translate.setDefaultLang(this.lang);
+    if (this.lang == 'ar') {
+      this.direction = 'rtl'
+    } else {
+      this.direction = 'ltr'
+    }
+    document.body.setAttribute("main-theme-layout", this.direction);
+    document.getElementsByTagName('html')[0].setAttribute('dir', this.direction);
   }
 
 
@@ -55,6 +63,13 @@ export class HeaderComponent implements OnInit {
     this.authService.cookieService.set('lang', lang);
     localStorage.setItem('lang', lang);
     document.getElementById("lang").innerText = lang.toUpperCase();
+    if (lang == 'ar') {
+      this.direction = 'rtl'
+    } else {
+      this.direction = 'ltr'
+    }
+    document.body.setAttribute("main-theme-layout", this.direction);
+    document.getElementsByTagName('html')[0].setAttribute('dir', this.direction);
   }
 
   searchTerm(term: any) {

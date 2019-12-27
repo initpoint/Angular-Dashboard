@@ -1,12 +1,12 @@
 <div class="page-wrapper">
 	<div class="auth-bg">
 		<div class="authentication-box">
-			<div class="text-center"><img src="assets/images/endless-logo.png" alt=""></div>
+			<div class="text-center"><img src="assets/images/alsenedy-logo-medium-white.png" style="margin-left: -75px;" alt=""></div>
 			<div class="card mt-4">
 				<div class="card-body">
 					<div class="text-center">
 						<h4>LOGIN</h4>
-						<h6>Enter your Username and Password </h6>
+						<h6>Enter your Email and Password </h6>
 					</div>
 					<form class="theme-form" [formGroup]="loginForm" *ngIf="!newUser">
 						<div class="form-group">
@@ -44,6 +44,16 @@
 						<div class="form-group form-row mt-3 mb-0">
 							<a class="btn btn-info btn-block btn-lg" href="auth/forgetpassword"><span>Forget Password?</span>
 							</a>
+						</div>
+						<div class="form-group form-row mt-3 mb-0">
+							<button class="btn btn-air-dark btn-dark btn-block btn-lg"
+									(click)="loginTest(1)"
+									type="submit"><span>Login User1</span>
+							</button>
+							<button class="btn btn-air-dark btn-dark btn-block btn-lg"
+									(click)="loginTest(2)"
+									type="submit"><span>Login User2</span>
+							</button>
 						</div>
 						<div class="social mt-3 hidden">
 							<div class="form-group btn-showcase d-flex">

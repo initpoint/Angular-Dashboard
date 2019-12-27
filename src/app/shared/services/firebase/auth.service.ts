@@ -12,8 +12,9 @@ export interface User {
     email: string;
     emailVerified: boolean;
     name: string;
-    avatar: string;
     userType: string;
+    code: string;
+    lastLoginAt: string;
 }
 
 @Injectable({
@@ -130,9 +131,11 @@ export class AuthService implements OnInit {
                 email: user.email,
                 uid: user.uid,
                 emailVerified: user.emailVerified,
-                avatar: doc.data().avatar,
                 userType: doc.data().userType,
+                code: doc.data().code,
+                lastLoginAt: user.metadata.b
             };
+            console.log(user);
             if (user.displayName == null || user.displayName === undefined) {
                 userData.name = doc.data().name;
             }

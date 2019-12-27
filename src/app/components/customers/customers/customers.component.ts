@@ -15,7 +15,7 @@ export class CustomersComponent implements OnInit {
   public items: Array<any>;
   public name_filtered_items: Array<any>;
   public user: any;
-  public age: any;
+  public btn: boolean;
   public sidebaron: any;
   public listView: any;
 
@@ -35,7 +35,17 @@ export class CustomersComponent implements OnInit {
     floor: 0,
     ceil: 100,
   };
-
+  resetPassword(userEmail) {
+    this.btn = true;
+    this.customerService.afAuth.auth.sendPasswordResetEmail(userEmail).then( res => {
+          this.toastr.success('Password reset success!');
+          this.btn = false;
+        },
+        err => {
+          this.toastr.error(err);
+        }
+    );
+  }
 
   searchByName() {
     let value = this.searchValue.toLowerCase();

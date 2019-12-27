@@ -29,7 +29,7 @@
                                 <thead>
                                 <tr>
                                     <th>
-                                        <h5 class="mb-0">Profile</h5>
+                                        <h5 class="mb-0">Code</h5>
                                     </th>
                                     <th>
                                         <h5 class="mb-0">Name</h5>
@@ -41,13 +41,19 @@
                                         <h5 class="mb-0">Mobile</h5>
                                     </th>
                                     <th>
+                                        <h5 class="mb-0">Last Login</h5>
+                                    </th>
+                                    <th>
                                     </th>
                                 </tr>
                                 </thead>
                                 <tbody *ngFor="let item of items">
                                 <tr>
-                                    <td><img class="img-60 rounded-circle" src="{{item.payload.doc.data().avatar}}"
-                                             alt="#"></td>
+                                    <!--<td><img class="img-60 rounded-circle" src="{{item.payload.doc.data().avatar}}"-->
+                                    <!--alt="#"></td>-->
+                                    <td>
+                                        <h6>{{item.payload.doc.data().code}}</h6>
+                                    </td>
                                     <td>
                                         <h6>{{item.payload.doc.data().name}}</h6>
                                     </td>
@@ -57,10 +63,16 @@
                                     <td>
                                         <h6>{{item.payload.doc.data().mobile}}</h6>
                                     </td>
+                                    <td>
+                                        {{item.payload.doc.data().lastLoginAt | date: 'hh:mm dd/MM/yyyy'}}
+                                    </td>
                                     <td><a class="btn btn-primary mr-2"
                                            [routerLink]="['/customers/edit-customer',item.payload.doc.id]">Edit</a>
-                                        <button class="btn btn-secondary"
+                                        <button class="btn btn-danger mr-2"
                                                 (click)="delete(item.payload.doc.id)">Delete
+                                        </button>
+                                        <button class="btn btn-secondary" [disabled]="btn"
+                                                (click)="resetPassword(item.payload.doc.data().email)">Reset Password
                                         </button>
                                     </td>
                                 </tr>

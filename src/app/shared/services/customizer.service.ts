@@ -24,6 +24,7 @@ export class CustomizerService {
 
   // Set Customize layout Version
   setLayoutType(layout) {
+    console.warn(layout)
     document.body.setAttribute("main-theme-layout", layout);
     document.getElementsByTagName('html')[0].setAttribute('dir', layout);
     this.data.settings.layout_type=layout
@@ -31,6 +32,7 @@ export class CustomizerService {
 
   // Set Customize layout Version
   setLayout(layout) {
+    console.log(layout)
     document.body.className = layout
     this.data.color.mix_layout=layout
     localStorage.setItem('layout_type', layout);

@@ -2,19 +2,28 @@
 <div class="container-fluid" [class.sidebaron]="sidebaron">
     <div class="">
         <div class="authentication-box contact-profile-form">
-            <div class="text-center"><img src="assets/images/endless-logo.png" alt=""></div>
+            <div class="text-center"><img src="assets/images/alsenedy-logo-small-green.png" alt=""></div>
             <div class="card mt-4">
                 <div class="card-body">
-                    <div class="text-center user-profile">
-                        <div class="hovercard">
-                            <div class="contact-profile">
-                                <img class="rounded-circle img-100" alt="" [src]="avatar">
-                                <div class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"><input class="upload"
-                                            type="file" (change)="readUrl($event)" /></i></div>
-                            </div>
-                        </div>
-                    </div>
+                    <!--<div class="text-center user-profile">-->
+                        <!--<div class="hovercard">-->
+                            <!--<div class="contact-profile">-->
+                                <!--<img class="rounded-circle img-100" alt="" [src]="avatar">-->
+                                <!--<div class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"><input class="upload"-->
+                                            <!--type="file" (change)="readUrl($event)" /></i></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <form [formGroup]="editcustomerForm">
+                        <div class="form-group">
+                            <label class="col-form-label pt-0">Code</label>
+                            <input class="form-control" formControlName="code" type="text" required="">
+                            <div *ngIf="editcustomerForm.controls.code.touched && editcustomerForm.controls.code.errors?.required"
+                                 class="text text-danger mt-1">
+                                Code is required
+                            </div>
+
+                        </div>
                         <div class="form-group">
                             <label class="col-form-label pt-0">Name</label>
                             <input class="form-control" formControlName="name" type="text" required="">

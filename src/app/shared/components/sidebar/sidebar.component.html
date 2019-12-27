@@ -1,16 +1,12 @@
 <div class="main-header-left d-none d-lg-block">
-  <div class="logo-wrapper"><a href="javascript:void(0)"><img src="assets/images/endless-logo.png" alt=""></a></div>
+  <div class="logo-wrapper"><a href="javascript:void(0)"><img class="ml-4" src="assets/images/alsenedy-logo-small.png" alt=""></a></div>
 </div>
 <div class="sidebar custom-scrollbar">
-  <div class="sidebar-user text-center">
-    <div><img class="img-60 rounded-circle" src="{{navServices.authService.currentUser.avatar ==null ? 'assets/images/user/1.jpg' : navServices.authService.currentUser.avatar}}" alt="#">
-      <div class="profile-edit"><a>
-          <i class="icofont icofont-pencil-alt-5"><input class="upload" type="file" (change)="readUrl($event)" /></i>
-        </a></div>
-    </div>
-    <h6 class="mt-3 f-14">{{navServices.authService.currentUser.name ==null ? navServices.authService.currentUser.email : navServices.authService.currentUser.name}}</h6>
-    <p>{{navServices.authService.currentUser.userType ==null ? 'Unassigned user type' : navServices.authService.currentUser.userType}}.</p>
-  </div>
+  <!--<div class="sidebar-user text-center">-->
+
+    <!--<h6 class="mt-3 f-14">{{navServices.authService.currentUser.name ==null ? navServices.authService.currentUser.email : navServices.authService.currentUser.name}}</h6>-->
+    <!--<p>{{navServices.authService.currentUser.userType ==null ? 'Unassigned user type' : navServices.authService.currentUser.userType}}.</p>-->
+  <!--</div>-->
   <ul class="sidebar-menu">
     <li *ngFor="let menuItem of menuItems" [ngClass]="{active: menuItem.active}">
       <!-- Sub -->

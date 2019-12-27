@@ -63,5 +63,6 @@ import { ToggleFullscreenDirective } from "./directives/fullscreen.directive";
     CustomizerService
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}
 

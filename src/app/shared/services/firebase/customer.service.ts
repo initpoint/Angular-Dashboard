@@ -11,7 +11,7 @@ export class CustomerService {
     ) {
     }
 
-    async createCustomer(value, avatar) {
+    async createCustomer(value) {
         const ref = this.db.collection('users');
          return this.afAuth.auth.createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
@@ -20,8 +20,7 @@ export class CustomerService {
                     email: value.email,
                     mobile: parseInt(value.mobile),
                     name: value.name,
-                    avatar: avatar ? avatar : 'assets/images/user/user.png',
-                    nameToSearch: value.name.toLowerCase(),
+                    code: value.code,
                     userType: 'customer'
                 });
                 return true;
@@ -49,8 +48,8 @@ export class CustomerService {
     }
 
     searchCustomers(searchValue) {
-        return this.db.collection('users', ref => ref.where('nameToSearch', '>=', searchValue).where('userType','==','customer')
-            .where('nameToSearch', '<=', searchValue + '\uf8ff'))
+        return this.db.collection('users', ref => ref.where('name', '>=', searchValue).where('userType','==','customer')
+            .where('name', '<=', searchValue + '\uf8ff'))
             .snapshotChanges()
     }
 

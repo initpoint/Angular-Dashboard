@@ -80,6 +80,7 @@ $url_1: url(../images/other-images/auth-bg-1.jpg);
 }
 .auth-bg {
   background: $url_1;
+  background-size: cover;
   display: flex;
   align-items: center;
   justify-content: center;

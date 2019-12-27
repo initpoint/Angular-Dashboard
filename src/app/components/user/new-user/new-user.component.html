@@ -2,20 +2,28 @@
 <div class="container-fluid" [class.sidebaron]="sidebaron">
     <div class="">
         <div class="authentication-box contact-profile-form">
-            <div class="text-center"><img src="assets/images/endless-logo.png" alt=""></div>
+            <div class="text-center"><img src="assets/images/alsenedy-logo-small-green.png" alt=""></div>
             <div class="card mt-4">
                 <div class="card-body">
-                    <div class="text-center user-profile">
-                        <div class="hovercard">
-                            <div class="contact-profile">
-                                <img class="rounded-circle img-100" alt=""
-                                    [src]="url? url:'assets/images/user/user.png'">
-                                <div class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"><input class="upload"
-                                            type="file" (change)="readUrl($event)" /></i></div>
+                    <!--<div class="text-center user-profile">-->
+                        <!--<div class="hovercard">-->
+                            <!--<div class="contact-profile">-->
+                                <!--<img class="rounded-circle img-100" alt=""-->
+                                    <!--[src]="url? url:'assets/images/user/user.png'">-->
+                                <!--<div class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"><input class="upload"-->
+                                            <!--type="file" (change)="readUrl($event)" /></i></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <form class="theme-form" [formGroup]="registerForm">
+                        <div class="form-group">
+                            <label class="col-form-label">Code</label>
+                            <input class="form-control" type="text" formControlName="code" required="">
+                            <div *ngIf="registerForm.controls.code.touched && registerForm.controls.code.errors?.required"
+                                 class="text text-danger mt-1">
+                                Code is required
                             </div>
                         </div>
-                    </div>
-                    <form class="theme-form" [formGroup]="registerForm">
                         <div class="form-group">
                             <label class="col-form-label pt-0">Name</label>
                             <input class="form-control" formControlName="name" type="text" required="">
