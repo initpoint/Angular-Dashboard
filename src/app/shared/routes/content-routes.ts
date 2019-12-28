@@ -9,10 +9,10 @@ export const content: Routes = [
     }
   },
   {
-    path: 'base',
-    loadChildren: './components/base/base.module#BaseModule',
+    path: 'products',
+    loadChildren: './components/products/products.module#ProductsModule',
     data: {
-      breadcrumb: "Base"
+      breadcrumb: "Products"
     }
   },
   {

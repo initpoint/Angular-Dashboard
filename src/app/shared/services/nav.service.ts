@@ -65,6 +65,9 @@ export class NavService {
 			title: 'Users', path:'/user/show',icon: 'users', type: 'link', active: false,
 		},
 		{
+			title: 'Products', path:'/products/show',icon: 'shopping-bag', type: 'link', active: false,
+		},
+		{
 			title: 'Customers', icon: 'user', type: 'link',path:'/customers/show', active: false,
 		},
 /*
