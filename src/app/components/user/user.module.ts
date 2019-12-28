@@ -14,7 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { Ng5SliderModule } from 'ng5-slider';
 import { ToastrModule } from 'ngx-toastr';
-
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 @NgModule({
   declarations: [NewUserComponent, UsersComponent, EditUserComponent],
@@ -28,7 +28,9 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     HttpModule,
     Ng5SliderModule,
     Ng2SearchPipeModule,
-    ToastrModule.forRoot()
+    NgxDatatableModule,
+    ToastrModule.forRoot(),
+
   ],
 
   providers: [UserService, EditUserResolver]

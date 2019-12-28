@@ -5,15 +5,6 @@
             <div class="text-center"><img src="assets/images/alsenedy-logo-small-green.png" alt=""></div>
             <div class="card mt-4">
                 <div class="card-body">
-                    <!--<div class="text-center user-profile">-->
-                        <!--<div class="hovercard">-->
-                            <!--<div class="contact-profile">-->
-                                <!--<img class="rounded-circle img-100" alt="" [src]="avatar">-->
-                                <!--<div class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"><input class="upload"-->
-                                            <!--type="file" (change)="readUrl($event)" /></i></div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
                     <form [formGroup]="editcustomerForm">
                         <div class="form-group">
                             <label class="col-form-label pt-0">Code</label>
@@ -48,7 +39,6 @@
                                 Invalid email
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="col-form-label">Mobile</label>
                             <input class="form-control" type="number" formControlName="mobile" required="">
@@ -57,15 +47,23 @@
                                 mobile is required
                             </div>
                         </div>
-
-                        <div class="form-group form-row mt-3 mb-0">
-                            <button class="btn btn-primary mr-2" [disabled]="!editcustomerForm.valid"
-                                (click)="save(editcustomerForm.value)" type="submit"> Save
+                        <div class="form-group  mt-3 mb-0">
+                            <button class="btn btn-info mr-2" [disabled]="btn" (click)="resetPassword(editcustomerForm.value['email'])" >Reset Password
                             </button>
-                            <button class="btn btn-primary" type="button" data-original-title="btn btn-info-gradien"
-                                (click)="cancel()" title="">
+                            <button class="btn pull-right btn-danger" type="button" data-original-title="btn btn-info-gradien"
+                                    (click)="delete(item.uid)" title="">
+                                Delete</button>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group  mt-3 mb-0">
+                            <button class="btn btn-success mr-2" [disabled]="!editcustomerForm.valid"
+                                    (click)="save(editcustomerForm.value)" type="submit"> Save
+                            </button>
+                            <button class="btn pull-right btn-light" type="button" data-original-title="btn btn-info-gradien"
+                                    (click)="cancel()" title="">
                                 Cancel</button>
                         </div>
+
                     </form>
                 </div>
             </div>

@@ -5,29 +5,30 @@ import {Options, ChangeContext, PointerType, LabelType} from 'ng5-slider';
 import {ToastrService} from 'ngx-toastr';
 
 @Component({
-    selector: 'app-contacts',
+    selector: 'app-users',
     templateUrl: './users.component.html',
-    styleUrls: ['./users.component.scss']
+    styleUrls: ['./users.component.scss'],
+
 })
 export class UsersComponent implements OnInit {
 
     public searchValue: string = '';
-    public items: Array<any>;
+    public items = [];
     public name_filtered_items: Array<any>;
     public user: any;
-    public btn: boolean;
+
     public sidebaron: any;
     public listView: any;
+    public selected = [];
 
     constructor(private userService: UserService, private router: Router, private toastr: ToastrService) {
+        this.getData();
     }
 
     showDelete() {
         this.toastr.error('User Deleted !');
     }
 
-
-    public logText: string = '';
     public min: number;
     public value: number = 10;
     public highValue: number = 50;
@@ -60,39 +61,25 @@ export class UsersComponent implements OnInit {
         return result;
     }
 
-    delete(userId) {
-        this.userService.deleteUser(userId)
-            .then(
-                res => {
-                    this.router.navigate(['/user/show']);
-                    this.showDelete();
-                },
-                err => {
-                }
-            );
+
+
+    onSelect({selected}) {
+        this.selected.splice(0, this.selected.length);
+        this.selected.push(...selected);
     }
 
-    resetPassword(userEmail) {
-        this.btn = true;
-        this.userService.afAuth.auth.sendPasswordResetEmail(userEmail).then( res => {
-                this.toastr.success('Password reset success!');
-                this.btn = false;
-            },
-            err => {
-                this.toastr.error(err);
-            }
-        );
-    }
 
-    getData() {
-        this.userService.getUsers()
+
+     getData() {
+         this.userService.getUsers()
             .subscribe(result => {
                 this.items = result;
                 this.name_filtered_items = result;
+
             });
     }
 
     ngOnInit() {
-        this.getData();
+         this.getData();
     }
 }

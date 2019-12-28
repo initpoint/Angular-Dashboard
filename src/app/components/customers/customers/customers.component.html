@@ -1,100 +1,66 @@
-<!-- Container-fluid starts-->
-<div class="container-fluid product-wrapper" [class.sidebaron]="sidebaron">
-    <div class="product-grid">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-xl-6">
-                        <form class="search-form contact-search">
-                            <div class="form-group mb-0">
-                                <input type="text" class="form-control" [(ngModel)]="searchValue"
-                                       [ngModelOptions]="{standalone: true}" placeholder="Search by name..."
-                                       (keyup)="searchByName()">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-xl-6">
-                        <button class="btn btn-primary ml-2 mt-2 pull-right" [routerLink]="['/customers/new-customer']"><i
-                        >ADD</i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="product-wrapper-grid" [class.list-view]="listView" style="opacity: 1;">
+<!-- Container-fluid starts -->
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="product-box table-responsive contact-table">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>
-                                        <h5 class="mb-0">Code</h5>
-                                    </th>
-                                    <th>
-                                        <h5 class="mb-0">Name</h5>
-                                    </th>
-                                    <th>
-                                        <h5 class="mb-0">Email</h5>
-                                    </th>
-                                    <th>
-                                        <h5 class="mb-0">Mobile</h5>
-                                    </th>
-                                    <th>
-                                        <h5 class="mb-0">Last Login</h5>
-                                    </th>
-                                    <th>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody *ngFor="let item of items">
-                                <tr>
-                                    <!--<td><img class="img-60 rounded-circle" src="{{item.payload.doc.data().avatar}}"-->
-                                    <!--alt="#"></td>-->
-                                    <td>
-                                        <h6>{{item.payload.doc.data().code}}</h6>
-                                    </td>
-                                    <td>
-                                        <h6>{{item.payload.doc.data().name}}</h6>
-                                    </td>
-                                    <td>
-                                        <h6>{{item.payload.doc.data().email}}</h6>
-                                    </td>
-                                    <td>
-                                        <h6>{{item.payload.doc.data().mobile}}</h6>
-                                    </td>
-                                    <td>
-                                        {{item.payload.doc.data().lastLoginAt | date: 'hh:mm dd/MM/yyyy'}}
-                                    </td>
-                                    <td><a class="btn btn-primary mr-2"
-                                           [routerLink]="['/customers/edit-customer',item.payload.doc.id]">Edit</a>
-                                        <button class="btn btn-danger mr-2"
-                                                (click)="delete(item.payload.doc.id)">Delete
-                                        </button>
-                                        <button class="btn btn-secondary" [disabled]="btn"
-                                                (click)="resetPassword(item.payload.doc.data().email)">Reset Password
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-
+                <div class="col-xl-6">
+                    <form class="search-form contact-search">
+                        <div class="form-group mb-0">
+                            <input type="text" class="form-control" [(ngModel)]="searchValue"
+                                   [ngModelOptions]="{standalone: true}" placeholder="Search by name..."
+                                   (keyup)="searchByName()">
                         </div>
-
-                    </div>
+                    </form>
+                </div>
+                <div class="col-xl-6">
+                    <button class="btn btn-primary ml-2 mt-2 pull-right" [routerLink]="['/customers/new-customer']"><i
+                    >Add Customer</i></button>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-sm-12">
-            <div *ngIf="!items?.length">
-                <div class="search-not-found text-center">
-                    <div>
-                        <img src="assets/images/search-not-found.png" alt="" class="second-search">
-                        <p>Sorry, We didn't find any results matching this search</p>
-                    </div>
+            <div class="card">
+                <div class="card-body custom-datatable">
+                    <ngx-datatable class="bootstrap" [rows]="items" [columnMode]="'flex'" [headerHeight]="50" externalPaging="true"
+                                   [footerHeight]="50" [rowHeight]="'auto'" [limit]="10" [selected]="selected"
+                                   [selectionType]="'checkbox'" [selectAllRowsOnPage]="false"
+                                   (select)='onSelect($event)'>
+                        <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false"
+                                              [draggable]="false" [resizeable]="false" [headerCheckboxable]="true"
+                                              [checkboxable]="true">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Code" [flexGrow]="1">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.payload.doc.data().code}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Name" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a class="text-primary"
+                                   [routerLink]="['/customers/edit-customer',row.payload.doc.id]"> {{row.payload.doc.data().name}}</a>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Email" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.payload.doc.data().email}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Mobile" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.payload.doc.data().mobile}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Last Login" [flexGrow]="1">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row.payload.doc.data().lastLoginAt | date: 'hh:mm dd/MM/yyyy'}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Container-fluid Ends-->
+<!-- Container-fluid Ends -->

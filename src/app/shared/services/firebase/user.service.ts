@@ -3,12 +3,14 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {ToastrService} from 'ngx-toastr';
 import {environment} from '../../../../environments/environment';
-import { User, auth , initializeApp } from 'firebase/app';
+import {User, auth, initializeApp} from 'firebase/app';
+
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
     app;
+
     constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth,
                 private toastr: ToastrService,
@@ -16,11 +18,11 @@ export class UserService {
     }
 
     async createUser(value) {
-        if(!this.app){
-            this.app = initializeApp(environment.firebase,"secondary");
+        if (!this.app) {
+            this.app = initializeApp(environment.firebase, 'secondary');
         }
         const ref = this.db.collection('users');
-        return  this.app.auth().createUserWithEmailAndPassword(value.email, value.password)
+        return this.app.auth().createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
 
                 ref.doc(userData.user.uid).set({
@@ -52,20 +54,18 @@ export class UserService {
     }
 
     updateUser(userKey, value) {
-        // value.nameToSearch = value.name.toLowerCase();
         value.userType = 'user';
         return this.db.collection('users').doc(userKey).set(value);
     }
 
+// ToDo Search in everywhere
     searchUsers(searchValue) {
         return this.db.collection('users', ref => ref.where('name', '>=', searchValue)
-            .where('name', '<=', searchValue + '\uf8ff'))
+            .where('name', '<=', searchValue + '\uf8ff')
+            .where('userType', '==', 'user'))
             .snapshotChanges();
     }
 
-    /*searchUsersByAge(value) {
-      return this.db.collection('users', ref => ref.orderBy('age').startAt(value)).snapshotChanges();
-    }*/
 
     getUser(userKey) {
         return this.db.collection('users').doc(userKey).snapshotChanges();

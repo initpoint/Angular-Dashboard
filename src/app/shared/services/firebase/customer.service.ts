@@ -42,15 +42,16 @@ export class CustomerService {
     }
 
     updateCustomer(userKey, value) {
-        value.nameToSearch = value.name.toLowerCase();
+
         value.userType = 'customer';
         return this.db.collection('users',ref => ref.where('userType','==','customer')).doc(userKey).set(value);
     }
 
     searchCustomers(searchValue) {
-        return this.db.collection('users', ref => ref.where('name', '>=', searchValue).where('userType','==','customer')
-            .where('name', '<=', searchValue + '\uf8ff'))
-            .snapshotChanges()
+        return this.db.collection('users', ref => ref.where('name', '>=', searchValue)
+            .where('name', '<=', searchValue + '\uf8ff')
+            .where('userType','==','customer'))
+            .snapshotChanges();
     }
 
 

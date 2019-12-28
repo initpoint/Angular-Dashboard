@@ -14,6 +14,7 @@ export class EditUserComponent implements OnInit {
   public errorMessage: any;
   public url: any;
   public item: any;
+  public btn: boolean;
   // public avatar: any;
   public sidebaron: any;
 
@@ -42,7 +43,29 @@ export class EditUserComponent implements OnInit {
   showEdit(){
     this.toastr.success('User Updated!');
   }
-
+  resetPassword(userEmail) {
+    this.btn = true;
+    this.userService.afAuth.auth.sendPasswordResetEmail(userEmail).then(res => {
+          this.toastr.success('Password reset success!');
+          this.btn = false;
+          this.router.navigate(['/user/show']);
+        },
+        err => {
+          this.toastr.error(err);
+        }
+    );
+  }
+  delete(userId) {
+    this.userService.deleteUser(userId)
+        .then(
+            res => {
+              this.router.navigate(['/user/show']);
+              this.toastr.error('User Deleted!');
+            },
+            err => {
+            }
+        );
+  }
   //FileUpload
   // readUrl(event: any) {
   //   if (event.target.files.length === 0)

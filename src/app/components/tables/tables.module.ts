@@ -5,7 +5,6 @@ import { TablesRoutingModule } from './tables-routing.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
-
 import { BasicComponent } from './bootstrap-tables/basic/basic.component'
 import { BorderComponent } from './bootstrap-tables/border/border.component'
 import { SizingComponent } from './bootstrap-tables/sizing/sizing.component'

@@ -14,6 +14,7 @@ export class EditCustomerComponent implements OnInit {
     public errorMessage: any;
     public url: any;
     public item: any;
+    public btn: boolean;
     // public avatar: any;
     public sidebaron: any;
 
@@ -28,7 +29,29 @@ export class EditCustomerComponent implements OnInit {
             code: [this.item.code, Validators.required]
         });
     }
-
+    resetPassword(userEmail) {
+        this.btn = true;
+        this.customerService.afAuth.auth.sendPasswordResetEmail(userEmail).then(res => {
+                this.toastr.success('Password reset success!');
+                this.btn = false;
+                this.router.navigate(['/customers/show']);
+            },
+            err => {
+                this.toastr.error(err);
+            }
+        );
+    }
+    delete(userId) {
+        this.customerService.deleteCustomer(userId)
+            .then(
+                res => {
+                    this.router.navigate(['/customers/show']);
+                    this.toastr.error('Customer Deleted!');
+                },
+                err => {
+                }
+            );
+    }
     save(value) {
 
         this.customerService.updateCustomer(this.item.id, value)
