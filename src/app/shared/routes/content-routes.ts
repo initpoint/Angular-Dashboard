@@ -1,30 +1,30 @@
 import { Routes } from '@angular/router';
 
 export const content: Routes = [
-  // {
-    // path: 'dashboard',
-    // loadChildren: './../../components/dashboard/dashboard.module#DashboardModule',
-    // data: {
-    //   breadcrumb: "Dashboard"
-    // }
-  // },
+  {
+    path: 'dashboard',
+    loadChildren: './components/dashboard/dashboard.module#DashboardModule',
+    data: {
+      breadcrumb: "Dashboard"
+    }
+  },
   {
     path: 'products/show',
-    loadChildren: './../../components/e-commerce/e-commerce.module#ECommerceModule',
+    loadChildren: './components/e-commerce/e-commerce.module#ECommerceModule',
     data: {
       breadcrumb: "Products"
     }
   },
   {
     path: 'icons',
-    loadChildren: './../../components/icons/icons.module#IconsModule',
+    loadChildren: './components/icons/icons.module#IconsModule',
     data: {
       breadcrumb: "Icons"
     }
   },
   {
     path: 'buttons',
-    loadChildren: './../../components/buttons/buttons.module#ButtonsModule',
+    loadChildren: './components/buttons/buttons.module#ButtonsModule',
     data: {
       breadcrumb: "Buttons"
     }
@@ -32,7 +32,7 @@ export const content: Routes = [
 
   {
     path: 'table',
-    loadChildren: './../../components/tables/tables.module#TablesModule',
+    loadChildren: './components/tables/tables.module#TablesModule',
     data: {
       breadcrumb: "Table"
     }
@@ -41,14 +41,14 @@ export const content: Routes = [
 
   {
     path: 'email',
-    loadChildren: './../../components/email/email.module#EmailModule',
+    loadChildren: './components/email/email.module#EmailModule',
     data: {
       breadcrumb: "Email"
     }
   },
   {
     path: 'support-ticket',
-    loadChildren: './../../components/support-ticket/support-ticket.module#SupportTicketModule',
+    loadChildren: './components/support-ticket/support-ticket.module#SupportTicketModule',
     data: {
       breadcrumb: "Support-Ticket"
     }
@@ -56,14 +56,14 @@ export const content: Routes = [
 
   {
     path: 'ecommerce',
-    loadChildren: './../../components/e-commerce/e-commerce.module#ECommerceModule',
+    loadChildren: './components/e-commerce/e-commerce.module#ECommerceModule',
     data: {
       breadcrumb: "Ecommerce"
     }
   },
   {
     path: 'chat',
-    loadChildren: './../../components/chat/chat.module#ChatModule',
+    loadChildren: './components/chat/chat.module#ChatModule',
     data: {
       breadcrumb: "Chat"
     }
@@ -71,14 +71,14 @@ export const content: Routes = [
 
   {
     path: 'user',
-    loadChildren: './../../components/user/user.module#UserModule',
+    loadChildren: './components/user/user.module#UserModule',
     data: {
       breadcrumb: "Users"
     }
   },
   {
     path: 'customers',
-    loadChildren: './../../components/customers/customers.module#CustomersModule',
+    loadChildren: './components/customers/customers.module#CustomersModule',
     data: {
       breadcrumb: "Customers"
     }
