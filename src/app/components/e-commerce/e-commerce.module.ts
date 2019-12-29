@@ -31,7 +31,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { GalleryModule } from '@ks89/angular-modal-gallery';
 import 'hammerjs';
 import 'mousetrap';
-
+import { DxTreeListModule, DxDataGridModule } from 'devextreme-angular';
 
 @NgModule({
   declarations: [
@@ -57,6 +57,8 @@ import 'mousetrap';
   ],
   imports: [
     CommonModule,
+    DxTreeListModule,
+    DxDataGridModule,
     ECommerceRoutingModule,
     NgxDatatableModule,
     SharedModule,

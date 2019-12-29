@@ -16,7 +16,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'products',
+        path: '',
         component: ProductsComponent,
         pathMatch: 'full',
         data: {
