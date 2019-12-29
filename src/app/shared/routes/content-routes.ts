@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
 
 export const content: Routes = [
-  {
-    path: 'dashboard',
-    loadChildren: './../../components/dashboard/dashboard.module#DashboardModule',
-    data: {
-      breadcrumb: "Dashboard"
-    }
-  },
+  // {
+    // path: 'dashboard',
+    // loadChildren: './../../components/dashboard/dashboard.module#DashboardModule',
+    // data: {
+    //   breadcrumb: "Dashboard"
+    // }
+  // },
   {
     path: 'products/show',
     loadChildren: './../../components/e-commerce/e-commerce.module#ECommerceModule',
