@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 export const content: Routes = [
   {
     path: 'dashboard',
-    loadChildren: './../components/dashboard/dashboard.module#DashboardModule',
+    loadChildren: './../../components/dashboard/dashboard.module#DashboardModule',
     data: {
       breadcrumb: "Dashboard"
     }
