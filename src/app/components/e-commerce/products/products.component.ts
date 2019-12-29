@@ -26,10 +26,10 @@ export class ProductsComponent implements OnInit {
 
   onRowExpanded(e: any) {
     this.productService.getRanking(e.key).subscribe(x => {
-      let ss = x.payload.data();
-      let rr = ss.children[0].get().then(y => console.log(y.data()));
-      console.log(ss)
-      console.log(rr)
+      // let ss = x.payload.data();
+      // let rr = ss.children[0].get().then(y => console.log(y.data()));
+      // console.log(ss)
+      // console.log(rr)
     });
   }
 
