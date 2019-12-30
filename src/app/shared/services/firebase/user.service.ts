@@ -24,7 +24,6 @@ export class UserService {
         const ref = this.db.collection('users');
         return this.app.auth().createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
-
                 ref.doc(userData.user.uid).set({
                     uid: userData.user.uid,
                     email: value.email,

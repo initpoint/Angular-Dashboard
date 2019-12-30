@@ -9,8 +9,8 @@ export const content: Routes = [
     }
   },
   {
-    path: 'products/show',
-    loadChildren: './components/e-commerce/e-commerce.module#ECommerceModule',
+    path: 'products',
+    loadChildren: './components/products/products.module#ProductsModule',
     data: {
       breadcrumb: "Products"
     }

@@ -1,19 +1,24 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireAuth} from "@angular/fire/auth";
-
+import {User, auth, initializeApp} from 'firebase/app';
+import {environment} from '../../../../environments/environment';
 @Injectable({
     providedIn: 'root'
 })
 export class CustomerService {
+    app;
     constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth,
     ) {
     }
 
     async createCustomer(value) {
+        if (!this.app) {
+            this.app = initializeApp(environment.firebase, 'secondary');
+        }
         const ref = this.db.collection('users');
-         return this.afAuth.auth.createUserWithEmailAndPassword(value.email, value.password)
+         return this.app.auth().createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
                 ref.doc(userData.user.uid).set({
                     uid: userData.user.uid,
@@ -39,6 +44,7 @@ export class CustomerService {
             }
             return false;
         });
+        this.app.auth().signOut();
     }
 
     updateCustomer(userKey, value) {

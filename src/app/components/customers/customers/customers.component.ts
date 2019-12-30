@@ -19,13 +19,9 @@ export class CustomersComponent implements OnInit {
     public sidebaron: any;
     public selected = [];
     public listView: any;
-
     constructor(private customerService: CustomerService, private router: Router, private toastr: ToastrService) {
         this.getData();
     }
-
-
-
     public logText: string = '';
     public min: number;
     public value: number = 10;
@@ -74,5 +70,6 @@ export class CustomersComponent implements OnInit {
 
     ngOnInit() {
         this.getData();
+
     }
 }

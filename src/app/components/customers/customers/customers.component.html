@@ -23,7 +23,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body custom-datatable">
-                    <ngx-datatable class="bootstrap" [rows]="items" [columnMode]="'flex'" [headerHeight]="50" externalPaging="true"
+                    <ngx-datatable class="bootstrap" [rows]="items" [columnMode]="'flex'" [headerHeight]="50"
                                    [footerHeight]="50" [rowHeight]="'auto'" [limit]="10" [selected]="selected"
                                    [selectionType]="'checkbox'" [selectAllRowsOnPage]="false"
                                    (select)='onSelect($event)'>
@@ -57,6 +57,17 @@
                                 {{row.payload.doc.data().lastLoginAt | date: 'hh:mm dd/MM/yyyy'}}
                             </ng-template>
                         </ngx-datatable-column>
+                        <!--<ngx-datatable-column name="" [flexGrow]="1" >-->
+                        <!--<ng-template let-row="row" ngx-datatable-cell-template>-->
+                        <!---->
+                        <!--&lt;!&ndash;<button class="btn btn-danger mr-2"&ndash;&gt;-->
+                        <!--&lt;!&ndash;(click)="delete(row.payload.doc.id)">Delete&ndash;&gt;-->
+                        <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<button class="btn btn-secondary" [disabled]="btn"&ndash;&gt;-->
+                        <!--&lt;!&ndash;(click)="resetPassword(row.payload.doc.data().email)">Reset Password&ndash;&gt;-->
+                        <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                        <!--</ng-template>-->
+                        <!--</ngx-datatable-column>-->
                     </ngx-datatable>
                 </div>
             </div>
