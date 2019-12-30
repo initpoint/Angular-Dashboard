@@ -1,42 +1,41 @@
-<dx-tree-list (onRowExpanded)="onRowExpanded($event)"
+<dx-tree-list
+(onRowExpanding)="SetId($event)"
               id="employees"
-              [dataSource]="categories"
-              [rootValue]="0"
+              [dataSource]="source"
+              rootValue=""
               keyExpr="id"
               parentIdExpr="headId"
+              [remoteOperations]="{filtering: true}"
               [showRowLines]="true"
               [showBorders]="true"
               [columnAutoWidth]="true"
-              (onEditorPreparing)="editorPreparing($event)"
-              (onInitNewRow)="initNewRow($event)"
-              (onCellPrepared)="cellPrepared($event)"
-              (onRowInserted)="rowInserted($event)">
+              hasItemsExpr="hasChildren">
     <dxo-paging
             [enabled]="true"
             [pageSize]="10">
     </dxo-paging>
-
     <dxo-pager
             [allowedPageSizes]="[5, 10]"
             [showPageSizeSelector]="true"
             [showNavigationButtons]="true">
     </dxo-pager>
-    <!--<dxo-export [enabled]="true"></dxo-export>-->
+    <dxo-export [enabled]="true"></dxo-export>
     <dxo-editing
-
             mode="row"
             [allowAdding]="true"
             [allowUpdating]="true"
             [allowDeleting]="true"
             [useIcons]="true">
     </dxo-editing>
-    <dxi-column dataField="name_ar" caption="Name">
-        <dxi-validation-rule type="required"></dxi-validation-rule>
-    </dxi-column>
     <dxi-column dataField="code" caption="Code">
-        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
+    </dxi-column>
+    <dxi-column dataField="name_ar" caption="Name Ar">
+        <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
+    </dxi-column>
+    <dxi-column dataField="name_en" caption="Name En">
+        <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
     </dxi-column>
     <dxi-column dataField="active" caption="Is Active">
-        <dxi-validation-rule type="required"></dxi-validation-rule>
     </dxi-column>
 </dx-tree-list>

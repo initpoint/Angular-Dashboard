@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ToastrService } from 'ngx-toastr';
 import { key } from 'flatpickr/dist/types/locale';
@@ -20,7 +20,7 @@ export class ProductsService {
     }
 
     getCategories(): Observable<Category[]> {
-        return this.db.collection<any>('category').snapshotChanges().pipe(
+        return this.db.collection<any>('category',ref => ref.where('type','==','category')).snapshotChanges().pipe(
             map(x => x.map(y => {
                 return {
                     id: y.payload.doc.id,
@@ -29,14 +29,30 @@ export class ProductsService {
             }))
         );
     }
+    getRanking(categoryId: string){
+        return this.db.collection<any>('category').doc(categoryId).snapshotChanges();
+    }
+    getRankings(id) {
+        return this.db.collection('category',ref => ref.where('headId', '==', id)).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    id: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                }
+            }))
+        );
+    }
+    /* Categories */
     getCategory(key) {
         return this.db.collection('category').doc(key).snapshotChanges();
     }
     deleteCategory(key) {
         return this.db.collection('category').doc(key).delete();
     }
-
-    getRanking(categoryId: string){
-        return this.db.collection<any>('category').doc(categoryId).snapshotChanges();
+    updateCategory(key,values) {
+        return this.db.collection('category').doc(key).set(values,{merge:true});
+    }
+    createCategory(values) {
+        return this.db.collection('category').add(values);
     }
 }
