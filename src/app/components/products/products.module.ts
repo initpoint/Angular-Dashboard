@@ -5,7 +5,7 @@ import {ProductsRoutingModule} from './products-routing.module';
 import {NewProductComponent} from './new-product/new-product.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProductsService} from '../../shared/services/firebase/products.service';
-import {ProductsComponent} from './products/products.component';
+import {ProductsComponent, NgbdModal2Content,NgbdModal1Content} from './products/products.component';
 import {EditProductComponent} from './edit-product/edit-product.component';
 import {EditProductResolver} from '../../shared/services/firebase/edit-product.resolver';
 
@@ -21,7 +21,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 @NgModule({
-    declarations: [NewProductComponent, ProductsComponent, EditProductComponent],
+    declarations: [NewProductComponent, ProductsComponent, EditProductComponent,NgbdModal2Content,NgbdModal1Content],
 
     imports: [
         DxDataGridModule,
@@ -45,6 +45,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
     ],
 
+    entryComponents: [ NgbdModal2Content,NgbdModal1Content],
     providers: [ProductsService, EditProductResolver]
 })
 export class ProductsModule {

@@ -1,4 +1,4 @@
-export class Materials {
+export class Combinations {
     public constructor(
         active?: boolean,
         name_ar?: string,
@@ -6,6 +6,7 @@ export class Materials {
         hasChildren?: boolean,
         code?: string,
         type?: string,
-        headId?: string
-    ) {}
+        headId?: string,
+    ) {
+    }
 }

@@ -1,17 +1,11 @@
-import {Materials} from './materials';
-import {Categories} from './categories';
-
 export class Ranking {
     public constructor(
         active?: boolean,
         name_ar?: string,
         name_en?: string,
-        children?: Materials[],
+        hasChildren?: boolean,
         code?: string,
-        parent_code?: string,
-        parent?: Categories[]
-    ) {
-
-    }
-
+        type?: string,
+        headId?: string
+    ) { }
 }
