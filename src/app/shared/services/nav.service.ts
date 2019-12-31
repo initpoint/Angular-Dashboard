@@ -34,6 +34,7 @@ export class NavService {
 	@HostListener('window:resize', ['$event'])
 	onResize(event?) {
 		this.screenWidth = window.innerWidth;
+
 	}
 
 	MENUITEMS: Menu[] = [

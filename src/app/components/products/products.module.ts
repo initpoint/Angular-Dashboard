@@ -9,13 +9,17 @@ import {ProductsComponent} from './products/products.component';
 import {EditProductComponent} from './edit-product/edit-product.component';
 import {EditProductResolver} from '../../shared/services/firebase/edit-product.resolver';
 
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {Ng5SliderModule} from 'ng5-slider';
 import {ToastrModule} from 'ngx-toastr';
-import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
 import { DxTreeListModule, DxDataGridModule } from 'devextreme-angular';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 @NgModule({
     declarations: [NewProductComponent, ProductsComponent, EditProductComponent],
 
@@ -30,7 +34,13 @@ import { DxTreeListModule, DxDataGridModule } from 'devextreme-angular';
         HttpModule,
         Ng5SliderModule,
         Ng2SearchPipeModule,
-        NgxDatatableModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            },
+        }),
         ToastrModule.forRoot(),
 
     ],

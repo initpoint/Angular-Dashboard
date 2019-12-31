@@ -1,33 +1,36 @@
 <dx-tree-list
-(onRowExpanding)="SetId($event)"
-              id="employees"
-              [dataSource]="source"
-              rootValue=""
-              keyExpr="id"
-              parentIdExpr="headId"
-              [remoteOperations]="{filtering: true}"
-              [showRowLines]="true"
-              [showBorders]="true"
-              [columnAutoWidth]="true"
-              hasItemsExpr="hasChildren">
-    <dxo-paging
-            [enabled]="true"
-            [pageSize]="10">
-    </dxo-paging>
-    <dxo-pager
-            [allowedPageSizes]="[5, 10]"
-            [showPageSizeSelector]="true"
-            [showNavigationButtons]="true">
-    </dxo-pager>
-    <dxo-export [enabled]="true"></dxo-export>
+        (onRowExpanding)="RowExpanding($event)"
+        (onCellPrepared)="cellPrepared($event)"
+        id="employees"
+        [dataSource]="source"
+        [rtlEnabled]="lang"
+        rootValue=""
+        keyExpr="id"
+        parentIdExpr="headId"
+        [remoteOperations]="{filtering: true}"
+        [showRowLines]="true"
+        [showBorders]="true"
+        [columnAutoWidth]="true"
+        hasItemsExpr="hasChildren">
+    <dxo-paging [enabled]="true" [pageSize]="15"></dxo-paging>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-export [enabled]="true" fileName="Products" [allowExportSelectedData]="true"></dxo-export>
     <dxo-editing
-            mode="row"
+            mode="form"
             [allowAdding]="true"
             [allowUpdating]="true"
-            [allowDeleting]="true"
-            [useIcons]="true">
+            [useIcons]="true"
+            [allowDeleting]="true">
+        <dxo-form [rtlEnabled]="lang">
+            <dxi-item dataField="code" caption="Code"></dxi-item>
+            <dxi-item dataField="name_ar" caption="Name Ar "></dxi-item>
+            <dxi-item dataField="name_en" caption="Name En "></dxi-item>
+            <dxi-item dataField="active" caption="Is Active" editorType="dxCheckBox"></dxi-item>
+        </dxo-form>
     </dxo-editing>
-    <dxi-column dataField="code" caption="Code">
+    <dxo-selection mode="multiple"></dxo-selection>
+    <dxi-column dataField="code" caption="Code" >
         <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
     </dxi-column>
     <dxi-column dataField="name_ar" caption="Name Ar">
@@ -37,5 +40,7 @@
         <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
     </dxi-column>
     <dxi-column dataField="active" caption="Is Active">
+    </dxi-column>
+    <dxi-column dataField="type" caption="Type">
     </dxi-column>
 </dx-tree-list>

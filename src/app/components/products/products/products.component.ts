@@ -5,6 +5,7 @@ import {WishListService} from '../../../shared/services/e-commerce/wish-list.ser
 import {ProductsService} from 'src/app/shared/services/firebase/products.service';
 import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
+import CustomeStore from 'devextreme/data/custom_store';
 
 @Component({
     selector: 'app-products',
@@ -14,25 +15,30 @@ import DataSource from 'devextreme/data/data_source';
 export class ProductsComponent implements OnInit {
     categories: Category[];
     source: DataSource;
-    newObj: string = '';
+    store: CustomeStore;
+    ExpandedRow;
+    lang;
+    canAdd: boolean;
 
     constructor(
         private productService: ProductsService,
         private cartService: CartService,
         private modalService: NgbModal,
         private wishService: WishListService) {
-        this.source = new DataSource({
+        this.store = new CustomeStore({
             key: 'id',
             load: (opts) => {
                 return new Promise((resolve, reject) => {
+                    this.lang = localStorage.getItem('lang') == 'ar';
                     if (opts.parentIds[0].length === 0) {
                         this.productService.getCategories().subscribe(res => {
                             resolve({data: res});
                         });
                     } else {
-                        this.productService.getRankings(this.newObj).subscribe(res => {
+                        this.productService.getRankings(this.ExpandedRow.id).subscribe(res => {
+                            //console.log(res);    //this.canAdd = res. == 'combination';
                             resolve({data: res});
-                            this.newObj = '';
+                            this.ExpandedRow = {};
                         });
                     }
                 });
@@ -45,47 +51,38 @@ export class ProductsComponent implements OnInit {
             },
             insert: (values) => {
                 return this.productService.createCategory(values);
+            },
+            onInserting: (values) => {
+                let parent = this.source.items().find(item => item.key == values.headId).data;
+                values.type = {'category': 'ranking', 'ranking': 'material', 'material': 'combination'}[parent.type];
+                if (values.type == 'combination') {
+                    values.hasChildren = false;
+                }
             }
         });
-
+        this.source = new DataSource({
+            store: this.store,
+        });
     }
 
-    SetId(e) {
-        this.newObj = e.key;
+    RowExpanding(e) {
+        this.ExpandedRow = this.source.items().find(item => item.key == e.key).data;
+        console.log(this.ExpandedRow)
     }
 
     ngOnInit() {
-        // this.productService.getCategories().subscribe(res => {
-        //     this.categories = res;
-        // });
+        this.lang = localStorage.getItem('lang') == 'ar';
     }
 
     cellPrepared(e) {
-        let addLink = e.cellElement.querySelector('.dx-link-add');
-        //console.log('Event' , e);
-    }
-
-    rowInserted(e) {
-        console.log('Row', e);
-    }
-
-    editorPreparing(e) {
-        if (e.dataField === 'headId' && e.row.data.ID === 1) {
-            e.cancel = true;
+        let item = e.data;
+        if (item && item.type == 'combination') {
+            let addLink = e.cellElement.querySelector('.dx-link-add');
+            if (addLink) {
+                addLink.remove();
+            }
         }
-    }
 
-    initNewRow(e) {
-        // e.data.Head_ID = 1;
-    }
-
-    onRowExpanded(e: any) {
-        this.productService.getRanking(e.key).subscribe(x => {
-            // let ss = x.payload.data();
-            // let rr = ss.children[0].get().then(y => console.log(y.data()));
-            // console.log(ss)
-            // console.log(rr)
-        });
     }
 
 }
