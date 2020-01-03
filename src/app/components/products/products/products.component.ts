@@ -6,55 +6,7 @@ import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import { NgbActiveModal, NgbModal, ModalDismissReasons, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
-
-
-
-@Component({
-    template: `
-    <div class="modal-header">
-      <h4 class="modal-title">Hi there!</h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p>Hello, World!</p>
-      <p><button class="btn btn-lg btn-outline-primary" (click)="open()">Launch demo modal</button></p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-    </div>
-  `
-})
-export class NgbdModal1Content {
-    constructor(private modalService: NgbModal, public activeModal: NgbActiveModal) {}
-
-    open() {
-        this.modalService.open(NgbdModal2Content, {
-            size: 'lg'
-        });
-    }
-}
-
-@Component({
-    template: `
-    <div class="modal-header">
-      <h4 class="modal-title">Hi there!</h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p>Hello, World!</p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-    </div>
-  `
-})
-export class NgbdModal2Content {
-    constructor(public activeModal: NgbActiveModal) {}
-}
+import {NgForm} from '@angular/forms';
 
 @Component({
     selector: 'app-products',
@@ -63,14 +15,15 @@ export class NgbdModal2Content {
     providers: [NgbModal]
 })
 export class ProductsComponent implements OnInit {
+    @ViewChild('form',{static:false}) form: NgForm;
+    popupVisible = false;
+    value: any[] = [];
     categories: Category[];
     source: DataSource;
     store: CustomeStore;
     ExpandedRow;
     lang;
-    canAdd: boolean = false;
-@ViewChild('content',{static: true})
-private content: TemplateRef<any>;
+    currentRow;
     constructor(
         private productService: ProductsService,
         private cartService: CartService,
@@ -111,20 +64,28 @@ private content: TemplateRef<any>;
             },
             insert: (values) => {
                 values.hasChildren = false;
-                if (values.headId != '') {
+                if (values.headId == '') {
+                    values.type = 'category';
+                    return this.productService.createCategory(values);
+                } else {
                     let parent = this.source.items().find(item => item.key == values.headId).data;
                     values.type = {'category': 'ranking', 'ranking': 'material', 'material': 'combination'}[parent.type];
                     values.parent_type = parent.type;
                     return this.productService.addChild(values);
-                } else {
-                    values.type = 'category';
-                    return this.productService.createCategory(values);
                 }
             },
 
         });
         this.source = new DataSource({
             store: this.store,
+        });
+    }
+
+    updateClick() {
+        // console.log(this.form)
+        // console.log(this.value)
+        this.value.forEach(file => {
+            this.productService.uploadImage(file,this.currentRow)
         });
     }
 
@@ -151,8 +112,10 @@ private content: TemplateRef<any>;
             }
         }
     }
-    ImgBtn(e) {
-        console.log('Content' , e)
-        // this.modalService.open(NgbdModal1Content);
+
+    RowClicked($event: any) {
+        this.currentRow = $event.data
+        this.popupVisible = true;
     }
+
 }

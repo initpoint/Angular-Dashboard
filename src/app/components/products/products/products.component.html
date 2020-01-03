@@ -1,4 +1,5 @@
 <dx-tree-list
+        (onRowClick)="RowClicked($event)"
         (onRowExpanding)="RowExpanding($event)"
         (onCellPrepared)="cellPrepared($event)"
         id="employees"
@@ -15,36 +16,39 @@
     <dxo-paging [enabled]="true" [pageSize]="15"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
-    <dxo-export [enabled]="true" fileName="Products" [allowExportSelectedData]="true"></dxo-export>
+    <!--<dxo-export [enabled]="true" fileName="Products" [allowExportSelectedData]="true"></dxo-export>-->
     <dxo-editing
             mode="form"
             [allowAdding]="true"
             [allowUpdating]="true"
             [useIcons]="true"
             [allowDeleting]="true">
-        <dxo-form [rtlEnabled]="lang" *ngIf="canAdd">
-            <dxi-item dataField="code" caption="Code"></dxi-item>
-            <dxi-item dataField="name_ar" caption="Name Ar "></dxi-item>
-            <dxi-item dataField="name_en" caption="Name En "></dxi-item>
-            <dxi-item dataField="image" caption="Image"></dxi-item>
-            <dxi-item dataField="active" [editorOptions]="{value:false}" caption="Is Active" editorType="dxCheckBox"></dxi-item>
-        </dxo-form>
-    </dxo-editing>
-    <dxi-column type="buttons">
-        <dxi-button text="Img" [onClick]="ImgBtn" cssClass="image-uploader"></dxi-button>
-        <dxi-button name="add"></dxi-button>
-        <dxi-button name="edit"></dxi-button>
-        <dxi-button name="delete"></dxi-button>
+        <!--<dxo-form [rtlEnabled]="lang">-->
+        <!--<dxi-item dataField="code" caption="Code"></dxi-item>-->
+        <!--<dxi-item dataField="nameAr" caption="Name Ar "></dxi-item>-->
+        <!--<dxi-item dataField="nameEn" caption="Name En "></dxi-item>-->
+        <!--<dxi-item dataField="type" caption="Name En " visible="false"></dxi-item>-->
 
-    </dxi-column>
+        <!--&lt;!&ndash;<dxi-item dataField="image" caption="Image"></dxi-item>&ndash;&gt;-->
+        <!--<dxi-item dataField="active" [editorOptions]="{value:false}" caption="Is Active" editorType="dxCheckBox"></dxi-item>-->
+        <!--</dxo-form>-->
+    </dxo-editing>
+
+    <!--<dxi-column type="buttons">-->
+    <!--<dxi-button text="Img" [onClick]="ImgBtn" cssClass="image-uploader"></dxi-button>-->
+    <!--<dxi-button name="add"></dxi-button>-->
+    <!--<dxi-button name="edit"></dxi-button>-->
+    <!--<dxi-button name="delete"></dxi-button>-->
+
+    <!--</dxi-column>-->
     <dxo-selection mode="multiple"></dxo-selection>
-    <dxi-column dataField="code" caption="Code" >
+    <dxi-column dataField="code" caption="Code">
         <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
     </dxi-column>
-    <dxi-column dataField="name_ar" caption="Name Ar">
+    <dxi-column dataField="nameAr" caption="Name Ar">
         <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
     </dxi-column>
-    <dxi-column dataField="name_en" caption="Name En">
+    <dxi-column dataField="nameEn" caption="Name En">
         <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
     </dxi-column>
     <dxi-column dataField="active" caption="Is Active">
@@ -52,17 +56,33 @@
     <dxi-column dataField="type" caption="Type">
     </dxi-column>
 </dx-tree-list>
-<ng-template #content let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title">Modal title</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
+<dx-popup
+        [width]="300"
+        [height]="250"
+        [showTitle]="true"
+        title="Information"
+        [dragEnabled]="false"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupVisible">
+    <div *dxTemplate="let data of 'content'">
+<img [src]="pic" *ngFor="let pic of currentRow.pics" alt=""/>
+        <div class="widget-container">
+            <form id="form" #form method="post" action="" enctype="multipart/form-data">
+                <div id="fileuploader-container">
+                    <dx-file-uploader
+                            selectButtonText="Select photo"
+                            labelText=""
+                            accept="image/*"
+                            [(value)] = 'value'
+                            [showFileList]="true"
+                            multiple="true"
+                            uploadMode="useForm">
+                    </dx-file-uploader>
+                </div>
+                <button class="btn btn-primary" type="submit" (click)="updateClick()">
+                    submit
+                </button>
+            </form>
+        </div>
     </div>
-    <div class="modal-body">
-        <p>One fine body&hellip;</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
-    </div>
-</ng-template>
+</dx-popup>

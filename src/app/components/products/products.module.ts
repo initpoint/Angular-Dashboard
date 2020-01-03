@@ -5,7 +5,7 @@ import {ProductsRoutingModule} from './products-routing.module';
 import {NewProductComponent} from './new-product/new-product.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProductsService} from '../../shared/services/firebase/products.service';
-import {ProductsComponent, NgbdModal2Content,NgbdModal1Content} from './products/products.component';
+import {ProductsComponent} from './products/products.component';
 import {EditProductComponent} from './edit-product/edit-product.component';
 import {EditProductResolver} from '../../shared/services/firebase/edit-product.resolver';
 
@@ -14,17 +14,19 @@ import {HttpModule} from '@angular/http';
 import {Ng5SliderModule} from 'ng5-slider';
 import {ToastrModule} from 'ngx-toastr';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
-import { DxTreeListModule, DxDataGridModule } from 'devextreme-angular';
+import { DxTreeListModule, DxFileUploaderModule,DxPopupModule ,DxTemplateModule} from 'devextreme-angular';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 @NgModule({
-    declarations: [NewProductComponent, ProductsComponent, EditProductComponent,NgbdModal2Content,NgbdModal1Content],
+    declarations: [NewProductComponent, ProductsComponent, EditProductComponent],
 
     imports: [
-        DxDataGridModule,
+        DxPopupModule,
+        DxTemplateModule,
+        DxFileUploaderModule,
         CommonModule,
         DxTreeListModule,
         ProductsRoutingModule,
@@ -45,7 +47,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 
     ],
 
-    entryComponents: [ NgbdModal2Content,NgbdModal1Content],
     providers: [ProductsService, EditProductResolver]
 })
 export class ProductsModule {
