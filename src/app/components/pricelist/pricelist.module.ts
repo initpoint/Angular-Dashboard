@@ -1,34 +1,31 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-
-import {ProductsRoutingModule} from './products-routing.module';
+import {PriceListService} from 'src/app/shared/services/firebase/pricelist.service';
+import {PriceListRoutingModule} from './pricelist-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {ProductsService} from '../../shared/services/firebase/products.service';
-import {ProductsComponent} from './products/products.component';
-import {EditProductResolver} from '../../shared/services/firebase/edit-product.resolver';
+import {PriceListComponent} from './pricelist.component';
 
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {Ng5SliderModule} from 'ng5-slider';
 import {ToastrModule} from 'ngx-toastr';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
-import { DxTreeListModule, DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule} from 'devextreme-angular';
+import {DxPopupModule ,DxTemplateModule, DxDataGridModule,DxNumberBoxModule} from 'devextreme-angular';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 @NgModule({
-    declarations: [ProductsComponent],
+    declarations: [PriceListComponent],
 
     imports: [
         DxDataGridModule,
         DxPopupModule,
         DxTemplateModule,
-        DxFileUploaderModule,
+        DxNumberBoxModule,
         CommonModule,
-        DxTreeListModule,
-        ProductsRoutingModule,
+        PriceListRoutingModule,
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
@@ -46,7 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
     ],
 
-    providers: [ProductsService, EditProductResolver]
+    providers: [PriceListService]
 })
-export class ProductsModule {
+export class PriceListModule {
 }

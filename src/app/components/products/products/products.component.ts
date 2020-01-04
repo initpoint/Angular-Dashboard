@@ -1,11 +1,8 @@
-import {Component, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
-import {CartService} from '../../../shared/services/e-commerce/cart.service';
-import {WishListService} from '../../../shared/services/e-commerce/wish-list.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProductsService} from 'src/app/shared/services/firebase/products.service';
 import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
-import {NgbActiveModal, NgbModal, ModalDismissReasons, NgbModalConfig} from '@ng-bootstrap/ng-bootstrap';
 import {NgForm} from '@angular/forms';
 import {now} from 'd3-timer';
 
@@ -13,7 +10,6 @@ import {now} from 'd3-timer';
     selector: 'app-products',
     templateUrl: './products.component.html',
     styleUrls: ['./products.component.scss'],
-    providers: [NgbModal]
 })
 export class ProductsComponent implements OnInit {
     @ViewChild('form', {static: false}) form: NgForm;
@@ -25,12 +21,11 @@ export class ProductsComponent implements OnInit {
     ExpandedRow;
     lang;
     currentRow;
-
+    showTree = true;
+    listStore : CustomeStore;
+    listSource : DataSource;
     constructor(
-        private productService: ProductsService,
-        private cartService: CartService,
-        private wishService: WishListService,
-        private modalService: NgbModal,) {
+        private productService: ProductsService) {
         this.store = new CustomeStore({
             key: 'id',
             load: (opts) => {
@@ -47,7 +42,6 @@ export class ProductsComponent implements OnInit {
                             'material': 'combination'
                         }[this.ExpandedRow.type]).subscribe(res => {
                             resolve({data: res});
-                            // this.ExpandedRow = {};
                         });
                     }
                 });
@@ -81,9 +75,40 @@ export class ProductsComponent implements OnInit {
         this.source = new DataSource({
             store: this.store,
         });
+        this.listStore = new CustomeStore({
+            key: 'id',
+            load: (opts) => {
+                return new Promise((resolve, reject) => {
+                    this.lang = localStorage.getItem('lang') == 'ar';
+                    this.productService.getCombinations().subscribe(res => {
+                        resolve({data: res});
+                    });
+                });
+            },
+            update: (key, values) => {
+                let item = this.source.items().find(item => item.key == key).data;
+                values.type = item.type;
+                return this.productService.updateItem(key, values);
+            },
+            remove: (key) => {
+                let item = this.source.items().find(item => item.key == key).data;
+                item.active = !item.active;
+                return new Promise((resolve, reject) => {
+                    return this.productService.setTreeAttr(item, {active: item.active});
+                });
+            }
+
+        });
+        this.listSource = new DataSource({
+            store: this.listStore,
+        });
     }
 
-    updateClick() {
+    changeView() {
+        this.showTree = !this.showTree;
+    }
+
+    uploadImages() {
         let i = 0;
         this.value.forEach(file => {
             console.log(file.name.split('.'));
@@ -101,10 +126,10 @@ export class ProductsComponent implements OnInit {
         this.lang = localStorage.getItem('lang') == 'ar';
     }
 
-    DeletingImage(pic) {
-        let path = pic.split('/').reverse()[0].split('?')[0].replace('%2F','/');
+    deleteImage(pic) {
+        let path = pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/');
         if (confirm('Are your sure you want to delete this Image') == true) {
-            this.productService.removeImage(this.currentRow,path,pic);
+            this.productService.removeImage(this.currentRow, path, pic);
         }
     }
 
@@ -115,11 +140,6 @@ export class ProductsComponent implements OnInit {
                 if (addLink) {
                     addLink.remove();
                 }
-            } else {
-                let imgLink = e.cellElement.querySelector('.image-uploader');
-                if (imgLink) {
-                    imgLink.remove();
-                }
             }
         }
     }
@@ -127,7 +147,6 @@ export class ProductsComponent implements OnInit {
     RowClicked($event: any) {
         this.currentRow = $event.data;
         if (this.currentRow.type == 'combination') {
-            //document.getElementsByClassName('dx-popup-content')[0].setAttribute('style','height:auto');
             this.popupVisible = true;
         }
     }

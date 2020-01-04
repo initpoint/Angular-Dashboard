@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
-import {key} from 'flatpickr/dist/types/locale';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {Category} from '../../model/category.model';
@@ -11,7 +10,7 @@ import {Combination} from '../../model/combination.model';
 @Injectable({
     providedIn: 'root'
 })
-export class ProductsService {
+export class PriceListService {
 
     constructor(public db: AngularFirestore,
                 private toastr: ToastrService,
@@ -83,8 +82,8 @@ export class ProductsService {
         );
     }
     /* Categories */
-    getCategories(): Observable<Category[]> {
-        return this.db.collection<any>('category').snapshotChanges().pipe(
+    getPriceLists() {
+        return this.db.collection<any>('pricelist').snapshotChanges().pipe(
             map(x => x.map(y => {
                 return {
                     id: y.payload.doc.id,
@@ -138,11 +137,22 @@ export class ProductsService {
 
     updateItem(key, values) {
         this.toastr.success('Item updated.');
-        return this.db.collection(values.type).doc(key).set(values, {merge: true});
+        return this.db.collection('combination').doc(key).set(values, {merge: true});
+    }
+    updatePriceList(key, values) {
+        this.toastr.success('Item updated.');
+        return this.db.collection('pricelist').doc(key).set(values, {merge: true});
+    }
+    createPriceList(values) {
+        this.toastr.success('Item added.');
+        return this.db.collection('pricelist').add(values);
     }
 
-    createCategory(values) {
-        this.toastr.success('Item added.');
-        return this.db.collection('category').add(values);
+    removeItem(itemKey: any, priceListKey: any) {
+        let newItem = {
+            prices: {}
+        };
+        newItem.prices[priceListKey] = null;
+        return this.updateItem(itemKey,newItem);
     }
 }

@@ -1,90 +1,95 @@
-<dx-tree-list
-        (onRowClick)="RowClicked($event)"
-        (onRowExpanding)="RowExpanding($event)"
-        (onCellPrepared)="cellPrepared($event)"
-        id="employees"
-        [dataSource]="source"
-        [rtlEnabled]="lang"
-        rootValue=""
-        keyExpr="id"
-        parentIdExpr="headId"
-        [remoteOperations]="{filtering: true}"
-        [showRowLines]="true"
-        [showBorders]="true"
-        [columnAutoWidth]="true"
-        hasItemsExpr="hasChildren">
-    <dxo-paging [enabled]="true" [pageSize]="15"></dxo-paging>
-    <dxo-header-filter [visible]="true"></dxo-header-filter>
-    <dxo-search-panel [visible]="true"></dxo-search-panel>
-    <!--<dxo-export [enabled]="true" fileName="Products" [allowExportSelectedData]="true"></dxo-export>-->
-    <dxo-editing
-            mode="form"
-            [allowAdding]="true"
-            [allowUpdating]="true"
-            [useIcons]="true"
-            [allowDeleting]="true">
-        <!--<dxo-form [rtlEnabled]="lang">-->
-        <!--<dxi-item dataField="code" caption="Code"></dxi-item>-->
-        <!--<dxi-item dataField="nameAr" caption="Name Ar "></dxi-item>-->
-        <!--<dxi-item dataField="nameEn" caption="Name En "></dxi-item>-->
-        <!--<dxi-item dataField="type" caption="Name En " visible="false"></dxi-item>-->
-
-        <!--&lt;!&ndash;<dxi-item dataField="image" caption="Image"></dxi-item>&ndash;&gt;-->
-        <!--<dxi-item dataField="active" [editorOptions]="{value:false}" caption="Is Active" editorType="dxCheckBox"></dxi-item>-->
-        <!--</dxo-form>-->
-    </dxo-editing>
-
-    <!--<dxi-column type="buttons">-->
-    <!--<dxi-button text="Img" [onClick]="ImgBtn" cssClass="image-uploader"></dxi-button>-->
-    <!--<dxi-button name="add"></dxi-button>-->
-    <!--<dxi-button name="edit"></dxi-button>-->
-    <!--<dxi-button name="delete"></dxi-button>-->
-
-    <!--</dxi-column>-->
-    <dxo-selection mode="multiple"></dxo-selection>
-    <dxi-column dataField="code" caption="Code">
-        <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
-    </dxi-column>
-    <dxi-column dataField="nameAr" caption="Name Ar">
-        <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
-    </dxi-column>
-    <dxi-column dataField="nameEn" caption="Name En">
-        <!--<dxi-validation-rule type="required"></dxi-validation-rule>-->
-    </dxi-column>
-    <dxi-column dataField="active" caption="Is Active">
-    </dxi-column>
-    <dxi-column dataField="type" caption="Type">
-    </dxi-column>
-</dx-tree-list>
-<dx-popup
-        width="700"
-        height="auto"
-        [showTitle]="true"
-        title="Photos"
-        [dragEnabled]="false"
-        [closeOnOutsideClick]="true"
-        [(visible)]="popupVisible">
-    <div *dxTemplate="let data of 'content'">
-        <ul class="list-group">
-            <li class="list-group-item list-group-item-action"><img style="height: 128px;width: 128px;padding-top: 3px" (click)="DeletingImage(pic)" [src]="pic" *ngFor="let pic of currentRow.pics" width="300" height="300" alt=""/></li>
-        </ul>
-        <div class="widget-container">
-            <form id="form" #form method="post" action="" enctype="multipart/form-data">
-                <div id="fileuploader-container">
-                    <dx-file-uploader
-                            selectButtonText="Select photo"
-                            labelText=""
-                            accept="image/*"
-                            [(value)]='value'
-                            [showFileList]="true"
-                            multiple="true"
-                            uploadMode="useForm">
-                    </dx-file-uploader>
-                </div>
-                <button class="btn btn-primary" type="submit" (click)="updateClick()">
-                    submit
-                </button>
-            </form>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <button class="btn btn-primary ml-2 mt-2 mb-3 pull-right" (click)="changeView()"><i class="fa fa-th-list"
+                > Combinations / FullList</i></button>
+                <dx-tree-list *ngIf="showTree"
+                        (onRowClick)="RowClicked($event)"
+                        (onRowExpanding)="RowExpanding($event)"
+                        (onCellPrepared)="cellPrepared($event)"
+                        id="product-list"
+                        [dataSource]="source"
+                        [rtlEnabled]="lang"
+                        rootValue=""
+                        keyExpr="id"
+                        parentIdExpr="headId"
+                        [remoteOperations]="{filtering: true}"
+                        [showRowLines]="true"
+                        [showBorders]="true"
+                        [columnAutoWidth]="true"
+                        hasItemsExpr="hasChildren">
+                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true"></dxo-search-panel>
+                    <dxo-editing
+                            mode="form"
+                            [allowAdding]="true"
+                            [allowUpdating]="true"
+                            [useIcons]="true"
+                            [allowDeleting]="true">
+                    </dxo-editing>
+                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxi-column dataField="code" caption="Code"></dxi-column>
+                    <dxi-column dataField="nameAr" caption="Name Ar"></dxi-column>
+                    <dxi-column dataField="nameEn" caption="Name En"></dxi-column>
+                    <dxi-column dataField="isActive" dataType="boolean" caption="Is Active"></dxi-column>
+                    <dxi-column dataField="isNew" dataType="boolean" caption="Is New"></dxi-column>
+                </dx-tree-list>
+                <dx-popup
+                        width="700"
+                        height="auto"
+                        [showTitle]="true"
+                        title="Photos"
+                        [dragEnabled]="false"
+                        [closeOnOutsideClick]="true"
+                        [(visible)]="popupVisible">
+                    <div *dxTemplate="let data of 'content'">
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-action"><img
+                                    style="height: 128px;width: 128px;padding-top: 3px" (click)="deleteImage(pic)"
+                                    [src]="pic" *ngFor="let pic of currentRow.pics" width="300" height="300" alt=""/>
+                            </li>
+                        </ul>
+                        <div class="widget-container">
+                            <form id="form" #form method="post" action="" enctype="multipart/form-data">
+                                <div id="fileuploader-container">
+                                    <dx-file-uploader
+                                            selectButtonText="Select photo"
+                                            labelText=""
+                                            accept="image/*"
+                                            [(value)]='value'
+                                            [showFileList]="true"
+                                            multiple="true"
+                                            uploadMode="useForm">
+                                    </dx-file-uploader>
+                                </div>
+                                <button class="btn btn-primary" type="submit" (click)="uploadImages()">
+                                    Submit
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </dx-popup>
+                <dx-data-grid *ngIf="!showTree" [dataSource]="listSource" [showBorders]="true" [rtlEnabled]="lang" (onRowClick)="RowClicked($event)">
+                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true"></dxo-search-panel>
+                    <dxo-editing
+                            mode="form"
+                            [allowUpdating]="true"
+                            [useIcons]="true"
+                            [allowDeleting]="true">
+                    </dxo-editing>
+                    <dxo-export [enabled]="true" fileName="Combinations" [allowExportSelectedData]="true"></dxo-export>
+                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxi-column dataField="code" caption="Code"></dxi-column>
+                    <dxi-column dataField="nameAr" caption="Name Ar"></dxi-column>
+                    <dxi-column dataField="nameEn" caption="Name En"></dxi-column>
+                    <dxi-column dataField="isActive" dataType="boolean" caption="Is Active"></dxi-column>
+                    <dxi-column dataField="isNew" dataType="boolean" caption="Is New"></dxi-column>
+                </dx-data-grid>
+            </div>
         </div>
     </div>
-</dx-popup>
+</div>

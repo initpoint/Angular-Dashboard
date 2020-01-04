@@ -69,6 +69,9 @@ export class NavService {
 			title: 'Products', path:'/products/show',icon: 'shopping-bag', type: 'link', active: false,
 		},
 		{
+			title: 'Price List', path:'/pricelist/show',icon: 'list', type: 'link', active: false,
+		},
+		{
 			title: 'Customers', icon: 'user', type: 'link',path:'/customers/show', active: false,
 		},
 /*
