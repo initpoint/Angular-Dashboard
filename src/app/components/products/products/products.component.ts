@@ -87,8 +87,7 @@ export class ProductsComponent implements OnInit {
         let i = 0;
         this.value.forEach(file => {
             console.log(file.name.split('.'));
-            file.newName = new Date() + '-' + i + '.' + file.name.split('.')[1];
-
+            file.newName = now() + '-' + i + '.' + file.name.split('.').reverse()[0];
             this.productService.uploadImage(file, this.currentRow);
             i++;
         });
@@ -103,10 +102,9 @@ export class ProductsComponent implements OnInit {
     }
 
     DeletingImage(pic) {
-        pic = pic.split('/').reverse()[0].split('?')[0].replace('%2F','/');
-        console.log(pic)
+        let path = pic.split('/').reverse()[0].split('?')[0].replace('%2F','/');
         if (confirm('Are your sure you want to delete this Image') == true) {
-            this.productService.removeImage(pic);
+            this.productService.removeImage(this.currentRow,path,pic);
         }
     }
 

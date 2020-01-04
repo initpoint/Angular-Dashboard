@@ -60,13 +60,13 @@
         width="700"
         height="auto"
         [showTitle]="true"
-        title="Information"
+        title="Photos"
         [dragEnabled]="false"
         [closeOnOutsideClick]="true"
         [(visible)]="popupVisible">
     <div *dxTemplate="let data of 'content'">
         <ul class="list-group">
-            <li class="list-group-item list-group-item-action"><img (click)="DeletingImage(pic)" [src]="pic" *ngFor="let pic of currentRow.pics" width="300" height="300" alt=""/></li>
+            <li class="list-group-item list-group-item-action"><img style="height: 128px;width: 128px;padding-top: 3px" (click)="DeletingImage(pic)" [src]="pic" *ngFor="let pic of currentRow.pics" width="300" height="300" alt=""/></li>
         </ul>
         <div class="widget-container">
             <form id="form" #form method="post" action="" enctype="multipart/form-data">

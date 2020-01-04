@@ -17,8 +17,15 @@ export class ProductsService {
     ) {
     }
 
-    removeImage(pic) {
-        return firebase.storage().ref().child(`${pic}`).delete();
+    removeImage(row,path,pic) {
+
+        return firebase.storage().ref().child(path).delete().then(() => {
+            this.db.collection(row.type).doc(row.id).update({
+                pics: firebase.firestore.FieldValue.arrayRemove(pic)
+            });
+        }).catch(function(error) {
+           console.log(error)
+        });
     }
 
     uploadImage(file, data) {
