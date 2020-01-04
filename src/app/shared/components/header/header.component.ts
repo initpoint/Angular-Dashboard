@@ -13,8 +13,8 @@ var body = document.getElementsByTagName("body")[0];
 })
 export class HeaderComponent implements OnInit {
 
-  public menuItems: Menu[];
-  public items: Menu[];
+  public menuItems;
+  public items: any[];
   public searchResult: boolean = false;
   public searchResultEmpty: boolean = false;
   public openNav: boolean = false
@@ -96,8 +96,8 @@ export class HeaderComponent implements OnInit {
         })
       })
       this.checkSearchResultEmpty(items)
-      this.menuItems = items
     });
+    this.menuItems = items
   }
 
   checkSearchResultEmpty(items) {
