@@ -17,14 +17,14 @@ export class ProductsService {
     ) {
     }
 
-    saveImage(id) {
-
+    removeImage(pic) {
+        return firebase.storage().ref().child(`${pic}`).delete();
     }
 
     uploadImage(file, data) {
         let storageRef = firebase.storage().ref();
 
-        let uploadTask = storageRef.child(`${data.id}/${file.name}`).put(file);
+        let uploadTask = storageRef.child(`${data.id}/${file.newName}`).put(file);
         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
             (snapshot) => {
                 // upload in progress
@@ -35,12 +35,12 @@ export class ProductsService {
                 console.log(error);
             },
             () => {
-                console.log('zy el fol', storageRef.child(`${data.id}/${file.name}`).getDownloadURL());
-                storageRef.child(`${data.id}/${file.name}`).getDownloadURL().then(downloadURL => {
+                console.log('zy el fol', storageRef.child(`${data.id}/${file.newName}`).getDownloadURL());
+                storageRef.child(`${data.id}/${file.newName}`).getDownloadURL().then(downloadURL => {
                     this.db.collection(data.type).doc(data.id).update({
-                        pics:firebase.firestore.FieldValue.arrayUnion(downloadURL)
+                        pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
                     });
-                })
+                });
             }
         );
     }

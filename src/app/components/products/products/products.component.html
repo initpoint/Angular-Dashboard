@@ -57,15 +57,17 @@
     </dxi-column>
 </dx-tree-list>
 <dx-popup
-        [width]="300"
-        [height]="250"
+        width="700"
+        height="auto"
         [showTitle]="true"
         title="Information"
         [dragEnabled]="false"
         [closeOnOutsideClick]="true"
         [(visible)]="popupVisible">
     <div *dxTemplate="let data of 'content'">
-<img [src]="pic" *ngFor="let pic of currentRow.pics" alt=""/>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action"><img (click)="DeletingImage(pic)" [src]="pic" *ngFor="let pic of currentRow.pics" width="300" height="300" alt=""/></li>
+        </ul>
         <div class="widget-container">
             <form id="form" #form method="post" action="" enctype="multipart/form-data">
                 <div id="fileuploader-container">
@@ -73,7 +75,7 @@
                             selectButtonText="Select photo"
                             labelText=""
                             accept="image/*"
-                            [(value)] = 'value'
+                            [(value)]='value'
                             [showFileList]="true"
                             multiple="true"
                             uploadMode="useForm">
