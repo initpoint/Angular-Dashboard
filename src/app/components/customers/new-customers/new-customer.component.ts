@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {FormBuilder, Validators, FormGroup, FormControl} from '@angular/forms';
 import {CustomerService} from '../../../shared/services/firebase/customer.service';
 import {ToastrService} from 'ngx-toastr';
-
+import {PriceListService} from 'src/app/shared/services/firebase/pricelist.service';
 type UserFields = 'name' | 'email' | 'mobile' | 'password' | 'code';
 type FormErrors = { [u in UserFields]: string };
 
@@ -14,7 +14,7 @@ type FormErrors = { [u in UserFields]: string };
     encapsulation: ViewEncapsulation.None
 })
 export class NewCustomerComponent implements OnInit {
-    userDetail: any;
+    private priceLists;
     public registerForm: FormGroup;
     public sidebaron: any;
     public formErrors: FormErrors = {
@@ -28,13 +28,14 @@ export class NewCustomerComponent implements OnInit {
     public url: any;
     public avatraLink: any;
 
-    constructor(private fb: FormBuilder, private router: Router, private customerService: CustomerService, private toastr: ToastrService) {
+    constructor(private priceListService:PriceListService,private fb: FormBuilder, private router: Router, private customerService: CustomerService, private toastr: ToastrService) {
         this.registerForm = new FormGroup({
             name: new FormControl(''),
             password: new FormControl(''),
             email: new FormControl(''),
             mobile: new FormControl(''),
             code: new FormControl(''),
+            pricelist: new FormControl(''),
         });
     }
 
@@ -45,6 +46,7 @@ export class NewCustomerComponent implements OnInit {
             email: new FormControl('', [Validators.required, Validators.email]),
             mobile: new FormControl('', Validators.required),
             code: new FormControl('', Validators.required),
+            pricelist: new FormControl('', Validators.required),
         });
     }
 
@@ -59,28 +61,15 @@ export class NewCustomerComponent implements OnInit {
         }
     }
 
-    //FileUpload
-    // readUrl(event: any) {
-    //     if (event.target.files.length === 0)
-    //         return;
-    //     //Image upload validation
-    //     var mimeType = event.target.files[0].type;
-    //     if (mimeType.match(/image\/*/) == null) {
-    //         return;
-    //     }
-    //     // Image upload
-    //     var reader = new FileReader();
-    //     reader.readAsDataURL(event.target.files[0]);
-    //     reader.onload = (_event) => {
-    //         this.url = reader.result;
-    //     }
-    // }
 
     cancel() {
         this.router.navigate(['/customers/show']);
     }
 
     ngOnInit() {
+        this.priceListService.getPriceLists().subscribe(res=> {
+            this.priceLists = res;
+        })
     }
 
 }

@@ -3,7 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {FormBuilder, Validators, FormGroup, FormControl} from '@angular/forms';
 import {CustomerService} from '../../../shared/services/firebase/customer.service';
 import {ToastrService} from 'ngx-toastr';
-
+import {PriceListService} from 'src/app/shared/services/firebase/pricelist.service';
 @Component({
     selector: 'app-edit-customer',
     templateUrl: './edit-customer.component.html',
@@ -15,10 +15,10 @@ export class EditCustomerComponent implements OnInit {
     public url: any;
     public item: any;
     public btn: boolean;
-    // public avatar: any;
+    private priceLists;
     public sidebaron: any;
 
-    constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private customerService: CustomerService, private toastr: ToastrService) {
+    constructor(private priceListService: PriceListService,private fb: FormBuilder, private route: ActivatedRoute, private router: Router, private customerService: CustomerService, private toastr: ToastrService) {
     }
 
     createForm() {
@@ -26,7 +26,8 @@ export class EditCustomerComponent implements OnInit {
             name: [this.item.name, Validators.required],
             email: [this.item.email, [Validators.required, Validators.email]],
             mobile: [this.item.mobile, Validators.required],
-            code: [this.item.code, Validators.required]
+            code: [this.item.code, Validators.required],
+            pricelist: [this.item.pricelist]
         });
     }
     resetPassword(userEmail) {
@@ -67,23 +68,6 @@ export class EditCustomerComponent implements OnInit {
         this.toastr.success('Customer Updated!');
     }
 
-    //FileUpload
-    // readUrl(event: any) {
-    //   if (event.target.files.length === 0)
-    //     return;
-    //   //Image upload validation
-    //   var mimeType = event.target.files[0].type;
-    //   if (mimeType.match(/image\/*/) == null) {
-    //     return;
-    //   }
-    //   // Image upload
-    //   var reader = new FileReader();
-    //   reader.readAsDataURL(event.target.files[0]);
-    //   reader.onload = (_event) => {
-    //     this.avatar = reader.result;
-    //   }
-    // }
-
     cancel() {
         this.router.navigate(['/customers/show']);
     }
@@ -92,8 +76,11 @@ export class EditCustomerComponent implements OnInit {
         this.route.data.subscribe(routeData => {
             let data = routeData['data'];
             if (data) {
-                // this.avatar = data.payload.data().avatar;
                 this.item = data.payload.data();
+                this.priceListService.getPriceLists().subscribe(res=> {
+                    this.priceLists = res;
+
+                })
                 this.item.id = data.payload.id;
                 this.createForm();
             }

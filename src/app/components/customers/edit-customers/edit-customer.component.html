@@ -47,6 +47,12 @@
                                 mobile is required
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="pricelist" class="col-form-label">Price List</label>
+                            <select id="pricelist" class="form-control" formControlName="pricelist" required="">
+                                <option *ngFor="let list of priceLists" value="{{list.id}}">{{list.name}}</option>
+                            </select>
+                        </div>
                         <div class="form-group  mt-3 mb-0">
                             <button class="btn btn-info mr-2" [disabled]="btn" (click)="resetPassword(editcustomerForm.value['email'])" >Reset Password
                             </button>

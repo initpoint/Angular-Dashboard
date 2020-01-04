@@ -3,14 +3,13 @@ import {CustomerService} from '../../../shared/services/firebase/customer.servic
 import {Router} from '@angular/router';
 import {Options, ChangeContext, PointerType, LabelType} from 'ng5-slider';
 import {ToastrService} from 'ngx-toastr';
-
 @Component({
     selector: 'app-customer',
     templateUrl: './customers.component.html',
     styleUrls: ['./customers.component.scss']
 })
 export class CustomersComponent implements OnInit {
-
+    private priceList;
     public searchValue: string = '';
     public items = [];
     public name_filtered_items: Array<any>;
@@ -19,9 +18,11 @@ export class CustomersComponent implements OnInit {
     public sidebaron: any;
     public selected = [];
     public listView: any;
+
     constructor(private customerService: CustomerService, private router: Router, private toastr: ToastrService) {
         this.getData();
     }
+
     public logText: string = '';
     public min: number;
     public value: number = 10;
@@ -30,7 +31,6 @@ export class CustomersComponent implements OnInit {
         floor: 0,
         ceil: 100,
     };
-
 
 
     searchByName() {
@@ -60,14 +60,14 @@ export class CustomersComponent implements OnInit {
         this.selected.splice(0, this.selected.length);
         this.selected.push(...selected);
     }
-     getData() {
+
+    getData() {
         this.customerService.getCustomers()
             .subscribe(result => {
                 this.items = result;
                 this.name_filtered_items = result;
             });
     }
-
     ngOnInit() {
         this.getData();
 

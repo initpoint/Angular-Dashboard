@@ -5,16 +5,6 @@
             <div class="text-center"><img src="assets/images/alsenedy-logo-small-green.png" alt=""></div>
             <div class="card mt-4">
                 <div class="card-body">
-                    <!--<div class="text-center user-profile">-->
-                        <!--<div class="hovercard">-->
-                            <!--<div class="contact-profile">-->
-                                <!--<img class="rounded-circle img-100" alt=""-->
-                                    <!--[src]="url? url:'assets/images/user/user.png'">-->
-                                <!--<div class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"><input class="upload"-->
-                                            <!--type="file" (change)="readUrl($event)" /></i></div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
                     <form class="theme-form" [formGroup]="registerForm">
                         <div class="form-group">
                             <label class="col-form-label pt-0">Code</label>
@@ -65,7 +55,12 @@
                                 mobile is required
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <label for="pricelist" class="col-form-label">Price List</label>
+                            <select id="pricelist" class="form-control" formControlName="pricelist" required="">
+                                <option *ngFor="let list of priceLists" value="{{list.id}}">{{list.name}}</option>
+                            </select>
+                        </div>
                         <div class="form-group form-row mt-3 mb-0">
                             <button class="btn btn-primary mr-2" [disabled]="!registerForm.valid"
                                 (click)="submit(registerForm.value)" type="submit"> Submit
