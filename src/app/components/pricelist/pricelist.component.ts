@@ -62,8 +62,6 @@ export class PriceListComponent implements OnInit {
                 });
             },
             update: (key, values) => {
-                console.log(this.itemSource.items());
-                let item = this.itemSource.items().find(item => item.id == key);
                 let newItem = {
                     prices: {}
                 };
@@ -93,9 +91,5 @@ export class PriceListComponent implements OnInit {
         this.currentRow = $event.data;
     }
 
-    asd(e) {
-        console.log(e);
-
-    }
 
 }

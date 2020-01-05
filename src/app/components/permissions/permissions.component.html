@@ -1,0 +1,64 @@
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <dx-data-grid [dataSource]="CustomersData" [showBorders]="true" [rtlEnabled]="lang"
+                              (onRowClick)="RowClicked($event)">
+                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true"></dxo-search-panel>
+                    <!--<dxo-editing-->
+                            <!--mode="form"-->
+                            <!--[allowAdding]="true"-->
+                            <!--[allowUpdating]="true"-->
+                            <!--[useIcons]="true"-->
+                            <!--[allowDeleting]="true">-->
+                    <!--</dxo-editing>-->
+                    <dxo-export [enabled]="true" fileName="PriceList" [allowExportSelectedData]="true"></dxo-export>
+                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+                    <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
+                    <dxi-column dataField="isActive" dataType="boolean"  [caption]="'Is Active'|translate"></dxi-column>
+                </dx-data-grid>
+                <div *ngIf="currentRow" class="dx-field m-15">
+                    <div class="dx-field-value">
+                        <dx-button
+                                [(rtlEnabled)]="lang"
+                                class="btn-success send"
+                                icon="fa fa-save"
+                                (click)="SaveCustomerPermissions()"
+                                text="Save ">
+                        </dx-button>
+                    </div>
+                </div>
+                <dx-tree-list *ngIf="currentRow"
+                              (onRowClick)="treeRowClicked($event)"
+                              (onRowExpanding)="RowExpanding($event)"
+                              (onCellPrepared)="cellPrepared($event)"
+                              (onRowPrepared)="rowPrepared($event)"
+                              [(selectedRowKeys)]="selectedRowKeys"
+                              id="product-list"
+                              [dataSource]="itemSource"
+                              [rtlEnabled]="lang"
+                              rootValue=""
+                              keyExpr="id"
+                              parentIdExpr="headId"
+                              [remoteOperations]="{filtering: true}"
+                              [showRowLines]="true"
+                              [showBorders]="true"
+                              [columnAutoWidth]="true"
+                              hasItemsExpr="hasChildren">
+                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true"></dxo-search-panel>
+                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+                    <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
+                    <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
+                    <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
+                </dx-tree-list>
+            </div>
+        </div>
+    </div>
+</div>

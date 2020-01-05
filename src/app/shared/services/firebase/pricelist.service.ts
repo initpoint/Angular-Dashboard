@@ -40,11 +40,8 @@ export class PriceListService {
     }
 
     getPriceList(key) {
-        return this.db.collection('pricelist').doc(key).get();
+        return this.db.collection('pricelist').doc(key).get().toPromise();
     }
-
-
-
     updateItem(key, values) {
         this.toastr.success('Item updated.');
         return this.db.collection('combination').doc(key).set(values, {merge: true});

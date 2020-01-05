@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-xl-6">
                     <button class="btn btn-primary ml-2 mt-2 pull-right" [routerLink]="['/user/new-user']"><i
-                    >Add User</i></button>
+                    >{{'Add User'|translate}}</i></button>
                 </div>
             </div>
         </div>
@@ -31,43 +31,32 @@
                                               [draggable]="false" [resizeable]="false" [headerCheckboxable]="true"
                                               [checkboxable]="true">
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="Code" [flexGrow]="1">
+                        <ngx-datatable-column [name]="'Code'|translate" [flexGrow]="1">
                             <ng-template let-row="row" ngx-datatable-cell-template>
                                 {{row.payload.doc.data().code}}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="Name" [flexGrow]="2">
+                        <ngx-datatable-column [name]="'Name'|translate" [flexGrow]="2">
                             <ng-template let-row="row" ngx-datatable-cell-template>
                                 <a class="text-primary"
                                    [routerLink]="['/user/edit-user',row.payload.doc.id]"> {{row.payload.doc.data().name}}</a>
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="Email" [flexGrow]="2">
+                        <ngx-datatable-column [name]="'Email'|translate" [flexGrow]="2">
                             <ng-template let-row="row" ngx-datatable-cell-template>
                                 {{row.payload.doc.data().email}}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="Mobile" [flexGrow]="2">
+                        <ngx-datatable-column [name]="'Mobile'|translate" [flexGrow]="2">
                             <ng-template let-row="row" ngx-datatable-cell-template>
                                 {{row.payload.doc.data().mobile}}
                             </ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="Last Login" [flexGrow]="1">
+                        <ngx-datatable-column [name]="'Last Login'|translate" [flexGrow]="1">
                             <ng-template let-row="row" ngx-datatable-cell-template>
                                 {{row.payload.doc.data().lastLoginAt | date: 'hh:mm dd/MM/yyyy'}}
                             </ng-template>
                         </ngx-datatable-column>
-                        <!--<ngx-datatable-column name="" [flexGrow]="1" >-->
-                        <!--<ng-template let-row="row" ngx-datatable-cell-template>-->
-                        <!---->
-                        <!--&lt;!&ndash;<button class="btn btn-danger mr-2"&ndash;&gt;-->
-                        <!--&lt;!&ndash;(click)="delete(row.payload.doc.id)">Delete&ndash;&gt;-->
-                        <!--&lt;!&ndash;</button>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<button class="btn btn-secondary" [disabled]="btn"&ndash;&gt;-->
-                        <!--&lt;!&ndash;(click)="resetPassword(row.payload.doc.data().email)">Reset Password&ndash;&gt;-->
-                        <!--&lt;!&ndash;</button>&ndash;&gt;-->
-                        <!--</ng-template>-->
-                        <!--</ngx-datatable-column>-->
                     </ngx-datatable>
                 </div>
             </div>

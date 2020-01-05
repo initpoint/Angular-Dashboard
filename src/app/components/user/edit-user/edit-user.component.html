@@ -5,18 +5,9 @@
             <div class="text-center"><img src="assets/images/alsenedy-logo-small-green.png" alt=""></div>
             <div class="card mt-4">
                 <div class="card-body">
-                    <!--<div class="text-center user-profile">-->
-                        <!--<div class="hovercard">-->
-                            <!--<div class="contact-profile">-->
-                                <!--<img class="rounded-circle img-100" alt="" [src]="avatar">-->
-                                <!--<div class="icon-wrapper"><i class="icofont icofont-pencil-alt-5"><input class="upload"-->
-                                            <!--type="file" (change)="readUrl($event)" /></i></div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
                     <form [formGroup]="editUserForm">
                         <div class="form-group">
-                            <label class="col-form-label pt-0">Code</label>
+                            <label class="col-form-label pt-0">{{'Code'|translate}}</label>
                             <input class="form-control" formControlName="code" type="text" required="">
                             <div *ngIf="editUserForm.controls.code.touched && editUserForm.controls.code.errors?.required"
                                  class="text text-danger mt-1">
@@ -25,7 +16,7 @@
 
                         </div>
                         <div class="form-group">
-                            <label class="col-form-label pt-0">Name</label>
+                            <label class="col-form-label pt-0">{{'Name'|translate}}</label>
                             <input class="form-control" formControlName="name" type="text" required="">
                             <div *ngIf="editUserForm.controls.name.touched && editUserForm.controls.name.errors?.required"
                                  class="text text-danger mt-1">
@@ -37,7 +28,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-form-label">Email</label>
+                            <label class="col-form-label">{{'Email'|translate}}</label>
                             <input class="form-control" type="email" formControlName="email" required="">
                             <div *ngIf="editUserForm.controls.email.touched && editUserForm.controls.email.errors?.required"
                                  class="text text-danger mt-1">
@@ -49,7 +40,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-form-label">Mobile</label>
+                            <label class="col-form-label">{{'Mobile'|translate}}</label>
                             <input class="form-control" type="number" formControlName="mobile" required="">
                             <div *ngIf="editUserForm.controls.mobile.touched && editUserForm.controls.mobile.errors?.required"
                                  class="text text-danger mt-1">
@@ -57,20 +48,20 @@
                             </div>
                         </div>
                         <div class="form-group  mt-3 mb-0">
-                            <button class="btn btn-info mr-2" [disabled]="btn" (click)="resetPassword(editUserForm.value['email'])" >Reset Password
+                            <button class="btn btn-info mr-2" [disabled]="btn" (click)="resetPassword(editUserForm.value['email'])">Reset Password
                             </button>
                             <button class="btn pull-right btn-danger" type="button" data-original-title="btn btn-info-gradien"
                                     (click)="delete(item.uid)" title="">
-                                Delete</button>
+                                {{'Delete'|translate}}</button>
                         </div>
                         <div class="dropdown-divider"></div>
                         <div class="form-group  mt-3 mb-0">
                             <button class="btn btn-success mr-2" [disabled]="!editUserForm.valid"
-                                (click)="save(editUserForm.value)" type="submit"> Save
+                                (click)="save(editUserForm.value)" type="submit"> {{'Save'|translate}}
                             </button>
                             <button class="btn pull-right btn-light" type="button" data-original-title="btn btn-info-gradien"
                                 (click)="cancel()" title="">
-                                Cancel</button>
+                                {{'Cancel'|translate}}</button>
                         </div>
 
                     </form>

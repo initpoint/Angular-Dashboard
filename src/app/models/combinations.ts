@@ -7,6 +7,9 @@ export class Combinations {
         code?: string,
         type?: string,
         headId?: string,
+        unit?:string,
+        size?:string,
+        prices?: object
     ) {
     }
 }

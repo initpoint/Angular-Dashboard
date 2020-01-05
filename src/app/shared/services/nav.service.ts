@@ -74,6 +74,9 @@ export class NavService {
 		{
 			title: 'Customers', icon: 'user', type: 'link',path:'/customers/show', active: false,
 		},
+		{
+			title: 'Permissions', path:'/permissions/show',icon: 'git-pull-request', type: 'link', active: false,
+		},
 /*
 		{
 			path: '/support-ticket', title: 'Support Ticket', icon: 'headphones', type: 'link'

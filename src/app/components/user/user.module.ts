@@ -16,6 +16,7 @@ import { Ng5SliderModule } from 'ng5-slider';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import {TranslateModule} from '@ngx-translate/core';
 @NgModule({
   declarations: [NewUserComponent, UsersComponent, EditUserComponent],
 
@@ -30,7 +31,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     Ng2SearchPipeModule,
     NgxDatatableModule,
     ToastrModule.forRoot(),
-
+    TranslateModule
   ],
 
   providers: [UserService, EditUserResolver]

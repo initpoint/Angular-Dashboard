@@ -1,31 +1,29 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-
-import {ProductsRoutingModule} from './products-routing.module';
+import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
+import {PermissionsRoutingModule} from './permissions-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {ProductsService} from '../../shared/services/firebase/products.service';
-import {ProductsComponent} from './products/products.component';
-import {EditProductResolver} from '../../shared/services/firebase/edit-product.resolver';
+import {PermissionComponent} from './permissions.component';
 
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {Ng5SliderModule} from 'ng5-slider';
 import {ToastrModule} from 'ngx-toastr';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
-import { DxTreeListModule, DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxTextBoxModule} from 'devextreme-angular';
+import {DxPopupModule,DxButtonModule ,DxTemplateModule,DxTreeListModule, DxDataGridModule,DxCheckBoxModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 @NgModule({
-    declarations: [ProductsComponent],
+    declarations: [PermissionComponent],
 
     imports: [
-        DxTextBoxModule,
+        DxButtonModule,
         DxDataGridModule,
         DxPopupModule,
         DxTemplateModule,
-        DxFileUploaderModule,
-        CommonModule,
         DxTreeListModule,
-        ProductsRoutingModule,
+        DxCheckBoxModule,
+        CommonModule,
+        PermissionsRoutingModule,
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
@@ -37,7 +35,7 @@ import {TranslateModule} from '@ngx-translate/core';
 
     ],
 
-    providers: [ProductsService, EditProductResolver]
+    providers: [PermissionService]
 })
-export class ProductsModule {
+export class PermissionsModule {
 }

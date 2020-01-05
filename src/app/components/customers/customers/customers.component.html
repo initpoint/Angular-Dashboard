@@ -1,64 +1,44 @@
 <!-- Container-fluid starts -->
 <div class="container-fluid">
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-xl-6">
-                    <form class="search-form contact-search">
-                        <div class="form-group mb-0">
-                            <input type="text" class="form-control" [(ngModel)]="searchValue"
-                                   [ngModelOptions]="{standalone: true}" placeholder="Search by name..."
-                                   (keyup)="searchByName()">
-                        </div>
-                    </form>
-                </div>
-                <div class="col-xl-6">
-                    <button class="btn btn-primary ml-2 mt-2 pull-right" [routerLink]="['/customers/new-customer']"><i
-                    >Add Customer</i></button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-body custom-datatable">
-                    <ngx-datatable class="bootstrap" [rows]="items" [columnMode]="'flex'" [headerHeight]="50"
-                                   [footerHeight]="50" [rowHeight]="'auto'" [limit]="10" [selected]="selected"
-                                   [selectionType]="'checkbox'" [selectAllRowsOnPage]="false"
-                                   (select)='onSelect($event)'>
-                        <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false"
-                                              [draggable]="false" [resizeable]="false" [headerCheckboxable]="true"
-                                              [checkboxable]="true">
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="Code" [flexGrow]="1">
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                {{row.payload.doc.data().code}}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="Name" [flexGrow]="2">
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                <a class="text-primary"
-                                   [routerLink]="['/customers/edit-customer',row.payload.doc.id]"> {{row.payload.doc.data().name}}</a>
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="Email" [flexGrow]="2">
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                {{row.payload.doc.data().email}}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="Mobile" [flexGrow]="2">
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                {{row.payload.doc.data().mobile}}
-                            </ng-template>
-                        </ngx-datatable-column>
-                        <ngx-datatable-column name="Last Login" [flexGrow]="1">
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                {{row.payload.doc.data().lastLoginAt | date: 'hh:mm dd/MM/yyyy'}}
-                            </ng-template>
-                        </ngx-datatable-column>
+                <div class="card-body">
+                    <dx-data-grid (onEditorPreparing)="onEditorPreparing($event)" [dataSource]="customerSource" [showBorders]="true" [rtlEnabled]="lang">
+                        <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        <dxo-header-filter [visible]="true"></dxo-header-filter>
+                        <dxo-search-panel [visible]="true"></dxo-search-panel>
+                        <dxo-editing
+                                mode="form"
+                                [allowAdding]="true"
+                                [allowUpdating]="true"
+                                [useIcons]="true"
+                                [allowDeleting]="true">
+                        </dxo-editing>
+                        <dxo-export [enabled]="true" fileName="Customers" [allowExportSelectedData]="true"></dxo-export>
+                        <dxo-selection mode="multiple"></dxo-selection>
+                        <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+                        <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
+                        <dxi-column dataField="email" [caption]="'Email'|translate"></dxi-column>
+                        <dxi-column dataField="password" [caption]="'Password'|translate" [allowSearch]="false" [allowSorting]="false" [visible]="false"></dxi-column>
+                        <dxi-column dataField="mobile" [caption]="'Mobile'|translate"></dxi-column>
+                        <dxi-column dataField="pricelist" caption="Price List"> <dxo-lookup
+                                [dataSource]="priceLists"
+                                displayExpr="name"
+                                valueExpr="id">
+                        </dxo-lookup>
+                        </dxi-column>
+                        <dxi-column dataField="isActive" [allowSearch]="false" [allowSorting]="false" [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
+                        <dxi-column dataField="lastLoginAt" [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
+                        <div *dxTemplate="let data of 'ActiveButton'">
+                            <button (click)="data.value = !data.value;activeCustomer(data)"
+                                    title="Click to {{data.value ? 'Disable' : 'Active'}}"
+                                    class="btn btn-sm btn-pill"
+                                    [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Active' : 'Pending'}}</button>
+                        </div>
+                    </dx-data-grid>
 
-                    </ngx-datatable>
                 </div>
             </div>
         </div>

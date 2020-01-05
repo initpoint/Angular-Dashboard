@@ -1,15 +1,16 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {AngularFireAuth} from "@angular/fire/auth";
 import {User, auth, initializeApp} from 'firebase/app';
 import {environment} from '../../../../environments/environment';
+import {map} from 'rxjs/operators';
+import {ToastrService} from 'ngx-toastr';
 @Injectable({
     providedIn: 'root'
 })
 export class CustomerService {
     app;
     constructor(public db: AngularFirestore,
-                public afAuth: AngularFireAuth,
+                private toastr: ToastrService,
     ) {
     }
 
@@ -17,7 +18,7 @@ export class CustomerService {
         if (!this.app) {
             this.app = initializeApp(environment.firebase, 'secondary');
         }
-        const ref = this.db.collection('users');
+        const ref = this.db.collection('customers');
          return this.app.auth().createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
                 ref.doc(userData.user.uid).set({
@@ -26,7 +27,9 @@ export class CustomerService {
                     mobile: parseInt(value.mobile),
                     name: value.name,
                     code: value.code,
-                    userType: 'customer'
+                    pricelist: value.pricelist || null,
+                    isActive: value.isActive,
+                    lastLoginAt: Date.now()
                 });
                 return true;
             }).catch(function (error) {
@@ -48,28 +51,42 @@ export class CustomerService {
     }
 
     updateCustomer(userKey, value) {
-
-        value.userType = 'customer';
-        return this.db.collection('users',ref => ref.where('userType','==','customer')).doc(userKey).set(value);
-    }
-
-    searchCustomers(searchValue) {
-        return this.db.collection('users', ref => ref.where('name', '>=', searchValue)
-            .where('name', '<=', searchValue + '\uf8ff')
-            .where('userType','==','customer'))
-            .snapshotChanges();
+        return this.db.collection('customers').doc(userKey).set(value,{merge:true}).then(res=> {
+            this.toastr.success('Customer Updated.');
+        });
     }
 
 
+    setCustomer(id,attr) {
+        return this.updateCustomer(id,attr);
+    }
     getCustomer(userKey) {
-        return this.db.collection('users',ref => ref.where('userType','==','customer')).doc(userKey).snapshotChanges();
+        return this.db.collection('customers').doc(userKey).snapshotChanges();
     }
 
     getCustomers() {
-        return this.db.collection('users', ref => ref.where('userType','==','customer')).snapshotChanges();
+        return this.db.collection('customers' ).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    uid: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
     }
-
+    getPendingCustomers() {
+        return this.db.collection('customers', ref => ref.where('isActive','==',false)).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    uid: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
+    }
     deleteCustomer(contactKey) {
-        return this.db.collection('users',ref => ref.where('userType','==','customer')).doc(contactKey).delete();
+        return this.db.collection('customers').doc(contactKey).delete().then(res=> {
+            this.toastr.error('Customer Deleted.');
+        });
     }
 }

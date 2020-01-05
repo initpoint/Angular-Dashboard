@@ -36,7 +36,7 @@
                                     <div class="ProfileCard-details">
                                         <div class="ProfileCard-realName">
                                             <a [routerLink]="menuItem?.path" class="realname"
-                                               (click)="removeFix()">{{menuItem?.title}}</a>
+                                               (click)="removeFix()">{{menuItem?.title | translate}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -80,7 +80,7 @@
                         <li *ngIf="authService.userData as user"><a href="javascript:void(0)"
                                                                     (click)="authService.SignOut()">
                             <app-feather-icons [icon]="'log-out'"></app-feather-icons>
-                            Logout
+                            {{'Log Out' | translate}}
                         </a></li>
                     </ul>
                 </li>

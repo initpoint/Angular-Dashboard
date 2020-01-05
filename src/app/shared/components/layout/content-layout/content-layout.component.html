@@ -1,16 +1,11 @@
 <div class="dark-body-only" id="outer-container">
   <!-- page-wrapper Start-->
-  <div class="page-wrapper" [ngClass]="customizer.data.settings.sidebar.type" id="canvas-bookmark">
+  <div class="page-wrapper" id="canvas-bookmark">
     <app-header (rightSidebarEvent)="rightSidebar($event)"></app-header>
     <!-- Page Body Start-->
-    <div class="page-body-wrapper" [ngClass]="customizer.data.settings.sidebar.body_type">
-      <div class="page-sidebar" id="pages-sidebar" [class.open]="navServices.collapseSidebar"
-        [ngClass]="customizer.data.settings.sidebar_backround"
-        [attr.sidebar-layout]="this.customizer.data.settings.sidebar_setting">
+    <div class="page-body-wrapper">
+      <div class="page-sidebar" id="pages-sidebar" [class.open]="navServices.collapseSidebar">
         <app-sidebar></app-sidebar>
-      </div>
-      <div class="right-sidebar" [class.show]="right_side_bar" id="right_side_bar">
-        <app-right-sidebar></app-right-sidebar>
       </div>
       <div class="page-body">
         <app-breadcrumb></app-breadcrumb>
@@ -28,4 +23,3 @@
   </div>
   <!-- page-wrapper End-->
 </div>
-<app-customizer></app-customizer>

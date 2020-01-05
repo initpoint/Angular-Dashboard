@@ -18,15 +18,15 @@ export class ProductsService {
     ) {
     }
 
-    removeImage(row,path,pic) {
+    removeImage(row, path, pic) {
 
         return firebase.storage().ref().child(path).delete().then(() => {
             this.db.collection(row.type).doc(row.id).update({
                 pics: firebase.firestore.FieldValue.arrayRemove(pic)
             });
             this.toastr.success('Image removed.');
-        }).catch(function(error) {
-           console.log(error);
+        }).catch(function (error) {
+            console.log(error);
 
         });
 
@@ -51,6 +51,7 @@ export class ProductsService {
                     this.db.collection(data.type).doc(data.id).update({
                         pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
                     });
+                    this.toastr.success('Images Uploaded.');
                 });
             }
         );
@@ -69,9 +70,15 @@ export class ProductsService {
 
     addChild(child) {
         this.db.collection(child.parent_type).doc(child.headId).set({hasChildren: true}, {merge: true});
-        this.toastr.success('Item added.');
-        return this.db.collection(child.type).add(child);
+
+        if (child.parent_type == 'material') {
+            child.prices = {};
+        }
+        return this.db.collection(child.type).add(child).then(res => {
+            this.toastr.success('Item added.');
+        });
     }
+
     getCombinations() {
         return this.db.collection('combination').snapshotChanges().pipe(
             map(x => x.map(y => {
@@ -82,6 +89,7 @@ export class ProductsService {
             }))
         );
     }
+
     /* Categories */
     getCategories(): Observable<Category[]> {
         return this.db.collection<any>('category').snapshotChanges().pipe(
@@ -142,7 +150,8 @@ export class ProductsService {
     }
 
     createCategory(values) {
-        this.toastr.success('Item added.');
-        return this.db.collection('category').add(values);
+        return this.db.collection('category').add(values).then(res => {
+            this.toastr.success('Item added.');
+        });
     }
 }

@@ -16,9 +16,9 @@
                     </dxo-editing>
                     <dxo-export [enabled]="true" fileName="PriceList" [allowExportSelectedData]="true"></dxo-export>
                     <dxo-selection mode="multiple"></dxo-selection>
-                    <dxi-column dataField="code" caption="Code"></dxi-column>
-                    <dxi-column dataField="name" caption="Name"></dxi-column>
-                    <dxi-column dataField="isActive" dataType="boolean" caption="Is Active"></dxi-column>
+                    <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+                    <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
+                    <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
                 </dx-data-grid>
                 <dx-data-grid *ngIf="currentRow" [dataSource]="itemSource" [showBorders]="true" [rtlEnabled]="lang">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
@@ -32,13 +32,13 @@
                     </dxo-editing>
                     <dxo-export [enabled]="true" fileName="Combinations" [allowExportSelectedData]="true"></dxo-export>
                     <dxo-selection mode="multiple"></dxo-selection>
-                    <dxi-column dataField="code" [allowEditing]='false' caption="Code"></dxi-column>
-                    <dxi-column dataField="nameAr" [allowEditing]='false' caption="Name Ar"></dxi-column>
-                    <dxi-column dataField="nameEn" [allowEditing]='false' caption="Name En"></dxi-column>
+                    <dxi-column dataField="code" [allowEditing]='false' [caption]="'Code'|translate"></dxi-column>
+                    <dxi-column dataField="nameAr" [allowEditing]='false' [caption]="'Name Ar'|translate"></dxi-column>
+                    <dxi-column dataField="nameEn" [allowEditing]='false' [caption]="'Name En'|translate"></dxi-column>
                     <dxi-column dataField="isActive" [allowEditing]='false' dataType="boolean"
-                                caption="Is Active"></dxi-column>
+                                [caption]="'Is Active'|translate"></dxi-column>
                     <dxi-column dataField="prices" editCellTemplate="tagBoxEditor" cellTemplate="priceTemplate"
-                                caption="Price"></dxi-column>
+                                [caption]="'Price'|translate"></dxi-column>
                     <div *dxTemplate="let data of 'priceTemplate'">
                         <div *ngIf="data.data.prices && data.data.prices.hasOwnProperty(currentRow.id)">
                             {{data.data.prices[currentRow.id]}}

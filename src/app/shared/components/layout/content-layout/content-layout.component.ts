@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { bounce, zoomOut, zoomIn, fadeIn, bounceIn } from 'ng-animate';
 import { NavService } from '../../../services/nav.service';
-import { CustomizerService } from '../../../services/customizer.service';
 import * as feather from 'feather-icons';
 
 @Component({
@@ -21,8 +20,7 @@ export class ContentLayoutComponent implements OnInit, AfterViewInit {
 
   public right_side_bar: boolean;
 
-  constructor(public navServices: NavService,
-    public customizer: CustomizerService) { }
+  constructor(public navServices: NavService) { }
 
 
   ngAfterViewInit() {
@@ -41,10 +39,6 @@ export class ContentLayoutComponent implements OnInit, AfterViewInit {
       }
       if (e.target != document.getElementById('outer-container')) {
         document.getElementById("canvas-bookmark").classList.remove("offcanvas-bookmark");
-      }
-      if (e.target != document.getElementById('inner-customizer')) {
-        document.getElementsByClassName("customizer-links")[0].classList.remove("open")
-        document.getElementsByClassName("customizer-contain")[0].classList.remove("open")
       }
     }
   }

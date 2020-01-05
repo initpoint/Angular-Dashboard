@@ -11,11 +11,7 @@ import {Ng5SliderModule} from 'ng5-slider';
 import {ToastrModule} from 'ngx-toastr';
 import {Ng2SearchPipeModule} from 'ng2-search-filter';
 import {DxPopupModule ,DxTemplateModule, DxDataGridModule,DxNumberBoxModule} from 'devextreme-angular';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
+import {TranslateModule} from '@ngx-translate/core';
 @NgModule({
     declarations: [PriceListComponent],
 
@@ -32,13 +28,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         HttpModule,
         Ng5SliderModule,
         Ng2SearchPipeModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            },
-        }),
+        TranslateModule,
         ToastrModule.forRoot(),
 
     ],

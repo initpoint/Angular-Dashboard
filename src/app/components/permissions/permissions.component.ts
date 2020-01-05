@@ -1,32 +1,61 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ProductsService} from 'src/app/shared/services/firebase/products.service';
+import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
 import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
-import {now} from 'd3-timer';
+import {ProductsService} from 'src/app/shared/services/firebase/products.service';
 
 @Component({
-    selector: 'app-products',
-    templateUrl: './products.component.html',
-    styleUrls: ['./products.component.scss'],
+    selector: 'app-Permission',
+    templateUrl: './permissions.component.html',
+    styleUrls: ['./permissions.component.scss'],
 })
-export class ProductsComponent implements OnInit {
+export class PermissionComponent implements OnInit {
     @ViewChild('form', {static: false}) form: NgForm;
-    popupVisible = false;
     value: any[] = [];
-    source: DataSource;
-    store: CustomeStore;
+    categories: Category[];
+    CustomersStore: CustomeStore;
     ExpandedRow;
     lang;
     canView = false;
     currentRow;
-    showTree = true;
-    listStore: CustomeStore;
-    listSource: DataSource;
+    currentTreeRow;
+    itemStore: CustomeStore;
+    itemSource: DataSource;
+    CustomersData: DataSource;
+    selectedRowKeys: any[] = [];
+
     constructor(
-        private productService: ProductsService) {
-        this.store = new CustomeStore({
+        private productService: ProductsService,
+        private permissionService: PermissionService) {
+        this.CustomersStore = new CustomeStore({
+            key: 'uid',
+            load: (opts) => {
+                return new Promise((resolve, reject) => {
+                    this.lang = localStorage.getItem('lang') == 'ar';
+                    this.permissionService.getCustomers().subscribe(res => {
+                        resolve({data: res});
+                    });
+                });
+            },
+            update: (key, values) => {
+                return this.permissionService.updatePermission(key, values);
+            },
+            remove: (key) => {
+                let item = this.CustomersData.items().find(item => item.id == key);
+                item.isActive = !item.isActive;
+                return this.permissionService.updatePermission(key, item);
+            },
+            insert: (values) => {
+                return this.permissionService.createPermission(values);
+            },
+
+        });
+        this.CustomersData = new DataSource({
+            store: this.CustomersStore,
+        });
+        this.itemStore = new CustomeStore({
             key: 'id',
             load: (opts) => {
                 return new Promise((resolve, reject) => {
@@ -47,12 +76,12 @@ export class ProductsComponent implements OnInit {
                 });
             },
             update: (key, values) => {
-                let item = this.source.items().find(item => item.key == key).data;
+                let item = this.itemSource.items().find(item => item.key == key).data;
                 values.type = item.type;
                 return this.productService.updateItem(key, values);
             },
             remove: (key) => {
-                let item = this.source.items().find(item => item.key == key).data;
+                let item = this.itemSource.items().find(item => item.key == key).data;
                 item.isActive = !item.isActive;
                 return new Promise((resolve, reject) => {
                     return this.productService.setTreeAttr(item, {isActive: item.isActive});
@@ -64,7 +93,7 @@ export class ProductsComponent implements OnInit {
                     values.type = 'category';
                     return this.productService.createCategory(values);
                 } else {
-                    let parent = this.source.items().find(item => item.key == values.headId).data;
+                    let parent = this.itemSource.items().find(item => item.key == values.headId).data;
                     values.type = {'category': 'ranking', 'ranking': 'material', 'material': 'combination'}[parent.type];
                     values.parent_type = parent.type;
                     return this.productService.addChild(values);
@@ -72,67 +101,14 @@ export class ProductsComponent implements OnInit {
             },
 
         });
-        this.source = new DataSource({
-            store: this.store,
+        this.itemSource = new DataSource({
+            store: this.itemStore,
         });
-        this.listStore = new CustomeStore({
-            key: 'id',
-            load: (opts) => {
-                return new Promise((resolve, reject) => {
-                    this.lang = localStorage.getItem('lang') == 'ar';
-                    this.productService.getCombinations().subscribe(res => {
-                        resolve({data: res});
-                    });
-                });
-            },
-            update: (key, values) => {
-                let item = this.source.items().find(item => item.key == key).data;
-                values.type = item.type;
-                return this.productService.updateItem(key, values);
-            },
-            remove: (key) => {
-                let item = this.source.items().find(item => item.key == key).data;
-                item.active = !item.active;
-                return new Promise((resolve, reject) => {
-                    return this.productService.setTreeAttr(item, {active: item.active});
-                });
-            }
-
-        });
-        this.listSource = new DataSource({
-            store: this.listStore,
-        });
-    }
-
-    changeView() {
-        this.showTree = !this.showTree;
-    }
-
-    uploadImages() {
-        let i = 0;
-        this.value.forEach(file => {
-            console.log(file.name.split('.'));
-            file.newName = now() + '-' + i + '.' + file.name.split('.').reverse()[0];
-            this.productService.uploadImage(file, this.currentRow);
-            i++;
-        });
-        this.popupVisible = false;
     }
 
     RowExpanding(e) {
-        this.ExpandedRow = this.source.items().find(item => item.key == e.key).data;
+        this.ExpandedRow = this.itemSource.items().find(item => item.key == e.key).data;
         this.canView = this.ExpandedRow.type == 'material';
-    }
-
-    ngOnInit() {
-        this.lang = localStorage.getItem('lang') == 'ar';
-    }
-
-    deleteImage(pic) {
-        let path = pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/');
-        if (confirm('Are your sure you want to delete this Image') == true) {
-            this.productService.removeImage(this.currentRow, path, pic);
-        }
     }
 
     cellPrepared(e) {
@@ -162,11 +138,24 @@ export class ProductsComponent implements OnInit {
         }
     }
 
+    treeRowClicked($event: any) {
+        this.currentTreeRow = $event.data;
+        if (this.currentTreeRow.type == 'combination') {
+            // this.popupVisible = true;
+        }
+    }
+
+    ngOnInit() {
+        this.lang = localStorage.getItem('lang') == 'ar';
+    }
+
     RowClicked($event: any) {
         this.currentRow = $event.data;
-        if (this.currentRow.type == 'combination') {
-            this.popupVisible = true;
-        }
+    }
+
+    SaveCustomerPermissions() {
+
+        console.log('Customer '+ this.currentRow.uid,this.selectedRowKeys);
     }
 
 }

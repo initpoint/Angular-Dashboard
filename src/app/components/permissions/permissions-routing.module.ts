@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CustomersComponent } from './customers/customers.component';
+import { PermissionComponent } from './permissions.component';
 const routes: Routes = [
   {
     path: '',
     children: [
       {
         path: 'show',
-        component: CustomersComponent,
+        component: PermissionComponent,
         data: {
-          title: "Customers",
-          breadcrumb: "Customers"
+          title: "Permissions",
+          breadcrumb: "Permissions"
         }
       },
     ]
@@ -22,4 +22,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CustomersRoutingModule { }
+export class PermissionsRoutingModule { }

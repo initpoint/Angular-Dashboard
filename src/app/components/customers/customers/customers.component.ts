@@ -1,8 +1,11 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {CustomerService} from '../../../shared/services/firebase/customer.service';
+import {PriceListService} from '../../../shared/services/firebase/pricelist.service';
 import {Router} from '@angular/router';
-import {Options, ChangeContext, PointerType, LabelType} from 'ng5-slider';
 import {ToastrService} from 'ngx-toastr';
+import CustomeStore from 'devextreme/data/custom_store';
+import DataSource from 'devextreme/data/data_source';
+
 @Component({
     selector: 'app-customer',
     templateUrl: './customers.component.html',
@@ -10,66 +13,61 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class CustomersComponent implements OnInit {
     private priceList;
-    public searchValue: string = '';
-    public items = [];
-    public name_filtered_items: Array<any>;
-    public user: any;
-    public btn: boolean;
-    public sidebaron: any;
-    public selected = [];
-    public listView: any;
+    customerSource: DataSource;
+    customerData: CustomeStore;
+    lang = localStorage.getItem('lang') == 'ar';
+    priceLists:any[];
 
-    constructor(private customerService: CustomerService, private router: Router, private toastr: ToastrService) {
-        this.getData();
-    }
+    constructor(private priceListService:PriceListService,private customerService: CustomerService, private router: Router, private toastr: ToastrService) {
+         this.priceListService.getPriceLists().subscribe(res => {
+             this.priceLists = res;
+         });
+            this.customerData = new CustomeStore({
+                key: 'uid',
+                load: (opts) => {
+                    return new Promise((resolve, reject) => {
+                        this.lang = localStorage.getItem('lang') == 'ar';
+                        this.customerService.getCustomers().subscribe(res => {
+                            resolve({data: res});
+                        });
+                    });
+                },
+                update: (key, values) => {
+                    return this.customerService.updateCustomer(key, values);
+                },
+                remove: (key) => {
+                    return this.customerService.deleteCustomer(key);
+                },
+                insert: (values) => {
+                    return this.customerService.createCustomer(values);
+                },
 
-    public logText: string = '';
-    public min: number;
-    public value: number = 10;
-    public highValue: number = 50;
-    public options: Options = {
-        floor: 0,
-        ceil: 100,
-    };
-
-
-    searchByName() {
-        let value = this.searchValue.toLowerCase();
-        this.customerService.searchCustomers(value)
-            .subscribe(result => {
-                this.name_filtered_items = result;
-                this.items = this.combineLists(result, this.name_filtered_items);
             });
-    }
-
-
-    combineLists(a, b) {
-        let result = [];
-
-        a.filter(x => {
-            return b.filter(x2 => {
-                if (x2.payload.doc.id == x.payload.doc.id) {
-                    result.push(x2);
-                }
-            });
+        this.customerSource = new DataSource({
+            store: this.customerData,
         });
-        return result;
     }
 
-    onSelect({selected}) {
-        this.selected.splice(0, this.selected.length);
-        this.selected.push(...selected);
+
+    onEditorPreparing(e) {
+        if (e.parentType === 'dataRow' && e.dataField === 'password' && e.row.data.uid) {
+            e.editorOptions.disabled = true;
+            e.editorOptions.visible = false;
+            e.cancel = true;
+        }
+
     }
 
-    getData() {
-        this.customerService.getCustomers()
-            .subscribe(result => {
-                this.items = result;
-                this.name_filtered_items = result;
-            });
+
+    activeCustomer(data) {
+        console.log(data.cellElement.querySelector('.btn-success'));
+        this.customerService.setCustomer(data.data.uid, {isActive: data.value}).then(res => {
+            this.toastr.success('Customer is active');
+        }).catch(err => {
+            console.error(err);
+        });
     }
+
     ngOnInit() {
-        this.getData();
-
     }
 }
