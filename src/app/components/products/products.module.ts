@@ -9,9 +9,7 @@ import {EditProductResolver} from '../../shared/services/firebase/edit-product.r
 
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
-import {Ng5SliderModule} from 'ng5-slider';
 import {ToastrModule} from 'ngx-toastr';
-import {Ng2SearchPipeModule} from 'ng2-search-filter';
 import { DxTreeListModule, DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxTextBoxModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 @NgModule({
@@ -30,8 +28,6 @@ import {TranslateModule} from '@ngx-translate/core';
         ReactiveFormsModule,
         HttpClientModule,
         HttpModule,
-        Ng5SliderModule,
-        Ng2SearchPipeModule,
         TranslateModule,
         ToastrModule.forRoot(),
 

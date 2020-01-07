@@ -1,0 +1,36 @@
+<!-- Container-fluid starts -->
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <dx-data-grid (onEditorPreparing)="onEditorPreparing($event)" [dataSource]="userSource" [showBorders]="true" [rtlEnabled]="lang">
+                        <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        <dxo-header-filter [visible]="true"></dxo-header-filter>
+                        <dxo-search-panel [visible]="true"></dxo-search-panel>
+                        <dxo-editing
+                                mode="form"
+                                [allowAdding]="true"
+                                [allowUpdating]="true"
+                                [useIcons]="true"
+                                [allowDeleting]="true">
+                        </dxo-editing>
+                        <dxo-export [enabled]="true" fileName="Customers" [allowExportSelectedData]="true"></dxo-export>
+                        <dxo-selection mode="multiple"></dxo-selection>
+                        <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+                        <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
+                        <dxi-column dataField="email" [caption]="'Email'|translate"></dxi-column>
+                        <dxi-column dataField="password" [caption]="'Password'|translate" [allowSearch]="false" [allowSorting]="false" [visible]="false"></dxi-column>
+                        <dxi-column dataField="mobile" [caption]="'Mobile'|translate"></dxi-column>
+                        <dxi-column dataField="isActive"  [caption]="'Is Active'|translate"></dxi-column>
+                        <dxi-column dataField="lastLoginAt" [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
+
+                    </dx-data-grid>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends -->

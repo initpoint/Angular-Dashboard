@@ -41,5 +41,6 @@
   "Error 403": "Error 403",
   "Error 404": "Error 404",
   "Error 500": "Error 500",
-  "Error 503": "Error 503"
+  "Error 503": "Error 503",
+  "Import": "Import"
 }

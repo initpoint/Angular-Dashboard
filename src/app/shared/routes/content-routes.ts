@@ -24,8 +24,8 @@ export const content: Routes = [
     }
   },
   {
-    path: 'user',
-    loadChildren: './components/user/user.module#UserModule',
+    path: 'users',
+    loadChildren: './components/users/users.module#UsersModule',
     data: {
       breadcrumb: "Users"
     }
@@ -37,5 +37,11 @@ export const content: Routes = [
       breadcrumb: "Customers"
     }
   },
-
+  {
+    path: 'import',
+    loadChildren: './components/import/import.module#ImportModule',
+    data: {
+      breadcrumb: "Import"
+    }
+  },
 ];

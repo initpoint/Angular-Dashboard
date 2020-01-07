@@ -4,7 +4,7 @@ import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
-import {now} from 'd3-timer';
+import {int} from 'flatpickr/dist/utils';
 
 @Component({
     selector: 'app-products',
@@ -24,6 +24,7 @@ export class ProductsComponent implements OnInit {
     showTree = true;
     listStore: CustomeStore;
     listSource: DataSource;
+
     constructor(
         private productService: ProductsService) {
         this.store = new CustomeStore({
@@ -31,16 +32,16 @@ export class ProductsComponent implements OnInit {
             load: (opts) => {
                 return new Promise((resolve, reject) => {
                     this.lang = localStorage.getItem('lang') == 'ar';
-                    if (!this.ExpandedRow) {
+                    if (opts.filter[2] == '') {
                         this.productService.getCategories().subscribe(res => {
                             resolve({data: res});
                         });
                     } else {
-                        this.productService.getItems(this.ExpandedRow.id, {
+                        this.productService.getItems(opts.filter[2], {
                             'category': 'ranking',
                             'ranking': 'material',
                             'material': 'combination'
-                        }[this.ExpandedRow.type]).subscribe(res => {
+                        }[this.currentRow.type]).subscribe(res => {
                             resolve({data: res});
                         });
                     }
@@ -70,11 +71,15 @@ export class ProductsComponent implements OnInit {
                     return this.productService.addChild(values);
                 }
             },
+            onLoaded: (fun) => {
+                this.source.paginate(true)
+            }
 
         });
         this.source = new DataSource({
             store: this.store,
         });
+        this.source.paginate(false)
         this.listStore = new CustomeStore({
             key: 'id',
             load: (opts) => {
@@ -110,19 +115,18 @@ export class ProductsComponent implements OnInit {
 
     uploadImages() {
         let i = 0;
-        this.value.forEach(file => {
-            console.log(file.name.split('.'));
-            file.newName = now() + '-' + i + '.' + file.name.split('.').reverse()[0];
+        if (!document.getElementsByClassName('list-group')[0]) {
+            document.getElementsByClassName('widget-container')[0].closest('.dx-template-wrapper').insertAdjacentHTML('afterbegin', '<ul class="list-group"></ul>');
+            document.getElementsByClassName('list-group')[0].insertAdjacentHTML('afterbegin', '<li class="list-group-item list-group-item-action"></li>');
+        }
+        this.value.forEach( file => {
+            file.newName = Math.floor(Math.random()*10000000) + '-' + i + '.' + file.name.split('.').reverse()[0];
             this.productService.uploadImage(file, this.currentRow);
             i++;
         });
-        this.popupVisible = false;
+        //this.popupVisible = false;
     }
 
-    RowExpanding(e) {
-        this.ExpandedRow = this.source.items().find(item => item.key == e.key).data;
-        this.canView = this.ExpandedRow.type == 'material';
-    }
 
     ngOnInit() {
         this.lang = localStorage.getItem('lang') == 'ar';
@@ -131,9 +135,12 @@ export class ProductsComponent implements OnInit {
     deleteImage(pic) {
         let path = pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/');
         if (confirm('Are your sure you want to delete this Image') == true) {
-            this.productService.removeImage(this.currentRow, path, pic);
+            this.productService.removeImage(this.currentRow, path, pic).then(res => {
+                document.getElementById(path.split('/')[1]).remove();
+            });
         }
     }
+
 
     cellPrepared(e) {
         if (e.data) {
@@ -166,6 +173,11 @@ export class ProductsComponent implements OnInit {
         this.currentRow = $event.data;
         if (this.currentRow.type == 'combination') {
             this.popupVisible = true;
+            if (document.getElementsByClassName('new-photos').length != 0) {
+                for (var i = 0; i <= document.getElementsByClassName('new-photos').length; i++) {
+                    document.getElementsByClassName('new-photos')[i].remove();
+                }
+            }
         }
     }
 

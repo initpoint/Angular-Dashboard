@@ -1,35 +1,31 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {PriceListService} from 'src/app/shared/services/firebase/pricelist.service';
-import {PriceListRoutingModule} from './pricelist-routing.module';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {PriceListComponent} from './pricelist.component';
 
+import {UsersRoutingModule} from './users-routing.module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
+import {UserService} from '../../shared/services/firebase/user.service';
+import {UsersComponent} from './users/users.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import {DxPopupModule ,DxTemplateModule, DxDataGridModule,DxNumberBoxModule} from 'devextreme-angular';
+import {DxDataGridModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 @NgModule({
-    declarations: [PriceListComponent],
+    declarations: [UsersComponent],
 
     imports: [
         DxDataGridModule,
-        DxPopupModule,
-        DxTemplateModule,
-        DxNumberBoxModule,
         CommonModule,
-        PriceListRoutingModule,
+        UsersRoutingModule,
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
         HttpModule,
-        TranslateModule,
         ToastrModule.forRoot(),
-
+        TranslateModule,
     ],
-
-    providers: [PriceListService]
+    providers: [UserService]
 })
-export class PriceListModule {
+export class UsersModule {
 }

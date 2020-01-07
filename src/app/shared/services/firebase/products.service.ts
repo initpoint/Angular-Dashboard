@@ -3,33 +3,34 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
 import {key} from 'flatpickr/dist/types/locale';
 import {map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Category} from '../../model/category.model';
 import * as firebase from 'firebase';
-import {Combination} from '../../model/combination.model';
+import {Combinations} from '../../../models/combinations';
+import {CartItem} from '../../model/e-commerce/cart.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProductsService {
-
     constructor(public db: AngularFirestore,
                 private toastr: ToastrService,
     ) {
     }
 
+
     removeImage(row, path, pic) {
 
-        return firebase.storage().ref().child(path).delete().then(() => {
-            this.db.collection(row.type).doc(row.id).update({
-                pics: firebase.firestore.FieldValue.arrayRemove(pic)
+        return this.db.collection(row.type).doc(row.id).update({
+            pics: firebase.firestore.FieldValue.arrayRemove(pic)
+        }).then(() => {
+            firebase.storage().ref().child(path).delete().then(() => {
+                this.toastr.success('Image removed.');
+            }).catch(function (error) {
+                console.log(error);
+
             });
-            this.toastr.success('Image removed.');
-        }).catch(function (error) {
-            console.log(error);
-
         });
-
     }
 
     uploadImage(file, data) {
@@ -46,12 +47,12 @@ export class ProductsService {
                 console.log(error);
             },
             () => {
-                console.log('zy el fol', storageRef.child(`${data.id}/${file.newName}`).getDownloadURL());
                 storageRef.child(`${data.id}/${file.newName}`).getDownloadURL().then(downloadURL => {
                     this.db.collection(data.type).doc(data.id).update({
                         pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
                     });
-                    this.toastr.success('Images Uploaded.');
+                    document.getElementsByClassName('list-group-item')[0].insertAdjacentHTML('afterbegin', '<div class="avatar new-photos" style="margin-left: 0;"><img class="b-r-8" style="height: 128px;width: 128px;padding-top: 3px" alt="" src="' + downloadURL + '"> <button title="Success" style="right: -1px;bottom: -1px;" class="status status-100 bg-success"><i class="fa fa-check"></i></button>\n' +
+                        '</div>');
                 });
             }
         );
@@ -70,9 +71,9 @@ export class ProductsService {
 
     addChild(child) {
         this.db.collection(child.parent_type).doc(child.headId).set({hasChildren: true}, {merge: true});
-
         if (child.parent_type == 'material') {
             child.prices = {};
+            child.pics = [];
         }
         return this.db.collection(child.type).add(child).then(res => {
             this.toastr.success('Item added.');

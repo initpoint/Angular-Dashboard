@@ -11,11 +11,8 @@ import { ContentLayoutComponent } from './components/layout/content-layout/conte
 import { FullLayoutComponent } from './components/layout/full-layout/full-layout.component';
 import { FeatherIconsComponent } from './components/feather-icons/feather-icons.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
-import { BookmarkComponent } from './components/bookmark/bookmark.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { DragulaModule } from 'ng2-dragula';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { GalleryModule } from '@ks89/angular-modal-gallery';
 import 'hammerjs';
 import 'mousetrap';
 
@@ -30,7 +27,6 @@ import { ToggleFullscreenDirective } from "./directives/fullscreen.directive";
     HeaderComponent,
     FooterComponent,
     SidebarComponent,
-    BookmarkComponent,
     ContentLayoutComponent,
     FullLayoutComponent,
     FeatherIconsComponent,
@@ -42,9 +38,7 @@ import { ToggleFullscreenDirective } from "./directives/fullscreen.directive";
     RouterModule,
     FormsModule,
     TranslateModule,
-    DragulaModule.forRoot(),
     NgbModule,
-    GalleryModule.forRoot()
   ],
   exports: [
     LoaderComponent,

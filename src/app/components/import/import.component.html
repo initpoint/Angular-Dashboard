@@ -1,0 +1,20 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <input type="file" (change)="onFileChange($event)" multiple="false"/>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .loader-wrapper.loderhide {
+        display: none;
+    }
+</style>
+<div class="loader-wrapper" [class.loderhide]="!show">
+    <div class="loader bg-white">
+        <div class="whirly-loader"> </div>
+    </div>
+</div>

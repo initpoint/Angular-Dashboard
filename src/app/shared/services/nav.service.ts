@@ -63,7 +63,7 @@ export class NavService {
 			]
 		},*/
 		{
-			title: 'Users', path:'/user/show',icon: 'users', type: 'link', active: false,
+			title: 'Users', path:'/users/show',icon: 'users', type: 'link', active: false,
 		},
 		{
 			title: 'Products', path:'/products/show',icon: 'shopping-bag', type: 'link', active: false,
@@ -76,6 +76,9 @@ export class NavService {
 		},
 		{
 			title: 'Permissions', path:'/permissions/show',icon: 'git-pull-request', type: 'link', active: false,
+		},
+		{
+			title: 'Import', path:'/import',icon: 'share', type: 'link', active: false,
 		},
 /*
 		{

@@ -1,3 +1,4 @@
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
@@ -7,7 +8,6 @@
                 > {{'Combinations / FullList'|translate}}</i></button>
                 <dx-tree-list *ngIf="showTree"
                               (onRowClick)="RowClicked($event)"
-                              (onRowExpanding)="RowExpanding($event)"
                               (onCellPrepared)="cellPrepared($event)"
                               (onRowPrepared)="rowPrepared($event)"
                               (onRowCollapsing)="canView = false;"
@@ -22,7 +22,15 @@
                               [showBorders]="true"
                               [columnAutoWidth]="true"
                               hasItemsExpr="hasChildren">
-                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                    <dxo-paging
+                            [enabled]="true"
+                            [pageSize]="10">
+                    </dxo-paging>
+                    <dxo-pager
+                            [showPageSizeSelector]="true"
+                            [allowedPageSizes]="[5, 10, 20]"
+                            [showInfo]="true">
+                    </dxo-pager>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-editing
@@ -32,14 +40,14 @@
                             [useIcons]="true"
                             [allowDeleting]="true">
                     </dxo-editing>
-                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
                     <dxi-column dataField="isNew" dataType="boolean" [caption]="'Is New'|translate"></dxi-column>
-                    <dxi-column dataField="unit" [caption]="'Unit'" [allowEditing]="canView" [visible]="canView"></dxi-column>
-                    <dxi-column dataField="size" [caption]="'Size'" [allowEditing]="canView" [visible]="canView"></dxi-column>
+                    <dxi-column dataField="unitNameAr" [caption]="'Unit'"></dxi-column>
+                    <dxi-column dataField="size" [caption]="'Size'"></dxi-column>
                 </dx-tree-list>
                 <dx-popup
                         width="700"
@@ -50,10 +58,14 @@
                         [closeOnOutsideClick]="true"
                         [(visible)]="popupVisible">
                     <div *dxTemplate="let data of 'content'">
-                        <ul *ngIf="currentRow.pics" class="list-group">
-                            <li class="list-group-item list-group-item-action"><img
-                                    style="height: 128px;width: 128px;padding-top: 3px" (click)="deleteImage(pic)"
-                                    [src]="pic" *ngFor="let pic of currentRow.pics" width="300" height="300" alt=""/>
+                        <ul *ngIf="currentRow.type == 'combination' && currentRow.pics.length >0" class="list-group ">
+                            <li class="list-group-item list-group-item-action avatars">
+                                <div class="avatar" style="margin-left: 0;" *ngFor="let pic of currentRow.pics" (click)="deleteImage(pic)" id="{{pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/').split('/')[1]}}">
+                                <img class="b-r-8" title="Click to delete!"
+                                    style="height: 128px;width: 128px;padding-top: 3px"
+                                    [src]="pic" width="300" height="300" alt=""/>
+                                <button title="Delete" style="right: -1px;bottom: -1px;" class="status status-100 bg-danger"><i class="fa fa-trash"></i></button>
+                                </div>
                             </li>
                         </ul>
                         <div class="widget-container">
@@ -65,13 +77,14 @@
                                             labelText=""
                                             accept="image/*"
                                             [(value)]='value'
+                                            [(rtlEnabled)]="lang"
                                             [showFileList]="true"
                                             multiple="true"
                                             uploadMode="useForm">
                                     </dx-file-uploader>
 
-                                    <button class="btn btn-primary" type="submit" (click)="uploadImages()">
-                                        Submit
+                                    <button class="mr-2 btn btn-primary" type="submit" (click)="uploadImages()">
+                                        {{'Submit' |translate}}
                                     </button>
                                 </div>
                             </form>
@@ -96,6 +109,8 @@
                     <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
                     <dxi-column dataField="isNew" dataType="boolean" [caption]="'Is New'|translate"></dxi-column>
+                    <dxi-column dataField="unitNameAr" [caption]="'Unit'"></dxi-column>
+                    <dxi-column dataField="size" [caption]="'Size'"></dxi-column>
                 </dx-data-grid>
             </div>
         </div>

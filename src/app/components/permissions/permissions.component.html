@@ -16,7 +16,6 @@
                             <!--[allowDeleting]="true">-->
                     <!--</dxo-editing>-->
                     <dxo-export [enabled]="true" fileName="PriceList" [allowExportSelectedData]="true"></dxo-export>
-                    <dxo-selection mode="multiple"></dxo-selection>
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean"  [caption]="'Is Active'|translate"></dxi-column>
@@ -52,7 +51,7 @@
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
