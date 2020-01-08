@@ -23,7 +23,7 @@
                         <dxi-column dataField="email" [caption]="'Email'|translate"></dxi-column>
                         <dxi-column dataField="password" [caption]="'Password'|translate" [allowSearch]="false" [allowSorting]="false" [visible]="false"></dxi-column>
                         <dxi-column dataField="mobile" [caption]="'Mobile'|translate"></dxi-column>
-                        <dxi-column dataField="isActive"  [caption]="'Is Active'|translate"></dxi-column>
+                        <dxi-column dataField="isActive" dataType="boolean"  [caption]="'Is Active'|translate"></dxi-column>
                         <dxi-column dataField="lastLoginAt" [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
 
                     </dx-data-grid>

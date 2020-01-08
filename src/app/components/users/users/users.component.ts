@@ -1,6 +1,5 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {UserService} from '../../../shared/services/firebase/user.service';
-import {PriceListService} from '../../../shared/services/firebase/pricelist.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import CustomeStore from 'devextreme/data/custom_store';
@@ -12,16 +11,12 @@ import DataSource from 'devextreme/data/data_source';
     styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-    private priceList;
     userSource: DataSource;
     userData: CustomeStore;
     lang = localStorage.getItem('lang') == 'ar';
-    priceLists:any[];
 
-    constructor(private priceListService:PriceListService,private userService: UserService, private router: Router, private toastr: ToastrService) {
-         this.priceListService.getPriceLists().subscribe(res => {
-             this.priceLists = res;
-         });
+    constructor(private userService: UserService, private router: Router, private toastr: ToastrService) {
+
             this.userData = new CustomeStore({
                 key: 'uid',
                 load: (opts) => {

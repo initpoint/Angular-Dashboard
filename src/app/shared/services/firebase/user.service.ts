@@ -4,6 +4,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {ToastrService} from 'ngx-toastr';
 import {environment} from '../../../../environments/environment';
 import {User, auth, initializeApp} from 'firebase/app';
+import {map} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -71,7 +72,14 @@ export class UserService {
     }
 
     getUsers() {
-        return this.db.collection('users', ref => ref.where('userType', '==', 'user')).snapshotChanges();
+        return this.db.collection('users', ref => ref.where('userType', '==', 'user')).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    uid: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
     }
 
     deleteUser(contactKey) {
