@@ -71,7 +71,14 @@ export class UserService {
     }
 
     getUsers() {
-        return this.db.collection('users', ref => ref.where('userType', '==', 'user')).snapshotChanges();
+        return this.db.collection('users', ref => ref.where('userType', '==', 'user')).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    uid: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
     }
 
     deleteUser(contactKey) {
