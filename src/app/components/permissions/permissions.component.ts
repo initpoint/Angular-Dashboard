@@ -163,10 +163,10 @@ export class PermissionComponent implements OnInit {
 
     SaveCustomerPermissions() {
         this.currentDeselectedRowKeys.forEach(DeselectedKey => {
-            this.permissionService.removePermission(this.currentRow.uid, this.itemSource.items().find(item => item.key == DeselectedKey).data);
+            this.permissionService.removePermission(this.currentRow, this.itemSource.items().find(item => item.key == DeselectedKey).data);
         });
         this.selectedRowKeys.forEach(SelectedRow => {
-            this.permissionService.addPermission(this.currentRow.uid, this.selectedRowData.find(item => item.id === SelectedRow));
+            this.permissionService.addPermission(this.currentRow, this.selectedRowData.find(item => item.id === SelectedRow));
         });
     }
 
