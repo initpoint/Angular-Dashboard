@@ -23,14 +23,14 @@ export class PermissionService {
         return this.db.collection(Collection.type).doc(Collection.id).update({
             customers: firebase.firestore.FieldValue.arrayUnion(customer.uid)
         }).then(() => {
-            this.toastr.success('Customer '+customer.name+' Can now access '+Collection.type+' ['+Collection.name+'].');
+            this.toastr.success('Customer '+customer.name+' Can now access '+Collection.type+' ['+Collection.nameEn+'].');
         });
     }
     removePermission(customer,Collection) {
         return this.db.collection(Collection.type).doc(Collection.id).update({
             customers: firebase.firestore.FieldValue.arrayRemove(customer.uid)
         }).then(() => {
-            this.toastr.error('Customer '+customer.name+' Can not access '+Collection.type+' ['+Collection.name+'] anymore.');
+            this.toastr.error('Customer '+customer.name+' Can not access '+Collection.type+' ['+Collection.nameEn+'] anymore.');
         });
     }
     getPermissions() {
