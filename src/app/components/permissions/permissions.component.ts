@@ -16,15 +16,16 @@ export class PermissionComponent implements OnInit {
     value: any[] = [];
     categories: Category[];
     CustomersStore: CustomeStore;
-    ExpandedRow;
+    initSelectedRows: any[] = [];
     lang;
-    canView = false;
     currentRow;
     currentTreeRow;
     itemStore: CustomeStore;
     itemSource: DataSource;
     CustomersData: DataSource;
     selectedRowKeys: any[] = [];
+    selectedRowData: any[] = [];
+    currentDeselectedRowKeys: any[] = [];
 
     constructor(
         private productService: ProductsService,
@@ -60,16 +61,16 @@ export class PermissionComponent implements OnInit {
             load: (opts) => {
                 return new Promise((resolve, reject) => {
                     this.lang = localStorage.getItem('lang') == 'ar';
-                    if (!this.ExpandedRow) {
+                    if (opts.filter[2] == '') {
                         this.productService.getCategories().subscribe(res => {
                             resolve({data: res});
                         });
                     } else {
-                        this.productService.getItems(this.ExpandedRow.id, {
+                        this.productService.getItems(opts.filter[2], {
                             'category': 'ranking',
                             'ranking': 'material',
                             'material': 'combination'
-                        }[this.ExpandedRow.type]).subscribe(res => {
+                        }[this.currentTreeRow.type]).subscribe(res => {
                             resolve({data: res});
                         });
                     }
@@ -106,11 +107,6 @@ export class PermissionComponent implements OnInit {
         });
     }
 
-    RowExpanding(e) {
-        this.ExpandedRow = this.itemSource.items().find(item => item.key == e.key).data;
-        this.canView = this.ExpandedRow.type == 'material';
-    }
-
     cellPrepared(e) {
         if (e.data) {
             if (e.data.type == 'combination') {
@@ -135,14 +131,20 @@ export class PermissionComponent implements OnInit {
             } else {
                 e.rowElement.style.backgroundColor = '#e3e7f1';
             }
+            if (e.data.customers && e.data.customers.find(x => x === this.currentRow.uid)) {
+                console.log(e)
+                if (this.initSelectedRows.indexOf(e.data.id) === -1)  {
+                    this.initSelectedRows.push(e.data.id);
+                    e.isExpanded = true;
+                    e.isSelected = true;
+                }
+                console.log(this.initSelectedRows)
+            }
         }
     }
 
     treeRowClicked($event: any) {
         this.currentTreeRow = $event.data;
-        if (this.currentTreeRow.type == 'combination') {
-            // this.popupVisible = true;
-        }
     }
 
     ngOnInit() {
@@ -153,9 +155,19 @@ export class PermissionComponent implements OnInit {
         this.currentRow = $event.data;
     }
 
-    SaveCustomerPermissions() {
+    onSelectionChanged(e) { // Handler of the "selectionChanged" event
+        this.currentDeselectedRowKeys = e.currentDeselectedRowKeys;
+        this.selectedRowKeys = e.selectedRowKeys;
+        this.selectedRowData = e.selectedRowsData;
+    }
 
-        console.log('Customer '+ this.currentRow.uid,this.selectedRowKeys);
+    SaveCustomerPermissions() {
+        this.currentDeselectedRowKeys.forEach(DeselectedKey => {
+            this.permissionService.removePermission(this.currentRow.uid, this.itemSource.items().find(item => item.key == DeselectedKey).data);
+        });
+        this.selectedRowKeys.forEach(SelectedRow => {
+            this.permissionService.addPermission(this.currentRow.uid, this.selectedRowData.find(item => item.id === SelectedRow));
+        });
     }
 
 }

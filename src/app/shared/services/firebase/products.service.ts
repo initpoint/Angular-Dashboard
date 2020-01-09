@@ -1,13 +1,10 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
-import {key} from 'flatpickr/dist/types/locale';
 import {map} from 'rxjs/operators';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Category} from '../../model/category.model';
 import * as firebase from 'firebase';
-import {Combinations} from '../../../models/combinations';
-import {CartItem} from '../../model/e-commerce/cart.model';
 
 @Injectable({
     providedIn: 'root'
@@ -92,8 +89,8 @@ export class ProductsService {
     }
 
     /* Categories */
-    getCategories(): Observable<Category[]> {
-        return this.db.collection<any>('category').snapshotChanges().pipe(
+    getCategories() {
+        return this.db.collection('category').snapshotChanges().pipe(
             map(x => x.map(y => {
                 return {
                     id: y.payload.doc.id,

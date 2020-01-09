@@ -2,10 +2,6 @@ import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
 import {map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
-import {Category} from '../../model/category.model';
-import * as firebase from 'firebase';
-import {Combination} from '../../model/combination.model';
 
 @Injectable({
     providedIn: 'root'
