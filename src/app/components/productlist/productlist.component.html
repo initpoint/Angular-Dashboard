@@ -112,13 +112,14 @@
                 <!--                    <dxi-column dataField="size" [caption]="'Size'"></dxi-column>-->
                 <!--                </dx-data-grid>-->
 
-                <button class="btn btn-primary ml-2 mt-2 mb-3 pull-right" (click)="addRows(1)"><i
+                <button class="btn btn-primary ml-2 mt-2 mb-3 pull-right" (click)="addRows(20)"><i
                         class="fa fa-th-list"
-                > Add 1 Item</i></button>
+                > Add 20 Item</i></button>
                 <button class="btn btn-danger ml-2 mt-2 mb-3 pull-right" (click)="removeAllItems()"><i
                         class="fa fa-th-list"
                 > Remove All Items</i></button>
                 <dx-data-grid
+                        (onRowExpanding)="rowExpanding($event)"
                         [showBorders]="true"
                         [dataSource]="source"
                         [rtlEnabled]="lang"
@@ -127,14 +128,6 @@
                         [remoteOperations]="{ groupPaging: true }"
                 >
 
-                    <!--                    <dxo-remote-operations-->
-                    <!--                            [filtering]="false"-->
-                    <!--                            [paging]="false"-->
-                    <!--                            [sorting]="false"-->
-                    <!--                            [summary]="false"-->
-                    <!--                            [grouping]="false"-->
-                    <!--                            [groupPaging]="true">-->
-                    <!--                    </dxo-remote-operations>-->
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
@@ -151,9 +144,12 @@
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
+                    <dxo-selection mode="multiple"
+                                   [allowSelectAll]="true"
+                                   [deferred]="true"
+                                   [showCheckBoxesMode]="true"></dxo-selection>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
-                    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
+                    <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
                     <dxo-editing
                             mode="form"
                             [allowAdding]="true"
@@ -163,6 +159,7 @@
                     </dxo-editing>
 
                     <div *dxTemplate="let category of 'categoryTemplate'">
+                        <dx-check-box>Select Category</dx-check-box>
                         {{category.value}}
                     </div>
                     <div *dxTemplate="let ranking of 'rankingTemplate'">
@@ -176,22 +173,3 @@
         </div>
     </div>
 </div>
-
-<dx-data-grid id="gridContainer"
-              [dataSource]="dataSource"
-              [remoteOperations]="{ groupPaging: true }"
-              [wordWrapEnabled]="true"
-              [showBorders]="true">
-
-    <dxo-scrolling mode="virtual"></dxo-scrolling>
-    <dxo-group-panel [visible]="true"></dxo-group-panel>
-    <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
-
-    <dxi-column dataField="Id" dataType="number" [width]="75"></dxi-column>
-    <dxi-column dataField="ProductSubcategoryName" caption="Subcategory" [width]="150"></dxi-column>
-    <dxi-column dataField="StoreName" caption="Store" [width]="150" [groupIndex]="0"></dxi-column>
-    <dxi-column dataField="ProductCategoryName" caption="Category" [width]="120" [groupIndex]="1"></dxi-column>
-    <dxi-column dataField="ProductName" caption="Product"></dxi-column>
-    <dxi-column dataField="DateKey" caption="Date" dataType="date" format="yyyy-MM-dd" [width]="100"></dxi-column>
-    <dxi-column dataField="SalesAmount" caption="Amount" format="currency" [width]="100"></dxi-column>
-</dx-data-grid>

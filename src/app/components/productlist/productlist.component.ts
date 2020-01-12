@@ -1,10 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ProductlistService} from 'src/app/shared/services/firebase/productlist.service';
-import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
-
-import * as AspNetData from 'devextreme-aspnet-data-nojquery';
 
 @Component({
     selector: 'app-productlist',
@@ -12,31 +9,16 @@ import * as AspNetData from 'devextreme-aspnet-data-nojquery';
     styleUrls: ['./productlist.component.scss'],
 })
 export class ProductlistComponent implements OnInit {
-    // @ViewChild('form', {static: false}) form: NgForm;
     // popupVisible = false;
     // value: any[] = [];
-    source: DataSource;
-    store: CustomeStore;
+    source: any;
     lang;
+
     // currentRow;
-    dataSource: any;
 
-    constructor(
-        private productlistService: ProductlistService) {
-
-        this.dataSource = AspNetData.createStore({
-            key: 'Id',
-            loadUrl: 'https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/Sales'
-        });
-
-        this.store = new CustomeStore({
+    constructor(private productlistService: ProductlistService) {
+        this.source = new CustomeStore({
             key: 'code',
-            byKey: (key) => {
-                console.log('byKey', key);
-                return new Promise(resolve => {
-                    resolve(null);
-                });
-            },
             load: (opts) => this.productlistService.getItems(opts),
             // update: (key, values) => {
             //     let item = this.source.items().find(item => item.key == key).data;
@@ -54,7 +36,6 @@ export class ProductlistComponent implements OnInit {
             //     return this.productlistService.insertItem(values);
             // }
         });
-        this.source = new DataSource(this.store);
     }
 
 
@@ -128,15 +109,19 @@ export class ProductlistComponent implements OnInit {
     addRows(number: number) {
         for (let x = 0; x < number; x++) {
             const i = Math.floor(Math.random() * 5).toString();
-            const j = Math.floor(Math.random() * 5).toString();
-            const k = Math.floor(Math.random() * 5).toString();
+            const j = Math.floor(Math.random() * 10).toString();
+            const k = Math.floor(Math.random() * 20).toString();
+            const u = Math.floor(Math.random() * 9999).toString();
+            const catCode = 'cat' + i;
+            const rankCode = 'rank' + i + '-' + j;
+            const matCode = 'mat' + i + '-' + j + '-' + k;
             this.productlistService.insertItem({
                 nameAr: 'تركيبة رقم ' + i,
                 nameEn: 'Combination #' + i,
-                code: 'c-' + i,
-                categoryCode: 'cat' + i,
-                rankingCode: 'rank' + i + '-' + j,
-                materialCode: 'mat' + i + '-' + j + '-' + k,
+                code: 'c-' + u,
+                categoryCode: catCode,
+                rankingCode: rankCode,
+                materialCode: matCode,
                 categoryNameAr: 'Category ' + i,
                 rankingNameAr: 'Ranking ' + i + '-' + j,
                 materialNameAr: 'Material ' + i + '-' + j + '-' + k
@@ -147,4 +132,9 @@ export class ProductlistComponent implements OnInit {
     removeAllItems() {
         this.productlistService.removeAllItems();
     }
+
+    rowExpanding(e) {
+        e.component.collapseAll(e.key.length - 1);
+    }
+
 }

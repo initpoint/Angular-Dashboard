@@ -10,8 +10,17 @@ import {EditProductResolver} from '../../shared/services/firebase/edit-product.r
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import { DxTreeListModule, DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxTextBoxModule} from 'devextreme-angular';
+import {
+    DxTreeListModule,
+    DxFileUploaderModule,
+    DxPopupModule,
+    DxTemplateModule,
+    DxDataGridModule,
+    DxTextBoxModule,
+    DxCheckBoxModule
+} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
+
 @NgModule({
     declarations: [ProductlistComponent],
 
@@ -21,6 +30,7 @@ import {TranslateModule} from '@ngx-translate/core';
         DxPopupModule,
         DxTemplateModule,
         DxFileUploaderModule,
+        DxCheckBoxModule,
         CommonModule,
         DxTreeListModule,
         ProductlistRoutingModule,

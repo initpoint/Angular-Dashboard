@@ -15,7 +15,6 @@ export class ProductlistService {
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
         this.db.doc('meta/items').snapshotChanges().subscribe(res => {
             this.metaData = res.payload.data();
-            console.log('metaData', this.metaData);
         });
     }
 
@@ -157,58 +156,63 @@ export class ProductlistService {
         });
     }
 
+    updateMetaDate() {
+        this.db.doc('meta/items').set(this.metaData);
+    }
+
     insertItem(values: any) {
-        this.db.doc('meta/items').get().subscribe(res => {
-            const data = res.data();
+        this.metaData.category = this.metaData.category === undefined ? {} : this.metaData.category;
+        if (this.metaData.category[values.categoryCode] === undefined) {
+            this.metaData.category[values.categoryCode] = {
+                key: values.categoryCode,
+                count: 1,
+                nameAr: values.categoryNameAr,
+                children: [],
+                items: null
+            };
+            this.metaData.categoryCount = this.metaData.categoryCount === undefined ? 1 : this.metaData.categoryCount + 1;
 
-            data.category = data.category === undefined ? {} : data.category;
-            if (data.category[values.categoryCode] === undefined) {
-                data.category[values.categoryCode] = {
-                    key: values.categoryCode,
-                    count: 1,
-                    nameAr: values.categoryNameAr,
-                    children: [],
-                };
-                data.categoryCount = data.categoryCount === undefined ? 1 : data.categoryCount + 1;
-
-            } else {
-                data.category[values.categoryCode].count += 1;
-            }
-
-            data.category[values.categoryCode].children.push(values.rankingCode);
-            data.ranking = data.ranking === undefined ? {} : data.ranking;
-            if (data.ranking[values.rankingCode] === undefined) {
-                data.ranking[values.rankingCode] = {
-                    key: values.rankingCode,
-                    count: 1,
-                    nameAr: values.rankingNameAr,
-                    children: [],
-                };
-                data.rankingCount = data.rankingCount === undefined ? 1 : data.rankingCount + 1;
-            } else {
-                data.ranking[values.rankingCode].count += 1;
-            }
-
-
-            data.ranking[values.rankingCode].children.push(values.materialCode);
-            data.material = data.material === undefined ? {} : data.material;
-            if (data.material[values.materialCode] === undefined) {
-                data.material[values.materialCode] = {
-                    key: values.materialCode,
-                    count: 1,
-                    nameAr: values.materialNameAr,
-                    children: [],
-                };
-                data.materialCount = data.materialCount === undefined ? 1 : data.materialCount + 1;
-            } else {
-                data.material[values.materialCode].count += 1;
-            }
-
-            data.material[values.materialCode].children.push(values.code);
-            data.totalCount = data.totalCount === undefined ? 1 : data.totalCount + 1;
-            res.ref.set(data);
-        });
-        return this.db.collection('item').add(values).then(res => {
+        } else {
+            this.metaData.category[values.categoryCode].count += 1;
+        }
+        if (!this.metaData.category[values.categoryCode].children.includes(values.rankingCode)) {
+            this.metaData.category[values.categoryCode].children.push(values.rankingCode);
+        }
+        this.metaData.ranking = this.metaData.ranking === undefined ? {} : this.metaData.ranking;
+        if (this.metaData.ranking[values.rankingCode] === undefined) {
+            this.metaData.ranking[values.rankingCode] = {
+                key: values.rankingCode,
+                count: 1,
+                nameAr: values.rankingNameAr,
+                children: [],
+                items: null
+            };
+            this.metaData.rankingCount = this.metaData.rankingCount === undefined ? 1 : this.metaData.rankingCount + 1;
+        } else {
+            this.metaData.ranking[values.rankingCode].count += 1;
+        }
+        if (!this.metaData.ranking[values.rankingCode].children.includes(values.rankingCode)) {
+            this.metaData.ranking[values.rankingCode].children.push(values.materialCode);
+        }
+        this.metaData.material = this.metaData.material === undefined ? {} : this.metaData.material;
+        if (this.metaData.material[values.materialCode] === undefined) {
+            this.metaData.material[values.materialCode] = {
+                key: values.materialCode,
+                count: 1,
+                nameAr: values.materialNameAr,
+                children: [],
+                items: null
+            };
+            this.metaData.materialCount = this.metaData.materialCount === undefined ? 1 : this.metaData.materialCount + 1;
+        } else {
+            this.metaData.material[values.materialCode].count += 1;
+        }
+        if (!this.metaData.material[values.materialCode].children.includes(values.rankingCode)) {
+            this.metaData.material[values.materialCode].children.push(values.code);
+        }
+        this.metaData.totalCount = this.metaData.totalCount === undefined ? 1 : this.metaData.totalCount + 1;
+        this.updateMetaDate();
+        return this.db.collection('item').doc(values.materialCode + ' | ' + values.code).set(values).then(res => {
             this.toastr.success('Item added');
         });
     }
@@ -226,9 +230,13 @@ export class ProductlistService {
     }
 
     getItems(opts) {
-        console.log('opts', opts);
+        // console.log(opts);
         return new Promise(resolve => {
             const obj = {};
+            if (!this.metaData) {
+                resolve({groupCount: 0, data: [], totalCount: 0});
+                return;
+            }
             if (opts.requireGroupCount) {
                 const group = opts.group[0].selector;
                 if (group.startsWith('cat')) {
@@ -238,7 +246,7 @@ export class ProductlistService {
                         return this.metaData.category[key];
                     });
                     obj['totalCount'] = this.metaData.totalCount;
-                    resolve(obj);
+                    resolve(Object.assign({}, obj));
                 } else if (group.startsWith('rank')) {
                     obj['groupCount'] = this.metaData.category[opts.filter[2]].children.length;
                     obj['data'] = this.metaData.category[opts.filter[2]].children.map(key => {
@@ -246,7 +254,7 @@ export class ProductlistService {
                         return this.metaData.ranking[key];
                     });
                     obj['totalCount'] = this.metaData.category[opts.filter[2]].count;
-                    resolve(obj);
+                    resolve(Object.assign({}, obj));
                 } else if (group.startsWith('mat')) {
                     obj['groupCount'] = this.metaData.ranking[opts.filter[2][2]].children.length;
                     obj['data'] = this.metaData.ranking[opts.filter[2][2]].children.map(key => {
@@ -254,37 +262,28 @@ export class ProductlistService {
                         return this.metaData.material[key];
                     });
                     obj['totalCount'] = this.metaData.ranking[opts.filter[2][2]].count;
-                    resolve(obj);
+                    resolve(Object.assign({}, obj));
                 } else {
                     console.log('group not exist');
                 }
             } else {
-                console.log('requireGroupCount = False');
-
                 const filter = opts.filter;
-                console.log('filter', filter);
+                // console.log('filter', filter);
                 this.db.collection('item', ref => {
                     let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-                    let whereArgs = [];
+                    const whereArgs = [];
                     if (filter[1] === 'and') {
-                        whereArgs.push([filter[0][0], filter[0][2]]);
-                        whereArgs.push([filter[2][0], filter[2][2]]);
-                        whereArgs.push([filter[4][0], filter[4][2]]);
+                        whereArgs.push(filter[4][2]);
                     } else if (filter[1] === 'or') {
                         filter.forEach(f => {
                             if (!(f === 'or')) {
-                                whereArgs.push([f[0][0], f[0][2]]);
-                                whereArgs.push([f[2][0], f[2][2]]);
-                                whereArgs.push([f[4][0], f[4][2]]);
+                                whereArgs.push(f[4][2]);
                             }
                         });
                     } else {
                         console.log('Filter other case');
                     }
-                    whereArgs.forEach(arg => {
-                        query = query.where(arg[0], '==', arg[1]);
-                        // firebase.firestore().collection('abc')
-                    });
+                    query = query.where('materialCode', 'in', whereArgs);
                     // query = query.orderBy('categoryCode').orderBy('rankingCode');
                     return query;
                 }).snapshotChanges().pipe(
@@ -295,14 +294,33 @@ export class ProductlistService {
                         };
                     }))
                 ).subscribe(itemsRes => {
+                    const sortBy = [{
+                        prop: 'categoryCode',
+                        direction: 1
+                    }, {
+                        prop: 'rankingCode',
+                        direction: 1
+                    }, {
+                        prop: 'materialCode',
+                        direction: 1
+                    }];
+                    console.log(itemsRes);
+                    itemsRes.sort(function (a, b) {
+                        let i = 0, result = 0;
+                        while (i < sortBy.length && result === 0) {
+                            result = sortBy[i].direction * (a[sortBy[i].prop].toString() < b[sortBy[i].prop].toString() ? -1 :
+                                (a[sortBy[i].prop].toString() > b[sortBy[i].prop].toString() ? 1 : 0));
+                            i++;
+                        }
+                        return result;
+                    });
+
+                    // console.log(itemsRes[0].id);
                     obj['data'] = itemsRes;
-                    resolve(obj);
+                    // console.log(obj);
+                    resolve(Object.assign({}, obj));
                 });
             }
-
-            console.log(obj);
-            // debugger;
-            // resolve({...obj});
         });
 
     }
