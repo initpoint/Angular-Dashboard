@@ -112,15 +112,29 @@
                 <!--                    <dxi-column dataField="size" [caption]="'Size'"></dxi-column>-->
                 <!--                </dx-data-grid>-->
 
+                <button class="btn btn-primary ml-2 mt-2 mb-3 pull-right" (click)="addRows(1)"><i
+                        class="fa fa-th-list"
+                > Add 1 Item</i></button>
+                <button class="btn btn-danger ml-2 mt-2 mb-3 pull-right" (click)="removeAllItems()"><i
+                        class="fa fa-th-list"
+                > Remove All Items</i></button>
                 <dx-data-grid
                         [showBorders]="true"
                         [dataSource]="source"
                         [rtlEnabled]="lang"
-                        [remoteOperations]="true"
                         [showRowLines]="true"
                         [columnAutoWidth]="true"
+                        keyExpr="code"
                 >
+                    <dxo-remote-operations
 
+                            [filtering]="true"
+                            [paging]="true"
+                            [sorting]="true"
+                            [summary]="true"
+                            [grouping]="true"
+                            [groupPaging]="true">
+                    </dxo-remote-operations>
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
@@ -128,6 +142,10 @@
                     <dxi-column dataField="isNew" dataType="boolean" [caption]="'Is New'|translate"></dxi-column>
                     <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
                     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
+                    <dxi-column dataField="categoryCode" groupIndex="0" groupCellTemplate="categoryTemplate"
+                                [caption]="'Category'|translate"></dxi-column>
+                    <dxi-column dataField="rankingCode"  groupCellTemplate="rankingTemplate"
+                                [caption]="'Ranking'|translate"></dxi-column>
 
                     <dxo-paging
                             [enabled]="true"
@@ -151,9 +169,11 @@
 
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
                     <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
-                    <div *dxTemplate="let employee of 'rowTemplateName'">
-                        {{employee.value}}
-                        <button (click)="hi($event, employee)">hiiiii</button>
+                    <div *dxTemplate="let category of 'categoryTemplate'">
+                        {{category.value}}
+                    </div>
+                    <div *dxTemplate="let ranking of 'rankingTemplate'">
+                        {{ranking.value}}
                     </div>
                 </dx-data-grid>
 

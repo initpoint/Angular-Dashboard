@@ -55,16 +55,16 @@ export class ProductlistService {
         );
     }
 
-    getItems(id, collection) {
-        return this.db.collection(collection, ref => ref.where('headId', '==', id)).snapshotChanges().pipe(
-            map(x => x.map(y => {
-                return {
-                    id: y.payload.doc.id,
-                    ...y.payload.doc.data()
-                };
-            }))
-        );
-    }
+    // getItems(id, collection) {
+    //     return this.db.collection(collection, ref => ref.where('headId', '==', id)).snapshotChanges().pipe(
+    //         map(x => x.map(y => {
+    //             return {
+    //                 id: y.payload.doc.id,
+    //                 ...y.payload.doc.data()
+    //             };
+    //         }))
+    //     );
+    // }
 
     addChild(child) {
         this.db.collection(child.parent_type).doc(child.headId).set({hasChildren: true}, {merge: true});
@@ -151,5 +151,114 @@ export class ProductlistService {
         return this.db.collection('category').add(values).then(res => {
             this.toastr.success('Item added.');
         });
+    }
+
+    insertItem(values: any) {
+        this.db.doc('meta/items').get().subscribe(res => {
+            const data = res.data();
+            console.log(values);
+            if (data.category === undefined) {
+                data.category = {};
+            }
+            if (data.category[values.categoryCode] === undefined) {
+                data.category[values.categoryCode] = {
+                    code: values.categoryCode,
+                    count: 1,
+                    nameAr: values.categoryNameAr
+                };
+                if (data.categoryCount === undefined) {
+                    data.categoryCount = 1;
+                } else {
+                    data.categoryCount += 1;
+                }
+            } else {
+                data.category[values.categoryCode].count += 1;
+            }
+
+            if (data.ranking === undefined) {
+                data.ranking = {};
+            }
+            if (data.ranking[values.rankingCode] === undefined) {
+                data.ranking[values.rankingCode] = {
+                    code: values.rankingCode,
+                    count: 1,
+                    nameAr: values.rankingNameAr
+                };
+                if (data.rankingCount === undefined) {
+                    data.rankingCount = 1;
+                } else {
+                    data.rankingCount += 1;
+                }
+            } else {
+                data.ranking[values.rankingCode].count += 1;
+            }
+
+
+            if (data.totalCount === undefined) {
+                data.totalCount = 1;
+            } else {
+                data.totalCount += 1;
+            }
+            res.ref.set(data);
+        });
+        return this.db.collection('item').add(values).then(res => {
+            this.toastr.success('Item added');
+        });
+    }
+
+    removeAllItems() {
+        this.db.doc('meta/items').ref.set({});
+        const batch = this.db.firestore.batch();
+        this.db.firestore.collection(`item`).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                batch.delete(doc.ref);
+            });
+            batch.commit();
+            this.toastr.success('All Items Removed');
+        });
+    }
+
+    getItems(limit, filter) {
+        return new Promise(resolve => {
+            this.db.doc('meta/items').get().subscribe(itemsMetaRes => {
+                const data = itemsMetaRes.data();
+
+                const col = this.db.collection('item');
+
+                if (filter) {
+                    col.ref.where('categoryCode', '==', filter);
+                }
+                col.ref.orderBy('categoryCode');
+                col.ref.orderBy('rankingCode');
+                if (limit) {
+                    col.ref.limit(limit);
+                }
+                col.snapshotChanges().pipe(
+                    map(x => x.map(y => {
+                        return {
+                            id: y.payload.doc.id,
+                            ...y.payload.doc.data()
+                        };
+                    }))
+                ).subscribe(itemsRes => {
+                    let obj = {
+                        // data: res, groupCount: data.categoryCount
+                        totalCount: data.totalCount,
+                        groupCount: data.categoryCount
+                    };
+                    if (filter === null) {
+                        obj['data'] = Object.keys(data.category).map(key => data.category[key]);
+                        obj['data'].forEach(i => {
+                            i.items = null;
+                        });
+                    } else {
+                        obj['data'] = itemsRes;
+                    }
+                    console.log(obj.data);
+                    resolve(obj);
+                });
+            });
+        });
+
     }
 }

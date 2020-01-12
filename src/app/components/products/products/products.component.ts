@@ -30,7 +30,6 @@ export class ProductsComponent implements OnInit {
         this.store = new CustomeStore({
             key: 'id',
             load: (opts) => {
-                console.log(opts);
                 return new Promise((resolve, reject) => {
                     this.lang = localStorage.getItem('lang') == 'ar';
                     if (opts.filter[2] == '') {
