@@ -4,60 +4,55 @@ import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
 
+import * as AspNetData from 'devextreme-aspnet-data-nojquery';
+
 @Component({
     selector: 'app-productlist',
     templateUrl: './productlist.component.html',
     styleUrls: ['./productlist.component.scss'],
 })
 export class ProductlistComponent implements OnInit {
-    @ViewChild('form', {static: false}) form: NgForm;
-    popupVisible = false;
-    value: any[] = [];
+    // @ViewChild('form', {static: false}) form: NgForm;
+    // popupVisible = false;
+    // value: any[] = [];
     source: DataSource;
     store: CustomeStore;
     lang;
-    currentRow;
+    // currentRow;
+    dataSource: any;
 
     constructor(
         private productlistService: ProductlistService) {
-        this.store = new CustomeStore({
-            key: 'id',
-            load: (opts) => {
-                console.log(opts);
-                const take = 'take' in opts ? opts.take : null;
-                const filter = !opts.filter === undefined ? opts.filter[2] : null;
-                return this.productlistService.getItems(take, filter);
-                // this.lang = localStorage.getItem('lang') == 'ar';
-                // if (opts.filter[2] == '') {
-                //     this.productlistService.getCategories().subscribe(res => {
-                //         resolve({data: res});
-                //     });
-                // } else {
-                //     this.productlistService.getItems(opts.filter[2], {
-                //         'category': 'ranking',
-                //         'ranking': 'material',
-                //         'material': 'combination'
-                //     }[this.currentRow.type]).subscribe(res => {
-                //         resolve({data: res});
-                //     });
-                // }
 
-            },
-            update: (key, values) => {
-                let item = this.source.items().find(item => item.key == key).data;
-                values.type = item.type;
-                return this.productlistService.updateItem(key, values);
-            },
-            remove: (key) => {
-                let item = this.source.items().find(item => item.key == key).data;
-                item.isActive = !item.isActive;
-                return new Promise((resolve, reject) => {
-                    return this.productlistService.setTreeAttr(item, {isActive: item.isActive});
+        this.dataSource = AspNetData.createStore({
+            key: 'Id',
+            loadUrl: 'https://js.devexpress.com/Demos/WidgetsGalleryDataService/api/Sales'
+        });
+
+        this.store = new CustomeStore({
+            key: 'code',
+            byKey: (key) => {
+                console.log('byKey', key);
+                return new Promise(resolve => {
+                    resolve(null);
                 });
             },
-            insert: (values) => {
-                return this.productlistService.insertItem(values);
-            }
+            load: (opts) => this.productlistService.getItems(opts),
+            // update: (key, values) => {
+            //     let item = this.source.items().find(item => item.key == key).data;
+            //     values.type = item.type;
+            //     return this.productlistService.updateItem(key, values);
+            // },
+            // remove: (key) => {
+            //     let item = this.source.items().find(item => item.key == key).data;
+            //     item.isActive = !item.isActive;
+            //     return new Promise((resolve, reject) => {
+            //         return this.productlistService.setTreeAttr(item, {isActive: item.isActive});
+            //     });
+            // },
+            // insert: (values) => {
+            //     return this.productlistService.insertItem(values);
+            // }
         });
         this.source = new DataSource(this.store);
     }
@@ -66,8 +61,10 @@ export class ProductlistComponent implements OnInit {
     // uploadImages() {
     //     let i = 0;
     //     if (!document.getElementsByClassName('list-group')[0]) {
-    //         document.getElementsByClassName('widget-container')[0].closest('.dx-template-wrapper').insertAdjacentHTML('afterbegin', '<ul class="list-group"></ul>');
-    //         document.getElementsByClassName('list-group')[0].insertAdjacentHTML('afterbegin', '<li class="list-group-item list-group-item-action"></li>');
+    //         document.getElementsByClassName('widget-container')[0]
+    //         .closest('.dx-template-wrapper').insertAdjacentHTML('afterbegin', '<ul class="list-group"></ul>');
+    //         document.getElementsByClassName('list-group')[0]
+    //         .insertAdjacentHTML('afterbegin', '<li class="list-group-item list-group-item-action"></li>');
     //     }
     //     this.value.forEach( file => {
     //         file.newName = Math.floor(Math.random()*10000000) + '-' + i + '.' + file.name.split('.').reverse()[0];
@@ -130,16 +127,19 @@ export class ProductlistComponent implements OnInit {
 
     addRows(number: number) {
         for (let x = 0; x < number; x++) {
-            const i = Math.floor(Math.random() * 15).toString();
-            const j = Math.floor(Math.random() * 15).toString();
+            const i = Math.floor(Math.random() * 5).toString();
+            const j = Math.floor(Math.random() * 5).toString();
+            const k = Math.floor(Math.random() * 5).toString();
             this.productlistService.insertItem({
                 nameAr: 'تركيبة رقم ' + i,
                 nameEn: 'Combination #' + i,
                 code: 'c-' + i,
                 categoryCode: 'cat' + i,
-                rankingCode: 'rank' + j,
+                rankingCode: 'rank' + i + '-' + j,
+                materialCode: 'mat' + i + '-' + j + '-' + k,
                 categoryNameAr: 'Category ' + i,
-                rankingNameAr: 'Ranking ' + j
+                rankingNameAr: 'Ranking ' + i + '-' + j,
+                materialNameAr: 'Material ' + i + '-' + j + '-' + k
             });
         }
     }

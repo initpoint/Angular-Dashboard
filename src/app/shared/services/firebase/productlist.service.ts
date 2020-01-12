@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
-import {map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Category} from '../../model/category.model';
 import * as firebase from 'firebase';
@@ -10,9 +10,13 @@ import * as firebase from 'firebase';
     providedIn: 'root'
 })
 export class ProductlistService {
-    constructor(public db: AngularFirestore,
-                private toastr: ToastrService,
-    ) {
+    private metaData;
+
+    constructor(public db: AngularFirestore, private toastr: ToastrService) {
+        this.db.doc('meta/items').snapshotChanges().subscribe(res => {
+            this.metaData = res.payload.data();
+            console.log('metaData', this.metaData);
+        });
     }
 
 
@@ -156,49 +160,52 @@ export class ProductlistService {
     insertItem(values: any) {
         this.db.doc('meta/items').get().subscribe(res => {
             const data = res.data();
-            console.log(values);
-            if (data.category === undefined) {
-                data.category = {};
-            }
+
+            data.category = data.category === undefined ? {} : data.category;
             if (data.category[values.categoryCode] === undefined) {
                 data.category[values.categoryCode] = {
-                    code: values.categoryCode,
+                    key: values.categoryCode,
                     count: 1,
-                    nameAr: values.categoryNameAr
+                    nameAr: values.categoryNameAr,
+                    children: [],
                 };
-                if (data.categoryCount === undefined) {
-                    data.categoryCount = 1;
-                } else {
-                    data.categoryCount += 1;
-                }
+                data.categoryCount = data.categoryCount === undefined ? 1 : data.categoryCount + 1;
+
             } else {
                 data.category[values.categoryCode].count += 1;
             }
 
-            if (data.ranking === undefined) {
-                data.ranking = {};
-            }
+            data.category[values.categoryCode].children.push(values.rankingCode);
+            data.ranking = data.ranking === undefined ? {} : data.ranking;
             if (data.ranking[values.rankingCode] === undefined) {
                 data.ranking[values.rankingCode] = {
-                    code: values.rankingCode,
+                    key: values.rankingCode,
                     count: 1,
-                    nameAr: values.rankingNameAr
+                    nameAr: values.rankingNameAr,
+                    children: [],
                 };
-                if (data.rankingCount === undefined) {
-                    data.rankingCount = 1;
-                } else {
-                    data.rankingCount += 1;
-                }
+                data.rankingCount = data.rankingCount === undefined ? 1 : data.rankingCount + 1;
             } else {
                 data.ranking[values.rankingCode].count += 1;
             }
 
 
-            if (data.totalCount === undefined) {
-                data.totalCount = 1;
+            data.ranking[values.rankingCode].children.push(values.materialCode);
+            data.material = data.material === undefined ? {} : data.material;
+            if (data.material[values.materialCode] === undefined) {
+                data.material[values.materialCode] = {
+                    key: values.materialCode,
+                    count: 1,
+                    nameAr: values.materialNameAr,
+                    children: [],
+                };
+                data.materialCount = data.materialCount === undefined ? 1 : data.materialCount + 1;
             } else {
-                data.totalCount += 1;
+                data.material[values.materialCode].count += 1;
             }
+
+            data.material[values.materialCode].children.push(values.code);
+            data.totalCount = data.totalCount === undefined ? 1 : data.totalCount + 1;
             res.ref.set(data);
         });
         return this.db.collection('item').add(values).then(res => {
@@ -218,22 +225,69 @@ export class ProductlistService {
         });
     }
 
-    getItems(limit, filter) {
+    getItems(opts) {
+        console.log('opts', opts);
         return new Promise(resolve => {
-            this.db.doc('meta/items').get().subscribe(itemsMetaRes => {
-                const data = itemsMetaRes.data();
-
-                const col = this.db.collection('item');
-
-                if (filter) {
-                    col.ref.where('categoryCode', '==', filter);
+            const obj = {};
+            if (opts.requireGroupCount) {
+                const group = opts.group[0].selector;
+                if (group.startsWith('cat')) {
+                    obj['groupCount'] = this.metaData.categoryCount;
+                    obj['data'] = Object.keys(this.metaData.category).map(key => {
+                        this.metaData.category[key].items = null;
+                        return this.metaData.category[key];
+                    });
+                    obj['totalCount'] = this.metaData.totalCount;
+                    resolve(obj);
+                } else if (group.startsWith('rank')) {
+                    obj['groupCount'] = this.metaData.category[opts.filter[2]].children.length;
+                    obj['data'] = this.metaData.category[opts.filter[2]].children.map(key => {
+                        this.metaData.ranking[key].items = null;
+                        return this.metaData.ranking[key];
+                    });
+                    obj['totalCount'] = this.metaData.category[opts.filter[2]].count;
+                    resolve(obj);
+                } else if (group.startsWith('mat')) {
+                    obj['groupCount'] = this.metaData.ranking[opts.filter[2][2]].children.length;
+                    obj['data'] = this.metaData.ranking[opts.filter[2][2]].children.map(key => {
+                        this.metaData.material[key].items = null;
+                        return this.metaData.material[key];
+                    });
+                    obj['totalCount'] = this.metaData.ranking[opts.filter[2][2]].count;
+                    resolve(obj);
+                } else {
+                    console.log('group not exist');
                 }
-                col.ref.orderBy('categoryCode');
-                col.ref.orderBy('rankingCode');
-                if (limit) {
-                    col.ref.limit(limit);
-                }
-                col.snapshotChanges().pipe(
+            } else {
+                console.log('requireGroupCount = False');
+
+                const filter = opts.filter;
+                console.log('filter', filter);
+                this.db.collection('item', ref => {
+                    let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
+                    let whereArgs = [];
+                    if (filter[1] === 'and') {
+                        whereArgs.push([filter[0][0], filter[0][2]]);
+                        whereArgs.push([filter[2][0], filter[2][2]]);
+                        whereArgs.push([filter[4][0], filter[4][2]]);
+                    } else if (filter[1] === 'or') {
+                        filter.forEach(f => {
+                            if (!(f === 'or')) {
+                                whereArgs.push([f[0][0], f[0][2]]);
+                                whereArgs.push([f[2][0], f[2][2]]);
+                                whereArgs.push([f[4][0], f[4][2]]);
+                            }
+                        });
+                    } else {
+                        console.log('Filter other case');
+                    }
+                    whereArgs.forEach(arg => {
+                        query = query.where(arg[0], '==', arg[1]);
+                        // firebase.firestore().collection('abc')
+                    });
+                    // query = query.orderBy('categoryCode').orderBy('rankingCode');
+                    return query;
+                }).snapshotChanges().pipe(
                     map(x => x.map(y => {
                         return {
                             id: y.payload.doc.id,
@@ -241,23 +295,14 @@ export class ProductlistService {
                         };
                     }))
                 ).subscribe(itemsRes => {
-                    let obj = {
-                        // data: res, groupCount: data.categoryCount
-                        totalCount: data.totalCount,
-                        groupCount: data.categoryCount
-                    };
-                    if (filter === null) {
-                        obj['data'] = Object.keys(data.category).map(key => data.category[key]);
-                        obj['data'].forEach(i => {
-                            i.items = null;
-                        });
-                    } else {
-                        obj['data'] = itemsRes;
-                    }
-                    console.log(obj.data);
+                    obj['data'] = itemsRes;
                     resolve(obj);
                 });
-            });
+            }
+
+            console.log(obj);
+            // debugger;
+            // resolve({...obj});
         });
 
     }

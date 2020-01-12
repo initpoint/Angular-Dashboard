@@ -124,17 +124,17 @@
                         [rtlEnabled]="lang"
                         [showRowLines]="true"
                         [columnAutoWidth]="true"
-                        keyExpr="code"
+                        [remoteOperations]="{ groupPaging: true }"
                 >
-                    <dxo-remote-operations
 
-                            [filtering]="true"
-                            [paging]="true"
-                            [sorting]="true"
-                            [summary]="true"
-                            [grouping]="true"
-                            [groupPaging]="true">
-                    </dxo-remote-operations>
+                    <!--                    <dxo-remote-operations-->
+                    <!--                            [filtering]="false"-->
+                    <!--                            [paging]="false"-->
+                    <!--                            [sorting]="false"-->
+                    <!--                            [summary]="false"-->
+                    <!--                            [grouping]="false"-->
+                    <!--                            [groupPaging]="true">-->
+                    <!--                    </dxo-remote-operations>-->
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
@@ -144,20 +144,16 @@
                     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
                     <dxi-column dataField="categoryCode" groupIndex="0" groupCellTemplate="categoryTemplate"
                                 [caption]="'Category'|translate"></dxi-column>
-                    <dxi-column dataField="rankingCode"  groupCellTemplate="rankingTemplate"
+                    <dxi-column dataField="rankingCode" groupIndex="1" groupCellTemplate="rankingTemplate"
                                 [caption]="'Ranking'|translate"></dxi-column>
-
-                    <dxo-paging
-                            [enabled]="true"
-                            [pageSize]="10">
-                    </dxo-paging>
-                    <dxo-pager
-                            [showPageSizeSelector]="true"
-                            [allowedPageSizes]="[5, 10, 20]"
-                            [showInfo]="true">
-                    </dxo-pager>
+                    <dxi-column dataField="materialCode" groupIndex="2" groupCellTemplate="materialTemplate"
+                                [caption]="'Material'|translate"></dxi-column>
+                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
+                    <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
+                    <dxo-group-panel [visible]="true"></dxo-group-panel>
+                    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
                     <dxo-editing
                             mode="form"
                             [allowAdding]="true"
@@ -165,19 +161,37 @@
                             [useIcons]="true"
                             [allowDeleting]="true">
                     </dxo-editing>
-                    <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
 
-                    <dxo-group-panel [visible]="true"></dxo-group-panel>
-                    <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
                     <div *dxTemplate="let category of 'categoryTemplate'">
                         {{category.value}}
                     </div>
                     <div *dxTemplate="let ranking of 'rankingTemplate'">
                         {{ranking.value}}
                     </div>
+                    <div *dxTemplate="let material of 'materialTemplate'">
+                        {{material.value}}
+                    </div>
                 </dx-data-grid>
-
             </div>
         </div>
     </div>
 </div>
+
+<dx-data-grid id="gridContainer"
+              [dataSource]="dataSource"
+              [remoteOperations]="{ groupPaging: true }"
+              [wordWrapEnabled]="true"
+              [showBorders]="true">
+
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
+
+    <dxi-column dataField="Id" dataType="number" [width]="75"></dxi-column>
+    <dxi-column dataField="ProductSubcategoryName" caption="Subcategory" [width]="150"></dxi-column>
+    <dxi-column dataField="StoreName" caption="Store" [width]="150" [groupIndex]="0"></dxi-column>
+    <dxi-column dataField="ProductCategoryName" caption="Category" [width]="120" [groupIndex]="1"></dxi-column>
+    <dxi-column dataField="ProductName" caption="Product"></dxi-column>
+    <dxi-column dataField="DateKey" caption="Date" dataType="date" format="yyyy-MM-dd" [width]="100"></dxi-column>
+    <dxi-column dataField="SalesAmount" caption="Amount" format="currency" [width]="100"></dxi-column>
+</dx-data-grid>
