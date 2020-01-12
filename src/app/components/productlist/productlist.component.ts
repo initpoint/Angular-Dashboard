@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ProductsService} from 'src/app/shared/services/firebase/products.service';
+import {ProductlistService} from 'src/app/shared/services/firebase/productlist.service';
 import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
@@ -7,11 +7,11 @@ import {NgForm} from '@angular/forms';
 import {int} from 'flatpickr/dist/utils';
 
 @Component({
-    selector: 'app-products',
-    templateUrl: './products.component.html',
-    styleUrls: ['./products.component.scss'],
+    selector: 'app-productlist',
+    templateUrl: './productlist.component.html',
+    styleUrls: ['./productlist.component.scss'],
 })
-export class ProductsComponent implements OnInit {
+export class ProductlistComponent implements OnInit {
     @ViewChild('form', {static: false}) form: NgForm;
     popupVisible = false;
     value: any[] = [];
@@ -26,7 +26,7 @@ export class ProductsComponent implements OnInit {
     listSource: DataSource;
 
     constructor(
-        private productService: ProductsService) {
+        private productService: ProductlistService) {
         this.store = new CustomeStore({
             key: 'id',
             load: (opts) => {
