@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {ProductlistService} from 'src/app/shared/services/firebase/productlist.service';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
+import DevExpress from 'devextreme';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
     selector: 'app-productlist',
@@ -14,30 +16,51 @@ export class ProductlistComponent implements OnInit {
     source: any;
     lang;
 
-    // currentRow;
-
     constructor(private productlistService: ProductlistService) {
-        this.source = new CustomeStore({
-            key: 'code',
+        this.source = new DataSource(new CustomeStore({
+            key: 'id',
             load: (opts) => this.productlistService.getItems(opts),
-            // update: (key, values) => {
-            //     let item = this.source.items().find(item => item.key == key).data;
-            //     values.type = item.type;
-            //     return this.productlistService.updateItem(key, values);
-            // },
-            // remove: (key) => {
-            //     let item = this.source.items().find(item => item.key == key).data;
-            //     item.isActive = !item.isActive;
-            //     return new Promise((resolve, reject) => {
-            //         return this.productlistService.setTreeAttr(item, {isActive: item.isActive});
-            //     });
-            // },
-            // insert: (values) => {
-            //     return this.productlistService.insertItem(values);
-            // }
-        });
+            update: (key, newValues) => this.productlistService.updateItem(key, newValues),
+            remove: (key) => this.productlistService.updateItem(key, {isActive: false})
+        }));
     }
 
+    ngOnInit() {
+        this.lang = localStorage.getItem('lang') === 'ar';
+    }
+
+    addRows(number: number) {
+        for (let x = 0; x < number; x++) {
+            const i = Math.floor(Math.random() * 5).toString();
+            const j = Math.floor(Math.random() * 10).toString();
+            const k = Math.floor(Math.random() * 20).toString();
+            const u = Math.floor(Math.random() * 9999).toString();
+            const catCode = 'cat' + i;
+            const rankCode = 'rank' + i + '-' + j;
+            const matCode = 'mat' + i + '-' + j + '-' + k;
+            this.productlistService.insertItem({
+                nameAr: 'تركيبة رقم ' + i,
+                nameEn: 'Combination #' + i,
+                code: 'c-' + u,
+                categoryCode: catCode,
+                rankingCode: rankCode,
+                materialCode: matCode,
+                isActive: true,
+                isNew: true,
+                categoryNameAr: 'Category ' + i,
+                rankingNameAr: 'Ranking ' + i + '-' + j,
+                materialNameAr: 'Material ' + i + '-' + j + '-' + k
+            });
+        }
+    }
+
+    removeAllItems() {
+        this.productlistService.removeAllItems();
+    }
+
+    rowExpanding(e) {
+        e.component.collapseAll(e.key.length - 1);
+    }
 
     // uploadImages() {
     //     let i = 0;
@@ -54,11 +77,6 @@ export class ProductlistComponent implements OnInit {
     //     });
     // }
 
-
-    ngOnInit() {
-        this.lang = localStorage.getItem('lang') === 'ar';
-    }
-
     // deleteImage(pic) {
     //     let path = pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/');
     //     if (confirm('Are your sure you want to delete this Image') == true) {
@@ -67,7 +85,6 @@ export class ProductlistComponent implements OnInit {
     //         });
     //     }
     // }
-
 
     // cellPrepared(e) {
     //     if (e.data) {
@@ -105,36 +122,5 @@ export class ProductlistComponent implements OnInit {
     //         }
     //     }
     // }
-
-    addRows(number: number) {
-        for (let x = 0; x < number; x++) {
-            const i = Math.floor(Math.random() * 5).toString();
-            const j = Math.floor(Math.random() * 10).toString();
-            const k = Math.floor(Math.random() * 20).toString();
-            const u = Math.floor(Math.random() * 9999).toString();
-            const catCode = 'cat' + i;
-            const rankCode = 'rank' + i + '-' + j;
-            const matCode = 'mat' + i + '-' + j + '-' + k;
-            this.productlistService.insertItem({
-                nameAr: 'تركيبة رقم ' + i,
-                nameEn: 'Combination #' + i,
-                code: 'c-' + u,
-                categoryCode: catCode,
-                rankingCode: rankCode,
-                materialCode: matCode,
-                categoryNameAr: 'Category ' + i,
-                rankingNameAr: 'Ranking ' + i + '-' + j,
-                materialNameAr: 'Material ' + i + '-' + j + '-' + k
-            });
-        }
-    }
-
-    removeAllItems() {
-        this.productlistService.removeAllItems();
-    }
-
-    rowExpanding(e) {
-        e.component.collapseAll(e.key.length - 1);
-    }
 
 }

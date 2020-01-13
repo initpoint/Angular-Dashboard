@@ -128,7 +128,8 @@
                         [remoteOperations]="{ groupPaging: true }"
                 >
 
-                    <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+                    <dxi-column dataField="code" [caption]="'Code'|translate"
+                                [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
@@ -136,11 +137,13 @@
                     <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
                     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
                     <dxi-column dataField="categoryCode" groupIndex="0" groupCellTemplate="categoryTemplate"
-                                [caption]="'Category'|translate"></dxi-column>
+                                [caption]="'Category'|translate" [formItem]="{visible: false}">
+                    </dxi-column>
                     <dxi-column dataField="rankingCode" groupIndex="1" groupCellTemplate="rankingTemplate"
-                                [caption]="'Ranking'|translate"></dxi-column>
+                                [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="materialCode" groupIndex="2" groupCellTemplate="materialTemplate"
-                                [caption]="'Material'|translate"></dxi-column>
+                                [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
+
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
@@ -152,7 +155,7 @@
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
                     <dxo-editing
                             mode="form"
-                            [allowAdding]="true"
+                            [allowAdding]="false"
                             [allowUpdating]="true"
                             [useIcons]="true"
                             [allowDeleting]="true">

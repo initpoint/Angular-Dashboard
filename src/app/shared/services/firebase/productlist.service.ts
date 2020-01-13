@@ -10,7 +10,7 @@ import * as firebase from 'firebase';
     providedIn: 'root'
 })
 export class ProductlistService {
-    private metaData;
+    metaData;
 
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
         this.db.doc('meta/items').snapshotChanges().subscribe(res => {
@@ -145,9 +145,13 @@ export class ProductlistService {
         });
     }
 
-    updateItem(key, values) {
-        this.toastr.success('Item updated.');
-        return this.db.collection(values.type).doc(key).set(values, {merge: true});
+    updateItem(key, newValues) {
+        return new Promise(resolve => {
+            this.db.collection('item').doc(key).set(newValues, {merge: true}).then(value => {
+                this.toastr.success('Item updated.');
+                resolve();
+            });
+        });
     }
 
     createCategory(values) {
@@ -230,7 +234,6 @@ export class ProductlistService {
     }
 
     getItems(opts) {
-        // console.log(opts);
         return new Promise(resolve => {
             const obj = {};
             if (!this.metaData) {
@@ -268,7 +271,6 @@ export class ProductlistService {
                 }
             } else {
                 const filter = opts.filter;
-                // console.log('filter', filter);
                 this.db.collection('item', ref => {
                     let query: firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
                     const whereArgs = [];
@@ -284,7 +286,6 @@ export class ProductlistService {
                         console.log('Filter other case');
                     }
                     query = query.where('materialCode', 'in', whereArgs);
-                    // query = query.orderBy('categoryCode').orderBy('rankingCode');
                     return query;
                 }).snapshotChanges().pipe(
                     map(x => x.map(y => {
@@ -304,7 +305,6 @@ export class ProductlistService {
                         prop: 'materialCode',
                         direction: 1
                     }];
-                    console.log(itemsRes);
                     itemsRes.sort(function (a, b) {
                         let i = 0, result = 0;
                         while (i < sortBy.length && result === 0) {
@@ -314,10 +314,8 @@ export class ProductlistService {
                         }
                         return result;
                     });
-
-                    // console.log(itemsRes[0].id);
                     obj['data'] = itemsRes;
-                    // console.log(obj);
+                    obj['totalCount'] = this.metaData.totalCount;
                     resolve(Object.assign({}, obj));
                 });
             }
