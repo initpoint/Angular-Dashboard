@@ -164,6 +164,7 @@ export class ProductlistService {
         this.db.doc('meta/items').set(this.metaData);
     }
 
+
     insertItem(values: any) {
         this.metaData.category = this.metaData.category === undefined ? {} : this.metaData.category;
         if (this.metaData.category[values.categoryCode] === undefined) {
@@ -233,6 +234,22 @@ export class ProductlistService {
         });
     }
 
+    insertItemRaw(param: { data: any[] }) {
+        return this.db.doc('newItem/theNewItem').set(param).then(res => {
+            this.toastr.success('Item added');
+        });
+    }
+
+    readItemRaw() {
+        return this.db.doc('newItem/theNewItem').get().subscribe(res => {
+            this.toastr.success('Item read');
+        });
+    }
+
+
+    removeItemRaw() {
+        return this.db.doc('newItem/theNewItem').delete()
+    }
     getItems(opts) {
         return new Promise(resolve => {
             const obj = {};
@@ -322,4 +339,5 @@ export class ProductlistService {
         });
 
     }
+
 }

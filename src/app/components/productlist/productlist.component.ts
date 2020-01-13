@@ -29,6 +29,24 @@ export class ProductlistComponent implements OnInit {
         this.lang = localStorage.getItem('lang') === 'ar';
     }
 
+    addLargeItem() {
+        let data = [];
+        for (let x = 0; x < 20000; x++) {
+            data.push('the long string that can be anything from a name to a pic url or any small number');
+        }
+        this.productlistService.insertItemRaw({
+            data: data
+        });
+    }
+
+    readLargeItem() {
+        this.productlistService.readItemRaw();
+    }
+
+    removeLargeItems() {
+        this.productlistService.removeItemRaw();
+    }
+
     addRows(number: number) {
         for (let x = 0; x < number; x++) {
             const i = Math.floor(Math.random() * 5).toString();

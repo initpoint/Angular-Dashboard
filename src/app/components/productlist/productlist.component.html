@@ -118,6 +118,18 @@
                 <button class="btn btn-danger ml-2 mt-2 mb-3 pull-right" (click)="removeAllItems()"><i
                         class="fa fa-th-list"
                 > Remove All Items</i></button>
+
+
+<!--                <button class="btn btn-primary ml-2 mt-2 mb-3 pull-right" (click)="addLargeItem()"><i-->
+<!--                        class="fa fa-th-list"-->
+<!--                > Add large Item (5000 array index)</i></button>-->
+<!--                <button class="btn btn-primary ml-2 mt-2 mb-3 pull-right" (click)="readLargeItem()"><i-->
+<!--                        class="fa fa-th-list"-->
+<!--                > Read large Item (5000 array index)</i></button>-->
+<!--                <button class="btn btn-danger ml-2 mt-2 mb-3 pull-right" (click)="removeLargeItems()"><i-->
+<!--                        class="fa fa-th-list"-->
+<!--                > Remove Large Items</i></button>-->
+
                 <dx-data-grid
                         (onRowExpanding)="rowExpanding($event)"
                         [showBorders]="true"
@@ -151,7 +163,7 @@
                                    [allowSelectAll]="true"
                                    [deferred]="true"
                                    [showCheckBoxesMode]="true"></dxo-selection>
-                    <dxo-group-panel [visible]="true"></dxo-group-panel>
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
                     <dxo-editing
                             mode="form"
