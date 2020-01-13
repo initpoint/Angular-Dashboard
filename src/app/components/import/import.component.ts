@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import * as XLSX from 'xlsx';
 import {ImportService} from '../../shared/services/firebase/import.service';
+import {json} from '@angular-devkit/core';
 
 @Component({
     selector: 'app-import',
@@ -32,8 +33,8 @@ export class ImportComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
             /* save data */
-            this.data = XLSX.utils.sheet_to_json(ws, {header: ['barCodeId','code','nameArFull','materialCode','materialNameAr','rankingCode','rankingNameAr','unitCode','unitNameAr','size']}).slice(1);
-            console.log('FKU');
+            this.data = XLSX.utils.sheet_to_json(ws, {header: ['barCodeId','code','nameAr','materialCode','materialNameAr','rankingCode','rankingNameAr','unitCode','unitNameAr','size']}).slice(1);
+           //console.log(this.data);
             this.data.forEach(data=> {
                 this.importService.importJSON(data);
             })

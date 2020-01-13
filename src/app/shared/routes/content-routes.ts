@@ -17,6 +17,13 @@ export const content: Routes = [
     }
   },
   {
+    path: 'items',
+    loadChildren: './components/items/items.module#ItemsModule',
+    data: {
+      breadcrumb: "Items"
+    }
+  },
+  {
     path: 'pricelist',
     loadChildren: './components/pricelist/pricelist.module#PriceListModule',
     data: {

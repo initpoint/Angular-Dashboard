@@ -16,69 +16,77 @@ export class ImportService {
     }
 
     importJSON(data) {
-        data.type = 'combination';
-        data.hasChildren = false;
-        data.isNew = true;
-        data.isActive = true;
-        data.headId = null;
-        data.prices = {};
-        data.pics = [];
-        data.nameEn = '';
-        data.nameAr = '';
-        data.parent_type = 'material';
-        let materialData = {
-            code: data.materialCode,
-            nameAr: data.materialNameAr,
-            nameEn: '',
-            type: 'material',
-            hasChildren: true,
-            isNew: true,
-            isActive: true,
-            headId: '',
-            parent_type: 'ranking'
-        };
-        let rankingData = {
-            code: data.rankingCode,
-            nameAr: data.rankingNameAr,
-            nameEn: '',
-            type: 'ranking',
-            hasChildren: true,
-            isNew: true,
-            isActive: true,
-            headId: 'zGnEcKh2GzeeyhfHIToQ',
-            parent_type: 'category'
-        };
-        this.db.collection('combination').ref.where('code', '==', data.code).get().then(res => {
-            if (res.empty) {
-                this.db.collection('material').ref.where('code', '==', data.materialCode).get().then(materials => {
-                    if (materials.empty) {
-                        this.db.collection('ranking').ref.where('code', '==', data.rankingCode).get().then(rankings => {
-                            if (rankings.empty) {
-                                this.db.collection('ranking').add(rankingData).then(rankingDoc => {
-                                    materialData.headId = rankingDoc.id;
-                                    this.db.collection('material').add(materialData).then(materialDoc=> {
-                                        data.headId = materialDoc.id;
-                                        this.db.collection('combination').add(data)
-                                    })
-                                });
-                            } else {
-                                materialData.headId = rankings.docs[0].id;
-                                this.db.collection('material').add(materialData).then(materialDoc=> {
-                                    data.headId = materialDoc.id;
-                                    this.db.collection('combination').add(data)
-                                })
-                            }
-                        });
-                    } else {
-                        data.headId = materials.docs[0].id;
-                        this.db.collection('combination').add(data)
-                    }
-                });
-            } else {
-                // ToDo : pass
-            }
+        let newItem = {};
+        // This is the Item Map
+        newItem[data.code] = {};
+        Object.keys(data).forEach(row => {
+            newItem[data.code][row] = data[row];
         });
-        //this.db.collection('import').add(data);
+        this.db.collection('item').doc('itemArray').set(newItem, {merge: true});
+        // data.type = 'combination';
+        // data.hasChildren = false;
+        // data.isNew = true;
+        // data.isActive = true;
+        // data.headId = null;
+        // data.prices = {};
+        // data.pics = [];
+        // data.nameEn = '';
+        // data.nameAr = '';
+        // data.parent_type = 'material';
+        // let materialData = {
+        //     code: data.materialCode,
+        //     nameAr: data.materialNameAr,
+        //     nameEn: '',
+        //     type: 'material',
+        //     hasChildren: true,
+        //     isNew: true,
+        //     isActive: true,
+        //     headId: '',
+        //     parent_type: 'ranking'
+        // };
+        // let rankingData = {
+        //     code: data.rankingCode,
+        //     nameAr: data.rankingNameAr,
+        //     nameEn: '',
+        //     type: 'ranking',
+        //     hasChildren: true,
+        //     isNew: true,
+        //     isActive: true,
+        //     headId: 'zGnEcKh2GzeeyhfHIToQ',
+        //     parent_type: 'category'
+        // };
+        // this.db.collection('combination').ref.where('code', '==', data.code).get().then(res => {
+        //     if (res.empty) {
+        //         this.db.collection('material').ref.where('code', '==', data.materialCode).get().then(materials => {
+        //             if (materials.empty) {
+        //                 this.db.collection('ranking').ref.where('code', '==', data.rankingCode).get().then(rankings => {
+        //                     if (rankings.empty) {
+        //                         this.db.collection('ranking').add(rankingData).then(rankingDoc => {
+        //                             materialData.headId = rankingDoc.id;
+        //                             this.db.collection('material').add(materialData).then(materialDoc=> {
+        //                                 data.headId = materialDoc.id;
+        //                                 this.db.collection('combination').add(data)
+        //                             })
+        //                         });
+        //                     } else {
+        //                         materialData.headId = rankings.docs[0].id;
+        //                         this.db.collection('material').add(materialData).then(materialDoc=> {
+        //                             data.headId = materialDoc.id;
+        //                             this.db.collection('combination').add(data)
+        //                         })
+        //                     }
+        //                 });
+        //             } else {
+        //                 data.headId = materials.docs[0].id;
+        //                 this.db.collection('combination').add(data)
+        //             }
+        //         });
+        //     } else {
+        //         // ToDo : pass
+        //     }
+        // });
+        // //this.db.collection('import').add(data);
+
     }
 
 

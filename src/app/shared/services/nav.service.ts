@@ -60,7 +60,9 @@ export class NavService {
 		{
 			title: 'Import', path:'/import',icon: 'share', type: 'link', active: false,
 		},
-
+		{
+			title: 'Items', path:'/items',icon: 'list', type: 'link', active: false,
+		},
 	]
 	// Array
 	items = new BehaviorSubject<Menu[]>(this.MENUITEMS);
