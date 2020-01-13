@@ -1,10 +1,11 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, QueryList} from '@angular/core';
 import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
 import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
 import {ItemsService} from '../../shared/services/firebase/items.service';
+import {DxDataGridComponent} from 'devextreme-angular';
 
 @Component({
     selector: 'app-Permission',
@@ -12,12 +13,13 @@ import {ItemsService} from '../../shared/services/firebase/items.service';
     styleUrls: ['./permissions.component.scss'],
 })
 export class PermissionComponent implements OnInit {
+    @ViewChild('items', {static: false}) dataGrids: DxDataGridComponent;
     customersSource: any;
     source: any;
     lang;
     materialSelectedRows = {};
     rankingSelectedRows = {};
-
+    filterValue: Array<any>;
     currentRow;
     selectedRowKeys: any[] = [];
     selectedRowData: any[] = [];
@@ -56,6 +58,7 @@ export class PermissionComponent implements OnInit {
             update: (key, newValues) => this.itemsService.updateItem(key, newValues),
             remove: (key) => this.itemsService.updateItem(key, {isActive: false})
         }));
+
     }
 
     ngOnInit() {
@@ -108,8 +111,10 @@ export class PermissionComponent implements OnInit {
         return this.rankingSelectedRows[ranking.key[0]];
     }
 
-    RowClicked($event: any) {
-        this.currentRow = $event.data;
+    RowClicked(e: any) {
+        this.filterValue = ['code', 'startswith', '9311'];
+        this.currentRow = e.data;
+        // this.dataGrids.instance.filter();
     }
 
     SaveCustomerPermissions() {

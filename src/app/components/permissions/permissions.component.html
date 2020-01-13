@@ -7,7 +7,6 @@
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-export [enabled]="true" fileName="PriceList" [allowExportSelectedData]="true"></dxo-export>
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
@@ -23,7 +22,10 @@
                         </dx-button>
                     </div>
                 </div>
-                <dx-data-grid *ngIf="currentRow"
+                <dx-data-grid
+                        #items
+                        [hidden]="!currentRow"
+                        [filterValue]="filterValue"
                         [showBorders]="true"
                         [dataSource]="source"
                         [rtlEnabled]="lang"
