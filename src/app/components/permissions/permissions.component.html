@@ -1,9 +1,8 @@
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <dx-data-grid [dataSource]="CustomersData" [showBorders]="true" [rtlEnabled]="lang"
+                <dx-data-grid [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
                               (onRowClick)="RowClicked($event)">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
@@ -11,7 +10,7 @@
                     <dxo-export [enabled]="true" fileName="PriceList" [allowExportSelectedData]="true"></dxo-export>
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
-                    <dxi-column dataField="isActive" dataType="boolean"  [caption]="'Is Active'|translate"></dxi-column>
+                    <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
                 </dx-data-grid>
                 <div *ngIf="currentRow" class="dx-field m-15">
                     <div class="dx-field-value">
@@ -24,33 +23,40 @@
                         </dx-button>
                     </div>
                 </div>
-                <dx-tree-list *ngIf="currentRow"
-                              (onRowClick)="treeRowClicked($event)"
-                              (onCellPrepared)="cellPrepared($event)"
-                              (onRowPrepared)="rowPrepared($event)"
-                              [(selectedRowKeys)]="initSelectedRows"
-                              (onSelectionChanged)="onSelectionChanged($event)"
-                              id="product-list"
-                              [dataSource]="itemSource"
-                              [rtlEnabled]="lang"
-                              rootValue=""
-                              keyExpr="id"
-                              parentIdExpr="headId"
-                              [remoteOperations]="{filtering: true}"
-                              [showRowLines]="true"
-                              [showBorders]="true"
-                              [columnAutoWidth]="true"
-                              hasItemsExpr="hasChildren">
+                <dx-data-grid *ngIf="currentRow"
+                        [showBorders]="true"
+                        [dataSource]="source"
+                        [rtlEnabled]="lang"
+                        [showRowLines]="true"
+                        [columnAutoWidth]="true"
+                        [hoverStateEnabled]="true"
+                        [remoteOperations]="{filtering: true,sorting:true}">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-selection mode="multiple" [recursive]="true"></dxo-selection>
-                    <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
+                    <dxi-column dataField="code" [caption]="'Code'|translate"
+                                [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
-                    <dxi-column dataField="nameEn" [caption]="'Name En'|translate"></dxi-column>
-                    <dxi-column dataField="customers" [visible]="false" ></dxi-column>
-                    <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
-                </dx-tree-list>
+                    <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
+                    <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
+                    <dxi-column dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
+                                [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
+                    <dxi-column dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
+                                [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
+                    <div *dxTemplate="let ranking of 'rankingTemplate'">
+                        <dx-check-box (onValueChanged)="rankingRowSelected($event,ranking)"
+                                      [value]="getRankingSelectValue(ranking)  || false"></dx-check-box>
+                        {{ranking.value}}
+                    </div>
+                    <div *dxTemplate="let material of 'materialTemplate'">
+                        <dx-check-box [value]="getMaterialSelectValue(material) || false"
+                                      (onValueChanged)="materialRowSelected($event,material.key,material.data.items,material.data.collapsedItems,material.component)"></dx-check-box>
+                        {{material.value}}
+                    </div>
+                </dx-data-grid>
             </div>
         </div>
     </div>
