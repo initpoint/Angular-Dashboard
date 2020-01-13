@@ -11,8 +11,9 @@ import {json} from '@angular-devkit/core';
 export class ImportComponent implements OnInit {
     data: any;
     public show: boolean;
+
     // wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
-    constructor(private importService:ImportService) {
+    constructor(private importService: ImportService) {
     }
 
     onFileChange(evt: any) {
@@ -33,20 +34,17 @@ export class ImportComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
             /* save data */
-            this.data = XLSX.utils.sheet_to_json(ws, {header: ['barCodeId','code','nameAr','materialCode','materialNameAr','rankingCode','rankingNameAr','unitCode','unitNameAr','size']}).slice(1);
-           //console.log(this.data);
-            this.data.forEach(data=> {
-                this.importService.importJSON(data);
-            })
+            this.data = XLSX.utils.sheet_to_json(ws, {header: ['barCodeId', 'code', 'nameAr', 'materialCode', 'materialNameAr', 'rankingCode', 'rankingNameAr', 'unitCode', 'unitNameAr', 'size']}).slice(1);
+            console.log(this.data);
+            // this.data.forEach(data => {
+            //     this.importService.importJSON(data);
+            // });
             this.show = false;
         };
         reader.readAsBinaryString(target.files[0]);
-
     }
 
     ngOnInit() {
 
     }
-
-
 }
