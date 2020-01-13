@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {ItemsService} from 'src/app/shared/services/firebase/items.service';
 import CustomeStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
-
 @Component({
     selector: 'app-items',
     templateUrl: './items.component.html',
