@@ -2,40 +2,29 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-
-
                 <dx-data-grid
                         [showBorders]="true"
-                        [(dataSource)]="source"
+                        [dataSource]="source"
                         [rtlEnabled]="lang"
                         [showRowLines]="true"
                         [columnAutoWidth]="true"
                         [hoverStateEnabled]="true"
                         [remoteOperations]="{filtering: true,sorting:true}">
-
-
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-group-panel [visible]="true"></dxo-group-panel>
-                    <dxo-selection
-                            mode="multiple"></dxo-selection>
+                    <dxo-filter-row [applyFilter]="applyFilterTypes"></dxo-filter-row>
+                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-selection mode="multiple"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
-                    <!--<dxo-editing-->
-                            <!--mode="form"-->
-                            <!--[allowAdding]="false"-->
-                            <!--[allowUpdating]="false"-->
-                            <!--[useIcons]="true"-->
-                            <!--[allowDeleting]="false">-->
-                    <!--</dxo-editing>-->
-                    <dxi-column dataField="code" [allowSearch]="true" [caption]="'Code'|translate"
+                    <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="nameAr" [allowSearch]="true" [caption]="'Name Ar'|translate"></dxi-column>
+                    <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
                     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
-                    <dxi-column dataField="rankingCode" [allowSearch]="true" groupIndex="0" groupCellTemplate="rankingTemplate"
+                    <dxi-column dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
                                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="materialCode" [allowSearch]="true" groupIndex="1" groupCellTemplate="materialTemplate"
+                    <dxi-column dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
                                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
                     <div *dxTemplate="let ranking of 'rankingTemplate'">
                         <dx-check-box (onValueChanged)="rankingRowSelected($event,ranking)"
