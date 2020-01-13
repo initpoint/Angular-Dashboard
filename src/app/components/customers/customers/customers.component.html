@@ -21,7 +21,7 @@
                         <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                         <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
                         <dxi-column dataField="email" [caption]="'Email'|translate"></dxi-column>
-                        <dxi-column dataField="password" [caption]="'Password'|translate" [allowSearch]="false" [allowSorting]="false" [visible]="false"></dxi-column>
+                        <dxi-column dataField="password" [caption]="'Password'|translate" [allowSearch]="false" [allowSorting]="false" [formItem]="{visible: fieldView}" [visible]="false"></dxi-column>
                         <dxi-column dataField="mobile" [caption]="'Mobile'|translate"></dxi-column>
                         <dxi-column dataField="pricelist" caption="Price List"> <dxo-lookup
                                 [dataSource]="priceLists"
@@ -29,8 +29,8 @@
                                 valueExpr="id">
                         </dxo-lookup>
                         </dxi-column>
-                        <dxi-column dataField="isActive" [allowSearch]="false" [allowSorting]="false" [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
-                        <dxi-column dataField="lastLoginAt" [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
+                        <dxi-column [formItem]="{visible: false}" dataField="isActive" datatype="boolean" [allowSearch]="false" [allowSorting]="false" [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
+                        <dxi-column [formItem]="{visible: false}" dataField="lastLoginAt" [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
                         <div *dxTemplate="let data of 'ActiveButton'">
                             <button (click)="data.value = !data.value;activeCustomer(data)"
                                     title="Click to {{data.value ? 'Disable' : 'Active'}}"

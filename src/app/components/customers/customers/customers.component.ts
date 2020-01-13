@@ -16,33 +16,34 @@ export class CustomersComponent implements OnInit {
     customerSource: DataSource;
     customerData: CustomeStore;
     lang = localStorage.getItem('lang') == 'ar';
-    priceLists:any[];
+    priceLists: any[];
+    fieldView: boolean = true;
 
-    constructor(private priceListService:PriceListService,private customerService: CustomerService, private router: Router, private toastr: ToastrService) {
-         this.priceListService.getPriceLists().subscribe(res => {
-             this.priceLists = res;
-         });
-            this.customerData = new CustomeStore({
-                key: 'uid',
-                load: (opts) => {
-                    return new Promise((resolve, reject) => {
-                        this.lang = localStorage.getItem('lang') == 'ar';
-                        this.customerService.getCustomers().subscribe(res => {
-                            resolve({data: res});
-                        });
+    constructor(private priceListService: PriceListService, private customerService: CustomerService, private router: Router, private toastr: ToastrService) {
+        this.priceListService.getPriceLists().subscribe(res => {
+            this.priceLists = res;
+        });
+        this.customerData = new CustomeStore({
+            key: 'uid',
+            load: (opts) => {
+                return new Promise((resolve, reject) => {
+                    this.lang = localStorage.getItem('lang') == 'ar';
+                    this.customerService.getCustomers().subscribe(res => {
+                        resolve({data: res});
                     });
-                },
-                update: (key, values) => {
-                    return this.customerService.updateCustomer(key, values);
-                },
-                remove: (key) => {
-                    return this.customerService.deleteCustomer(key);
-                },
-                insert: (values) => {
-                    return this.customerService.createCustomer(values);
-                },
+                });
+            },
+            update: (key, values) => {
+                return this.customerService.updateCustomer(key, values);
+            },
+            remove: (key) => {
+                return this.customerService.deleteCustomer(key);
+            },
+            insert: (values) => {
+                return this.customerService.createCustomer(values);
+            },
 
-            });
+        });
         this.customerSource = new DataSource({
             store: this.customerData,
         });
@@ -54,6 +55,7 @@ export class CustomersComponent implements OnInit {
             e.editorOptions.disabled = true;
             e.editorOptions.visible = false;
             e.cancel = true;
+            this.fieldView = false;
         }
 
     }

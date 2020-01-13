@@ -11,35 +11,36 @@ import DataSource from 'devextreme/data/data_source';
     styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-    userSource: DataSource;
-    userData: CustomeStore;
+    customerSource: DataSource;
+    customerData: CustomeStore;
     lang = localStorage.getItem('lang') == 'ar';
+    fieldView: boolean = true;
 
-    constructor(private userService: UserService, private router: Router, private toastr: ToastrService) {
+    constructor(private userService: UserService) {
 
-            this.userData = new CustomeStore({
-                key: 'uid',
-                load: (opts) => {
-                    return new Promise((resolve, reject) => {
-                        this.lang = localStorage.getItem('lang') == 'ar';
-                        this.userService.getUsers().subscribe(res => {
-                            resolve({data: res});
-                        });
+        this.customerData = new CustomeStore({
+            key: 'uid',
+            load: (opts) => {
+                return new Promise((resolve, reject) => {
+                    this.lang = localStorage.getItem('lang') == 'ar';
+                    this.userService.getUsers().subscribe(res => {
+                        resolve({data: res});
                     });
-                },
-                update: (key, values) => {
-                    return this.userService.updateUser(key, values);
-                },
-                remove: (key) => {
-                    return this.userService.deleteUser(key);
-                },
-                insert: (values) => {
-                    return this.userService.createUser(values);
-                },
+                });
+            },
+            update: (key, values) => {
+                return this.userService.updateUser(key, values);
+            },
+            remove: (key) => {
+                return this.userService.deleteUser(key);
+            },
+            insert: (values) => {
+                return this.userService.createUser(values);
+            },
 
-            });
-        this.userSource = new DataSource({
-            store: this.userData,
+        });
+        this.customerSource = new DataSource({
+            store: this.customerData,
         });
     }
 
@@ -49,19 +50,10 @@ export class UsersComponent implements OnInit {
             e.editorOptions.disabled = true;
             e.editorOptions.visible = false;
             e.cancel = true;
+            this.fieldView = false;
         }
 
     }
-
-
-    // activeUser(data) {
-    //     console.log(data.cellElement.querySelector('.btn-success'));
-    //     this.userService.setUser(data.data.uid, {isActive: data.value}).then(res => {
-    //         this.toastr.success('User is active');
-    //     }).catch(err => {
-    //         console.error(err);
-    //     });
-    // }
 
     ngOnInit() {
     }

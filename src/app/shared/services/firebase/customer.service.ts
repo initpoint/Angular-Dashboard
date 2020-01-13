@@ -28,7 +28,7 @@ export class CustomerService {
                     name: value.name,
                     code: value.code,
                     pricelist: value.pricelist || null,
-                    isActive: value.isActive,
+                    isActive: value.isActive || true,
                     lastLoginAt: Date.now()
                 });
                 return true;
