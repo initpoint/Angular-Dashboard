@@ -12,7 +12,7 @@ import {TranslateModule} from '@ngx-translate/core';
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'user/show',
+        redirectTo: 'customers/show',
         pathMatch: 'full'
     },
     {

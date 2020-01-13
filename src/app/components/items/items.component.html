@@ -5,32 +5,29 @@
 
 
                 <dx-data-grid
-                        (onRowClick)="rowClick($event)"
                         [showBorders]="true"
                         [dataSource]="source"
                         [rtlEnabled]="lang"
                         [showRowLines]="true"
                         [columnAutoWidth]="true"
-                        (onSelectionChanged)="selectRow($event)"
-                        [(selectedRowKeys)]="selectedRows"
+                        [hoverStateEnabled]="true"
                         [remoteOperations]="{filtering: true,sorting:true}">
 
 
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-selection [selectAllMode]="'allPages'"
-                                   [showCheckBoxesMode]="'always'" allowSelectAll="true"
-                                   mode="multiple"></dxo-selection>
                     <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-selection
+                            mode="multiple"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
-                    <dxo-editing
-                            mode="form"
-                            [allowAdding]="false"
-                            [allowUpdating]="true"
-                            [useIcons]="true"
-                            [allowDeleting]="true">
-                    </dxo-editing>
+                    <!--<dxo-editing-->
+                            <!--mode="form"-->
+                            <!--[allowAdding]="false"-->
+                            <!--[allowUpdating]="false"-->
+                            <!--[useIcons]="true"-->
+                            <!--[allowDeleting]="false">-->
+                    <!--</dxo-editing>-->
                     <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
@@ -41,11 +38,13 @@
                     <dxi-column dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
                                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
                     <div *dxTemplate="let ranking of 'rankingTemplate'">
-                        <dx-check-box [value]="getSelectValue(ranking.value)" id="ranking-{{ranking.value}}"></dx-check-box>
+                        <dx-check-box (onValueChanged)="rankingRowSelected($event,ranking)"
+                                      [value]="getRankingSelectValue(ranking)  || false"></dx-check-box>
                         {{ranking.value}}
                     </div>
                     <div *dxTemplate="let material of 'materialTemplate'">
-                        <dx-check-box [value]="getSelectValue(material.value)" id="material-{{material.value}}"></dx-check-box>
+                        <dx-check-box [value]="getMaterialSelectValue(material) || false"
+                                      (onValueChanged)="materialRowSelected($event,material.key,material.data.items,material.data.collapsedItems,material.component)"></dx-check-box>
                         {{material.value}}
                     </div>
                 </dx-data-grid>
@@ -53,3 +52,5 @@
         </div>
     </div>
 </div>
+
+

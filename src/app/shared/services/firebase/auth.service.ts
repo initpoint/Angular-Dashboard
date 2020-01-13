@@ -12,7 +12,6 @@ export interface User {
     email: string;
     emailVerified: boolean;
     name: string;
-    userType: string;
     code: string;
     lastLoginAt: string;
 }
@@ -39,7 +38,6 @@ export class AuthService implements OnInit {
             if (user) {
                 const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
                 userRef.get().subscribe((doc) => {
-                    if (doc.data().userType == 'user') {
                         this.userData = user;
                         this.SetUserData(user, this);
                         this._sessionId = this.userData;
@@ -47,13 +45,13 @@ export class AuthService implements OnInit {
                         JSON.parse(cookieService.get('user'));
                         localStorage.setItem('user', JSON.stringify(this.userData));
                         JSON.parse(localStorage.getItem('user'));
-                    } else {
-                        localStorage.setItem('user', null);
-                        JSON.parse(localStorage.getItem('user'));
-                        this.currentUser = null;
-                        this.toster.error('Permission denied.');
-                    }
+
                 });
+            } else {
+                localStorage.setItem('user', null);
+                JSON.parse(localStorage.getItem('user'));
+                this.currentUser = null;
+                this.toster.error('Permission denied.');
             }
         });
 
@@ -69,7 +67,6 @@ export class AuthService implements OnInit {
             .then((result) => {
                 const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${result.user.uid}`);
                 userRef.get().subscribe((doc) => {
-                    if (doc.data().userType == 'user') {
                         if (result.user.emailVerified == true) {
                             this.SetUserData(result.user, this);
                             this.SendVerificationMail();
@@ -82,10 +79,6 @@ export class AuthService implements OnInit {
                                 this.router.navigate(['/auth/login']);
                             });
                         }
-                    } else {
-                        this.showLoader = false;
-                        this.toster.error('You don\'t have the permission to login.');
-                    }
                 });
             }).catch((error) => {
                 this.showLoader = false;
@@ -121,23 +114,24 @@ export class AuthService implements OnInit {
     SetUserData(user, ref) {
         const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
         return userRef.get().subscribe((doc) => {
-            ref.currentUser = doc.data();
-            //console.log('User: ' + user.uid, ref.currentUser);
-            const userData: User = {
-                name: doc.data().name,
-                email: user.email,
-                uid: user.uid,
-                emailVerified: user.emailVerified,
-                userType: doc.data().userType,
-                code: doc.data().code,
-                lastLoginAt: user.metadata.b
-            };
-            if (user.displayName == null || user.displayName === undefined) {
-                userData.name = doc.data().name;
+            if (doc) {
+                ref.currentUser = doc.data();
+                //console.log('User: ' + user.uid, ref.currentUser);
+                const userData: User = {
+                    name: doc.data().name,
+                    email: user.email,
+                    uid: user.uid,
+                    emailVerified: user.emailVerified,
+                    code: doc.data().code,
+                    lastLoginAt: user.metadata.b.toInt()
+                };
+                if (user.displayName == null || user.displayName === undefined) {
+                    userData.name = doc.data().name;
+                }
+                userRef.set(userData, {
+                    merge: true
+                });
             }
-            userRef.set(userData, {
-                merge: true
-            });
         });
     }
 

@@ -1,9 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ItemsService} from 'src/app/shared/services/firebase/items.service';
 import CustomeStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
-import {DxDataGridComponent} from 'devextreme-angular';
-
 @Component({
     selector: 'app-items',
     templateUrl: './items.component.html',
@@ -12,9 +10,8 @@ import {DxDataGridComponent} from 'devextreme-angular';
 export class ItemsComponent implements OnInit {
     source: any;
     lang;
-    selectedRows: any[] = [];
-    @ViewChild(DxDataGridComponent, {static: false}) dataGrid: DxDataGridComponent;
-
+    materialSelectedRows= {};
+    rankingSelectedRows= {};
     constructor(private itemsService: ItemsService) {
         this.source = new DataSource(new CustomeStore({
             key: 'code',
@@ -28,70 +25,46 @@ export class ItemsComponent implements OnInit {
         this.lang = localStorage.getItem('lang') === 'ar';
     }
 
-    rowExpanding(e) {
-        e.component.collapseAll(e.key.length - 1);
-    }
-
-    selectRow(event) {
-        if (event.currentSelectedRowKeys && this.selectedRows.includes(event.currentSelectedRowKeys) === false) {
-            this.selectedRows.push(event.currentSelectedRowKeys);
-        }
-    }
-
-    rowClick(event) {
-        if (event.event && event.event.target.className == 'dx-checkbox-icon') {
-            console.log(event.data);
-            if (event.data.key) {
-                if (this.selectedRows.includes(event.data.key) === false) {
-                    this.selectedRows.push(event.data.key);
-                    if (event.data.items) {
-                        event.data.items.forEach(item => {
-                            if (this.selectedRows.includes(item.key) === false) {
-                                this.selectedRows.push(item.key);
-                                console.log('Material : ' + item.key + ' is selected');
-                                if (item.collapsedItems) {
-                                    item.collapsedItems.forEach(Child => {
-                                        if (this.selectedRows.includes(Child.code) === false) {
-                                            this.selectedRows.push(Child.code);
-                                            console.log('Combination : ' + Child.code + ' is selected');
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                    console.log('Row : ' + event.data.key + ' is selected');
+    materialRowSelected(event, key,items,collapsedItems,component) {
+        this.materialSelectedRows[key[1]] = event.value;
+        component.expandRow(key)
+        if (items) {
+            items.forEach(item => {
+                if (event.value) {
+                    component.selectRows(item.code, true);
                 } else {
-                    if (event.data.items) {
-                        event.data.items.forEach(item => {
-                                if (this.selectedRows.includes(item.key) === true) {
-                                    if (item.collapsedItems) {
-                                        item.collapsedItems.forEach(Child => {
-                                            if (this.selectedRows.includes(Child.code) === true) {
-                                                this.selectedRows.splice(this.selectedRows.indexOf(Child.code), 1);
-                                                event.component.deselectRows(Child.code).then(() => {
-                                                    console.log('Combination : ' + Child.code + ' is deselected');
-                                                    this.selectedRows.splice(this.selectedRows.indexOf(item.key), 1);
-                                                    console.log('Material : ' + item.key + ' is deselected');
-                                                });
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                        );
-                    }
-                    this.selectedRows.splice(this.selectedRows.indexOf(event.data.key), 1);
-                    console.log('Row : ' + event.data.key + ' is deselected');
+                    component.deselectRows(item.code);
                 }
-
-            }
-            console.log(this.selectedRows);
-
+            });
+        }
+        if (collapsedItems) {
+            collapsedItems.forEach(item => {
+                if (event.value) {
+                    component.selectRows(item.code, true);
+                } else {
+                    component.deselectRows(item.code);
+                }
+            });
         }
     }
-
-    getSelectValue(value) {
-        return this.selectedRows.find(x => x == value);
+    rankingRowSelected(event, ranking) {
+        this.rankingSelectedRows[ranking.key[0]] = event.value;
+        ranking.component.expandRow(ranking.key)
+        if (ranking.data.items) {
+            ranking.data.items.forEach(item => {
+               this.materialRowSelected(event,[ranking.key[0],item.key],item.items,item.collapsedItems,ranking.component)
+            });
+        }
+        if (ranking.data.collapsedItems) {
+            ranking.data.collapsedItems.forEach(item => {
+            this.materialRowSelected(event,[ranking.key[0],item.key],item.items,item.collapsedItems,ranking.component)
+             });
+        }
+    }
+    getMaterialSelectValue(material) {
+        return this.materialSelectedRows[material.key[1]];
+    }
+    getRankingSelectValue(ranking) {
+        return this.rankingSelectedRows[ranking.key[0]];
     }
 }

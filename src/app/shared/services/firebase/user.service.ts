@@ -72,7 +72,7 @@ export class UserService {
     }
 
     getUsers() {
-        return this.db.collection('users', ref => ref.where('userType', '==', 'user')).snapshotChanges().pipe(
+        return this.db.collection('users').snapshotChanges().pipe(
             map(x => x.map(y => {
                 return {
                     uid: y.payload.doc.id,
