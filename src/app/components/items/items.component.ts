@@ -42,16 +42,16 @@ export class ItemsComponent implements OnInit {
         if (event.event && event.event.target.className == 'dx-checkbox-icon') {
             console.log(event.data);
             if (event.data.key) {
-                if (this.selectedRows.includes(event.data.key) === false) {
+                if (this.selectedRows.includes(event.data.key) === false && typeof event.data.key === 'string') {
                     this.selectedRows.push(event.data.key);
                     if (event.data.items) {
                         event.data.items.forEach(item => {
-                            if (this.selectedRows.includes(item.key) === false) {
+                            if (this.selectedRows.includes(item.key) === false && typeof item.key === 'string') {
                                 this.selectedRows.push(item.key);
                                 console.log('Material : ' + item.key + ' is selected');
                                 if (item.collapsedItems) {
                                     item.collapsedItems.forEach(Child => {
-                                        if (this.selectedRows.includes(Child.code) === false) {
+                                        if (this.selectedRows.includes(Child.code) === false && typeof Child.code === 'string') {
                                             this.selectedRows.push(Child.code);
                                             console.log('Combination : ' + Child.code + ' is selected');
                                         }
@@ -67,12 +67,14 @@ export class ItemsComponent implements OnInit {
                                 if (this.selectedRows.includes(item.key) === true) {
                                     if (item.collapsedItems) {
                                         item.collapsedItems.forEach(Child => {
-                                            if (this.selectedRows.includes(Child.code) === true) {
+                                            if (this.selectedRows.includes(Child.code) === true && typeof Child.code === 'string') {
                                                 this.selectedRows.splice(this.selectedRows.indexOf(Child.code), 1);
                                                 event.component.deselectRows(Child.code).then(() => {
                                                     console.log('Combination : ' + Child.code + ' is deselected');
-                                                    this.selectedRows.splice(this.selectedRows.indexOf(item.key), 1);
-                                                    console.log('Material : ' + item.key + ' is deselected');
+                                                    if (typeof item.key === 'string') {
+                                                        this.selectedRows.splice(this.selectedRows.indexOf(item.key), 1);
+                                                        console.log('Material : ' + item.key + ' is deselected');
+                                                    }
                                                 });
                                             }
                                         });

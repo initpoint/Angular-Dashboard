@@ -38,10 +38,10 @@ export class NavService {
 	}
 
 	MENUITEMS: Menu[] = [
-
 		{
-			title: 'Users', path:'/users/show',icon: 'users', type: 'link', active: false,
+			title: 'Customers', icon: 'user', type: 'link',path:'/customers/show', active: false,
 		},
+
 		{
 			title: 'Products', path:'/products/show',icon: 'shopping-bag', type: 'link', active: false,
 		},
@@ -51,9 +51,7 @@ export class NavService {
 		{
 			title: 'Price List', path:'/pricelist/show',icon: 'list', type: 'link', active: false,
 		},
-		{
-			title: 'Customers', icon: 'user', type: 'link',path:'/customers/show', active: false,
-		},
+
 		{
 			title: 'Permissions', path:'/permissions/show',icon: 'git-pull-request', type: 'link', active: false,
 		},
@@ -62,6 +60,9 @@ export class NavService {
 		},
 		{
 			title: 'Items', path:'/items',icon: 'list', type: 'link', active: false,
+		},
+		{
+			title: 'Users', path:'/users/show',icon: 'users', type: 'link', active: false,
 		},
 	]
 	// Array
