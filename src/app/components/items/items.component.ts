@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ItemsService} from 'src/app/shared/services/firebase/items.service';
-import CustomeStore from 'devextreme/data/custom_store';
-import DataSource from 'devextreme/data/data_source';
+
 @Component({
     selector: 'app-items',
     templateUrl: './items.component.html',
@@ -14,12 +13,10 @@ export class ItemsComponent implements OnInit {
     rankingSelectedRows = {};
 
     constructor(private itemsService: ItemsService) {
-        this.source = new DataSource(new CustomeStore({
-            key: 'code',
-            load: (opts) => this.itemsService.getItems(opts),
-            update: (key, newValues) => this.itemsService.updateItem(key, newValues),
-            remove: (key) => this.itemsService.updateItem(key, {isActive: false})
-        }));
+        this.itemsService.getItemsSync().subscribe(res => {
+            this.source = Object.keys(res.data()).map(key => res.data()[key]);
+        });
+
     }
 
     ngOnInit() {

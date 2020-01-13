@@ -116,7 +116,6 @@ export class AuthService implements OnInit {
         return userRef.get().subscribe((doc) => {
             if (doc) {
                 ref.currentUser = doc.data();
-                //console.log('User: ' + user.uid, ref.currentUser);
                 const userData: User = {
                     name: doc.data().name || null,
                     email: user.email,

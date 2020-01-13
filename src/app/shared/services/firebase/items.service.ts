@@ -1,6 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
+import {map} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -33,8 +34,12 @@ export class ItemsService implements OnInit {
         this.db.doc('meta/items').set(this.metaData);
     }
 
-    getItems(opts) {
-        return new Promise((resolve , reject) => {
+    getItemsSync() {
+       return this.db.doc('item/itemArray').get();
+    }
+
+    getItems() {
+        return new Promise((resolve, reject) => {
             if (!this.itemArray) {
                 this.db.doc('item/itemArray').snapshotChanges().subscribe(res => {
                     this.itemArray = res.payload.data();
