@@ -52,7 +52,7 @@ export class PermissionComponent implements OnInit {
 
         this.source = new DataSource(new CustomeStore({
             key: 'code',
-            load: (opts) => this.itemsService.getItems(opts),
+            load: (opts) => this.itemsService.getItems(),
             update: (key, newValues) => this.itemsService.updateItem(key, newValues),
             remove: (key) => this.itemsService.updateItem(key, {isActive: false})
         }));
