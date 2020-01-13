@@ -30,9 +30,7 @@ export class UserService {
                     email: value.email,
                     mobile: parseInt(value.mobile),
                     name: value.name,
-                    // avatar: avatar ? avatar : 'assets/images/user/user.png',
                     code: value.code,
-                    userType: 'user'
                 });
                 return true;
             }).catch(function (err) {

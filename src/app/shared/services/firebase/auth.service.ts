@@ -13,7 +13,7 @@ export interface User {
     emailVerified: boolean;
     name: string;
     code: string;
-    lastLoginAt: string;
+    lastLoginAt: number;
 }
 
 @Injectable({
@@ -70,9 +70,11 @@ export class AuthService implements OnInit {
                         if (result.user.emailVerified == true) {
                             this.SetUserData(result.user, this);
                             this.SendVerificationMail();
+                            this.toster.success('Authentication successful.');
+                            this.router.navigateByUrl('/cusomters/show');
                         } else if (result.user.emailVerified == false) {
                             this.toster.success('Authentication successful.');
-                            this.router.navigateByUrl('/user/show');
+                            this.router.navigateByUrl('/cusomters/show');
                         } else {
                             this.showLoader = false;
                             this.ngZone.run(() => {
@@ -91,8 +93,6 @@ export class AuthService implements OnInit {
         return this.afAuth.auth.currentUser.sendEmailVerification()
             .then(() => {
                 this.toster.warning('Please check your email.');
-                this.toster.success('Authentication successful.');
-                this.router.navigateByUrl('/user/show');
             });
     }
 
@@ -118,12 +118,12 @@ export class AuthService implements OnInit {
                 ref.currentUser = doc.data();
                 //console.log('User: ' + user.uid, ref.currentUser);
                 const userData: User = {
-                    name: doc.data().name,
+                    name: doc.data().name || null,
                     email: user.email,
                     uid: user.uid,
-                    emailVerified: user.emailVerified,
-                    code: doc.data().code,
-                    lastLoginAt: user.metadata.b.toInt()
+                    emailVerified: user.emailVerified || false,
+                    code: doc.data().code || null,
+                    lastLoginAt: parseInt(user.metadata.b)
                 };
                 if (user.displayName == null || user.displayName === undefined) {
                     userData.name = doc.data().name;

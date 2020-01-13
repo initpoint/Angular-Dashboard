@@ -12,6 +12,10 @@ export class ItemsComponent implements OnInit {
     lang;
     materialSelectedRows= {};
     rankingSelectedRows= {};
+    applyFilterTypes = {
+        key: "auto",
+        name: "Immediately"
+    };
     constructor(private itemsService: ItemsService) {
         this.source = new DataSource(new CustomeStore({
             key: 'code',
