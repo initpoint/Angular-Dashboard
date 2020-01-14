@@ -4,6 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {map} from 'rxjs/operators';
 import {CustomerService} from './customer.service';
 import * as firebase from 'firebase';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -19,29 +20,24 @@ export class PermissionService {
         return this.customerService.getCustomers();
     }
 
-    addPermission(customer,Collection) {
+    addPermission(customer, Collection) {
         return this.db.collection(Collection.type).doc(Collection.id).update({
             customers: firebase.firestore.FieldValue.arrayUnion(customer.uid)
         }).then(() => {
-            this.toastr.success('Customer '+customer.name+' Can now access '+Collection.type+' ['+Collection.code+'].');
+            this.toastr.success('Customer ' + customer.name + ' Can now access ' + Collection.type + ' [' + Collection.code + '].');
         });
     }
-    removePermission(customer,Collection) {
+
+    removePermission(customer, Collection) {
         return this.db.collection(Collection.type).doc(Collection.id).update({
             customers: firebase.firestore.FieldValue.arrayRemove(customer.uid)
         }).then(() => {
-            this.toastr.error('Customer '+customer.name+' Can not access '+Collection.type+' ['+Collection.code+'] anymore.');
+            this.toastr.error('Customer ' + customer.name + ' Can not access ' + Collection.type + ' [' + Collection.code + '] anymore.');
         });
     }
-    getPermissions() {
-        return this.db.collection<any>('permissions').snapshotChanges().pipe(
-            map(x => x.map(y => {
-                return {
-                    id: y.payload.doc.id,
-                    ...y.payload.doc.data()
-                };
-            }))
-        );
+
+    getUserPermissions(uid) {
+        return this.db.doc('permission/' + uid).get();
     }
 
     getPermission(key) {

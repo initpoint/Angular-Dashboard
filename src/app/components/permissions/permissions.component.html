@@ -3,7 +3,9 @@
         <div class="col-sm-12">
             <div class="card">
                 <dx-data-grid [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
-                              (onRowClick)="RowClicked($event)">
+                              [hoverStateEnabled]="true"
+                              [focusedRowEnabled]="true"
+                              (onFocusedRowChanged)="onFocusedRowChanged($event)">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
@@ -11,7 +13,7 @@
                     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
                 </dx-data-grid>
-                <div *ngIf="currentRow" class="dx-field m-15">
+                <div [hidden]="!currentUser" class="dx-field m-15">
                     <div class="dx-field-value">
                         <dx-button
                                 [(rtlEnabled)]="lang"
@@ -23,21 +25,19 @@
                     </div>
                 </div>
                 <dx-data-grid
-                        #items
-                        [hidden]="!currentRow"
+                        [(selectedRowKeys)]="selectedItems"
+                        keyExpr="code"
+                        [hidden]="!currentUser"
                         [filterValue]="filterValue"
-                        [showBorders]="true"
                         [dataSource]="source"
                         [rtlEnabled]="lang"
-                        [showRowLines]="true"
                         [columnAutoWidth]="true"
-                        [hoverStateEnabled]="true"
-                        [remoteOperations]="{filtering: true,sorting:true}">
+                        [hoverStateEnabled]="true">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-group-panel [visible]="false"></dxo-group-panel>
-                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxo-group-panel [visible]="true"></dxo-group-panel>
+                    <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
                     <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>

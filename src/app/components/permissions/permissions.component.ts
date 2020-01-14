@@ -20,11 +20,8 @@ export class PermissionComponent implements OnInit {
     materialSelectedRows = {};
     rankingSelectedRows = {};
     filterValue: Array<any>;
-    currentRow;
-    selectedRowKeys: any[] = [];
-    selectedRowData: any[] = [];
-    currentDeselectedRowKeys: any[] = [];
-
+    currentUser;
+    selectedItems: any;
 
     constructor(private itemsService: ItemsService,
                 private permissionService: PermissionService) {
@@ -51,14 +48,9 @@ export class PermissionComponent implements OnInit {
             },
 
         }));
-
-        this.source = new DataSource(new CustomeStore({
-            key: 'code',
-            load: (opts) => this.itemsService.getItems(),
-            update: (key, newValues) => this.itemsService.updateItem(key, newValues),
-            remove: (key) => this.itemsService.updateItem(key, {isActive: false})
-        }));
-
+        this.itemsService.getItemsSync().subscribe(res => {
+            this.source = Object.keys(res.data()).map(key => res.data()[key]);
+        });
     }
 
     ngOnInit() {
@@ -111,19 +103,36 @@ export class PermissionComponent implements OnInit {
         return this.rankingSelectedRows[ranking.key[0]];
     }
 
-    RowClicked(e: any) {
-        this.filterValue = ['code', 'startswith', '9311'];
-        this.currentRow = e.data;
-        // this.dataGrids.instance.filter();
-    }
-
     SaveCustomerPermissions() {
-        this.currentDeselectedRowKeys.forEach(DeselectedKey => {
-            this.permissionService.removePermission(this.currentRow, this.source.items().find(item => item.key === DeselectedKey).data);
-        });
-        this.selectedRowKeys.forEach(SelectedRow => {
-            this.permissionService.addPermission(this.currentRow, this.selectedRowData.find(item => item.id === SelectedRow));
-        });
+        console.log(this.selectedItems);
+        // this.currentDeselectedRowKeys.forEach(DeselectedKey => {
+        //     this.permissionService.removePermission(this.currentRow, this.source.items().find(item => item.key === DeselectedKey).data);
+        // });
+        // this.selectedRowKeys.forEach(SelectedRow => {
+        //     this.permissionService.addPermission(this.currentRow, this.selectedRowData.find(item => item.id === SelectedRow));
+        // });
     }
 
+    onFocusedRowChanged(e: any) {
+        this.currentUser = e.row.data;
+        this.filterValue = [];
+        // this.filterValue = ['code', 'startswith', '9311'];
+        this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
+            doc.data().items.forEach(item => {
+                this.filterValue.push(['code', '=', item]);
+                this.filterValue.push(['or']);
+            });
+        });
+        this.filterValue.slice(0, this.filterValue.length - 1);
+        console.log('filter', this.filterValue);
+    }
+
+    // uid: "b8gWFvNAYmRVpZCzTzvuISMHdRD2"
+    // code: "sadsda"
+    // email: "customer2@mailinator.com"
+    // isActive: true
+    // lastLoginAt: 1578938483679
+    // mobile: 123456
+    // name: "Customer"
+    // pricelist: null
 }
