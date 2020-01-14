@@ -2,10 +2,6 @@ import {Injectable, OnInit} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
 import * as firebase from 'firebase';
-import {environment} from '../../../../environments/environment';
-import {initializeApp} from 'firebase';
-import {map} from 'rxjs/operators';
-
 @Injectable({
     providedIn: 'root'
 })
@@ -32,9 +28,10 @@ export class ItemsService implements OnInit {
         });
     }
 
-
-    updateMetaDate() {
-        this.db.doc('meta/items').set(this.metaData);
+    toggleItem(id,data) {
+        return this.db.collection('combinations').doc(id).set({isNew:data.value},{merge:true}).then(res=> {
+            this.toastr.success('Combination updated.');
+        });
     }
 
     getItemsSync() {

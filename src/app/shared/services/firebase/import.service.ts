@@ -16,6 +16,9 @@ export class ImportService {
         let newItem = {};
         // This is the Item Map
         newItem[data.code] = {};
+        newItem[data.code].prices = {};
+        newItem[data.code].pics = [];
+        newItem[data.code].users = [];
         Object.keys(data).forEach(row => {
             newItem[data.code][row] = data[row];
         });
@@ -23,11 +26,18 @@ export class ImportService {
     }
 
     importToPhones(data) {
-        data.isNew = true;
+        data.isNew = false;
         data.isActive = true;
         data.prices = {};
         data.pics = [];
         data.users = []
         this.db.collection('combinations').doc(data.code).set(data, {merge: true});
+    }
+
+    importPriceList(name,rows) {
+        let data;
+        data.code = rows.code;
+        data.name = name;
+        this.db.collection('combinations').add(data);
     }
 }

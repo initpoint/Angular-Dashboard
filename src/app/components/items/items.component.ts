@@ -27,17 +27,19 @@ export class ItemsComponent implements OnInit {
     RowClicked($event: any) {
         if ($event.rowType == 'data') {
             this.currentRow = $event.data;
-            this.itemsService.getItemPhotos(this.currentRow.code).subscribe(res=> {
-                this.currentRow.pics = res.data().pics
-                this.popupVisible = true;
-                console.log(this.currentRow)
-                if (document.getElementsByClassName('newPhotos').length != 0) {
-                    for (let i = 0; i <= document.getElementsByClassName('newPhotos').length; i++) {
-                        document.getElementsByClassName('newPhotos')[i].remove();
-                    }
-                }
-            });
-
+           if ($event.event.target.className == 'btn btn-sm btn-pill btn-success') {
+               this.itemsService.getItemPhotos(this.currentRow.code).subscribe(res => {
+                   this.currentRow.pics = res.data().pics
+                   this.popupVisible = true;
+                   console.log(this.currentRow)
+                   if (document.getElementsByClassName('newPhotos').length != 0) {
+                       for (let i = 0; i < document.getElementsByClassName('newPhotos').length; i++) {
+                           document.getElementsByClassName('newPhotos')[i].remove();
+                       }
+                       document.getElementsByClassName('dx-fileuploader-files-container')[0].remove();
+                   }
+               });
+           }
         }
     }
     deleteImage(pic) {
@@ -52,7 +54,7 @@ export class ItemsComponent implements OnInit {
         let i = 0;
         if (!document.getElementsByClassName('list-group')[0]) {
             document.getElementsByClassName('widget-container')[0].closest('.dx-template-wrapper').insertAdjacentHTML('afterbegin', '<ul class="list-group"></ul>');
-            document.getElementsByClassName('list-group')[0].insertAdjacentHTML('afterbegin', '<li class="list-group-item list-group-item-action"></li>');
+            document.getElementsByClassName('list-group')[0].insertAdjacentHTML('afterbegin', '<li class="list-group-item avatars list-group-item-action"></li>');
         }
         this.value.forEach( file => {
             file.newName = Math.floor(Math.random()*10000000) + '-' + i + '.' + file.name.split('.').reverse()[0];
@@ -109,6 +111,15 @@ export class ItemsComponent implements OnInit {
     }
 
     toggleNew(data) {
-
+        console.log(data)
+        this.itemsService.toggleItem(data.data.code, data).then(res => {
+           this.source.find(x=> x.code == data.data.code).isNew = data.value;
+           let newItem = {};
+           newItem[data.data.code] = {}
+           newItem[data.data.code].isNew = data.value;
+           this.itemsService.db.doc('item/itemArray').set(newItem,{merge:true})
+        }).catch(err => {
+            console.log(err);
+        });
     }
 }
