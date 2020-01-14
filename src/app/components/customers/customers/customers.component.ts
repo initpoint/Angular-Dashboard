@@ -62,7 +62,6 @@ export class CustomersComponent implements OnInit {
 
 
     activeCustomer(data) {
-        console.log(data.cellElement.querySelector('.btn-success'));
         this.customerService.setCustomer(data.data.uid, {isActive: data.value}).then(res => {
             this.toastr.success('Customer is active');
         }).catch(err => {

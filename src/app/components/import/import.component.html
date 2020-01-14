@@ -2,8 +2,16 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
+                <div class="card-title">Import Combinations</div>
+                <div class="card-body">
                 <input type="file" (change)="onFileChange($event)" multiple="false"/>
-                
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Import PriceList</div>
+                <div class="card-body">
+                    <input type="file" (change)="uploadPriceList($event)" multiple="false"/>
+                </div>
             </div>
         </div>
     </div>
