@@ -1,10 +1,11 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, QueryList} from '@angular/core';
 import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
 import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
 import {ItemsService} from '../../shared/services/firebase/items.service';
+import {DxDataGridComponent} from 'devextreme-angular';
 
 @Component({
     selector: 'app-Permission',
@@ -12,17 +13,18 @@ import {ItemsService} from '../../shared/services/firebase/items.service';
     styleUrls: ['./permissions.component.scss'],
 })
 export class PermissionComponent implements OnInit {
+    @ViewChild('items', {static: false}) dataGrids: DxDataGridComponent;
     customersSource: any;
     source: any;
     lang;
     materialSelectedRows = {};
     rankingSelectedRows = {};
-
-    currentRow;
-    selectedRowKeys: any[] = [];
-    selectedRowData: any[] = [];
-    currentDeselectedRowKeys: any[] = [];
-
+    filterValue: Array<any>;
+    currentFitler: Array<any>;
+    currentUser;
+    selectedItems: any;
+    canChangePermissions = false;
+    currentUserPermissions: [];
 
     constructor(private itemsService: ItemsService,
                 private permissionService: PermissionService) {
@@ -35,27 +37,11 @@ export class PermissionComponent implements OnInit {
                         resolve({data: res});
                     });
                 });
-            },
-            update: (key, values) => {
-                return this.permissionService.updatePermission(key, values);
-            },
-            remove: (key) => {
-                let item = this.customersSource.items().find(item => item.id === key);
-                item.isActive = !item.isActive;
-                return this.permissionService.updatePermission(key, item);
-            },
-            insert: (values) => {
-                return this.permissionService.createPermission(values);
-            },
-
+            }
         }));
-
-        this.source = new DataSource(new CustomeStore({
-            key: 'code',
-            load: (opts) => this.itemsService.getItems(),
-            update: (key, newValues) => this.itemsService.updateItem(key, newValues),
-            remove: (key) => this.itemsService.updateItem(key, {isActive: false})
-        }));
+        this.itemsService.getItemsSync().subscribe(res => {
+            this.source = Object.keys(res.data()).map(key => res.data()[key]);
+        });
     }
 
     ngOnInit() {
@@ -108,17 +94,47 @@ export class PermissionComponent implements OnInit {
         return this.rankingSelectedRows[ranking.key[0]];
     }
 
-    RowClicked($event: any) {
-        this.currentRow = $event.data;
+    saveCustomerPermissions() {
+        console.log(this.selectedItems);
+        console.log(this.currentUser);
+        this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems);
+        // this.currentDeselectedRowKeys.forEach(DeselectedKey => {
+        //     this.permissionService.removePermission(this.currentRow, this.source.items().find(item => item.key === DeselectedKey).data);
+        // });
+        // this.selectedRowKeys.forEach(SelectedRow => {
+        //     this.permissionService.addPermission(this.currentRow, this.selectedRowData.find(item => item.id === SelectedRow));
+        // });
     }
 
-    SaveCustomerPermissions() {
-        this.currentDeselectedRowKeys.forEach(DeselectedKey => {
-            this.permissionService.removePermission(this.currentRow, this.source.items().find(item => item.key === DeselectedKey).data);
+    onFocusedRowChanged(e: any) {
+        this.currentUser = e.row.data;
+        this.currentFitler = [];
+        // this.filterValue = ['code', 'startswith', '9311'];
+        this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
+            this.currentUserPermissions = doc.data().items;
+            doc.data().items.forEach(item => {
+                this.currentFitler.push(['code', '=', item]);
+                this.currentFitler.push(['or']);
+            });
         });
-        this.selectedRowKeys.forEach(SelectedRow => {
-            this.permissionService.addPermission(this.currentRow, this.selectedRowData.find(item => item.id === SelectedRow));
-        });
+        this.currentFitler.slice(0, this.currentFitler.length - 1);
+        this.filterValue = this.currentFitler;
     }
 
+    // uid: "b8gWFvNAYmRVpZCzTzvuISMHdRD2"
+    // code: "sadsda"
+    // email: "customer2@mailinator.com"
+    // isActive: true
+    // lastLoginAt: 1578938483679
+    // mobile: 123456
+    // name: "Customer"
+    // pricelist: null
+    filterItems(e: any) {
+        this.filterValue = e.value ? this.currentFitler : undefined;
+        if (e.value) {
+            this.dataGrids.instance.deselectAll();
+        } else {
+            this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
+        }
+    }
 }

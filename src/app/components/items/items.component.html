@@ -3,6 +3,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <dx-data-grid
+                        keyExpr="code"
                         [showBorders]="true"
                         (onRowClick)="RowClicked($event)"
                         [dataSource]="source"
