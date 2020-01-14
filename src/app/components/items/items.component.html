@@ -14,6 +14,11 @@
                         [hoverStateEnabled]="true"
                         [remoteOperations]="{filtering: true,sorting:true}">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                    <dxo-pager
+                            [showPageSizeSelector]="true"
+                            [allowedPageSizes]="[5, 10, 20]"
+                            [showInfo]="true">
+                    </dxo-pager>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
@@ -37,12 +42,12 @@
                     <div *dxTemplate="let ranking of 'rankingTemplate'">
                         <dx-check-box (onValueChanged)="rankingRowSelected($event,ranking)"
                                       [value]="getRankingSelectValue(ranking)  || false"></dx-check-box>
-                        {{ranking.value}}
+                        {{'Ranking'|translate}}: {{ranking.value}}
                     </div>
                     <div *dxTemplate="let material of 'materialTemplate'">
                         <dx-check-box [value]="getMaterialSelectValue(material) || false"
                                       (onValueChanged)="materialRowSelected($event,material.key,material.data.items,material.data.collapsedItems,material.component)"></dx-check-box>
-                        {{material.value}}
+                        {{'Material'|translate}}: {{material.value}}
                     </div>
                     <div *dxTemplate="let data of 'ActiveButton'">
                         <button (click)="data.value = !data.value;toggleNew(data)"

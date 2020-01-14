@@ -17,35 +17,47 @@ export class ImportService {
     }
 
     importJSON(data) {
-        let newItem = {};
-        // This is the Item Map
-        newItem[data.code] = {};
-        newItem[data.code].prices = {};
-        newItem[data.code].pics = [];
-        newItem[data.code].users = [];
-        Object.keys(data).forEach(row => {
-            newItem[data.code][row] = data[row];
+        const newItem = {};
+        data.forEach(dataItem => {
+            newItem[dataItem.code] = {
+                prices: {},
+                pics: [],
+                users: []
+            };
+            Object.keys(dataItem).forEach(row => {
+                newItem[dataItem.code][row] = dataItem[row];
+            });
         });
-        this.db.collection('item').doc('itemArray').set(newItem, {merge: true});
+        return this.db.doc('item/itemArray').set(newItem, {merge: true}).then(res => {
+            this.toastr.success('ItemArray updated.');
+        });
     }
 
     importToPhones(data) {
-        data.isNew = false;
-        data.isActive = true;
-        data.prices = {};
-        data.pics = [];
-        data.users = [];
-        this.db.collection('combinations').doc(data.code).set(data, {merge: true});
+        const b = this.db.firestore.batch();
+        data.forEach(item => {
+            const dataItem = {
+                isNew: false,
+                isActive: true,
+                prices: {},
+                pics: [],
+                ...item
+            };
+            b.set(this.db.doc('combinations/' + item.code).ref, dataItem);
+        });
+        return b.commit().then(res => {
+            this.toastr.success('Combinations added.');
+        });
     }
 
-    importPriceList(rows,listID) {
+    importPriceList(rows, listID) {
         if (this.itemArray[rows.code]) {
 
-                this.itemArray[rows.code].prices= {};
-                this.itemArray[rows.code].prices[listID] = rows.price
-                this.db.collection('combinations').doc(rows.code).set(this.itemArray[rows.code],{merge:true});
-                this.db.doc('item/itemArray').set(this.itemArray,{merge:true})
-                console.log(this.itemArray[rows.code]);
+            this.itemArray[rows.code].prices = {};
+            this.itemArray[rows.code].prices[listID] = rows.price;
+            this.db.collection('combinations').doc(rows.code).set(this.itemArray[rows.code], {merge: true});
+            this.db.doc('item/itemArray').set(this.itemArray, {merge: true});
+            console.log(this.itemArray[rows.code]);
 
         }
     }
