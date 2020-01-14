@@ -25,20 +25,14 @@ export class PermissionComponent implements OnInit {
     selectedItems: any;
     showCurrentPermissions = true;
     currentUserPermissions: [];
+    popupVisible: boolean;
+    selectedForCopy;
 
     constructor(private itemsService: ItemsService,
                 private permissionService: PermissionService) {
-        this.customersSource = new DataSource(new CustomeStore({
-            key: 'uid',
-            load: (opts) => {
-                return new Promise((resolve, reject) => {
-                    this.lang = localStorage.getItem('lang') === 'ar';
-                    this.permissionService.getCustomers().subscribe(res => {
-                        resolve({data: res});
-                    });
-                });
-            }
-        }));
+        this.permissionService.getCustomers().subscribe(res => {
+            this.customersSource = res;
+        });
         this.itemsService.getItemsSync().subscribe(res => {
             this.source = Object.keys(res.data()).map(key => res.data()[key]);
         });
@@ -121,5 +115,22 @@ export class PermissionComponent implements OnInit {
         } else {
             this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
         }
+    }
+
+
+    RowClicked($event: any) {
+        if ($event.rowType === 'data') {
+            if ($event.event.target.className === 'btn btn-sm btn-pill btn-primary') {
+                this.popupVisible = true;
+            }
+        }
+    }
+
+    click(e: any) {
+        this.permissionService.getUserPermissions(this.selectedForCopy.uid).subscribe(doc => {
+            this.selectedItems = doc.data().items;
+            this.saveCustomerPermissions();
+        });
+        this.popupVisible = false;
     }
 }

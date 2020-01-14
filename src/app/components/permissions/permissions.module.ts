@@ -10,11 +10,14 @@ import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
 import {
     DxPopupModule,
+    DxSelectBoxModule,
+    DxBoxModule,
     DxButtonModule,
     DxTemplateModule,
     DxTreeListModule,
     DxDataGridModule,
     DxCheckBoxModule,
+    DxListModule,
     DxSwitchModule
 } from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
@@ -25,8 +28,11 @@ import {TranslateModule} from '@ngx-translate/core';
     imports: [
         DxButtonModule,
         DxDataGridModule,
+        DxBoxModule,
+        DxSelectBoxModule,
         DxPopupModule,
         DxTemplateModule,
+        DxListModule,
         DxTreeListModule,
         DxCheckBoxModule,
         DxSwitchModule,
