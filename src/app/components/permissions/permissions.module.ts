@@ -8,8 +8,17 @@ import {PermissionComponent} from './permissions.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import {DxPopupModule,DxButtonModule ,DxTemplateModule,DxTreeListModule, DxDataGridModule,DxCheckBoxModule} from 'devextreme-angular';
+import {
+    DxPopupModule,
+    DxButtonModule,
+    DxTemplateModule,
+    DxTreeListModule,
+    DxDataGridModule,
+    DxCheckBoxModule,
+    DxSwitchModule
+} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
+
 @NgModule({
     declarations: [PermissionComponent],
 
@@ -20,6 +29,7 @@ import {TranslateModule} from '@ngx-translate/core';
         DxTemplateModule,
         DxTreeListModule,
         DxCheckBoxModule,
+        DxSwitchModule,
         CommonModule,
         PermissionsRoutingModule,
         FormsModule,

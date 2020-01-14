@@ -2,10 +2,13 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <dx-data-grid [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
-                              [hoverStateEnabled]="true"
-                              [focusedRowEnabled]="true"
-                              (onFocusedRowChanged)="onFocusedRowChanged($event)">
+                <dx-data-grid
+                        [focusedRowIndex]="0"
+                        [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
+                        [hoverStateEnabled]="true"
+                        [focusedRowEnabled]="true"
+                        keyExpr="uid"
+                        (onFocusedRowChanged)="onFocusedRowChanged($event)">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
@@ -13,22 +16,25 @@
                     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
                 </dx-data-grid>
-                <div [hidden]="!currentUser" class="dx-field m-15">
-                    <div class="dx-field-value">
-                        <dx-button
-                                [(rtlEnabled)]="lang"
-                                class="btn-success send"
-                                icon="fa fa-save"
-                                (click)="saveCustomerPermissions()"
-                                text="Save ">
-                        </dx-button>
+                <div class="dx-fieldset m-15" [hidden]="!currentUser">
+                    <div class="dx-field">
+                        <div class="dx-field-label ">Only Show filtered Items</div>
+                        <div class="dx-field-value">
+                            <dx-switch [(value)]="showCurrentPermissions"
+                                       (onValueChanged)="filterItems($event)"></dx-switch>
+                        </div>
                     </div>
-                </div>
-                <div [hidden]="!currentUser" class="dx-field m-15">
-                    <div class="dx-field-value">
-                        <dx-check-box [value]="!canChangePermissions" (onValueChanged)="filterItems($event)">
-                            Only Show filtered Items
-                        </dx-check-box>
+
+                    <div [hidden]="showCurrentPermissions" class="dx-field m-15">
+                        <div class="dx-field-value">
+                            <dx-button
+                                    [(rtlEnabled)]="lang"
+                                    class="btn-success send"
+                                    icon="fa fa-save"
+                                    (click)="saveCustomerPermissions()"
+                                    text="Save ">
+                            </dx-button>
+                        </div>
                     </div>
                 </div>
 
@@ -36,7 +42,6 @@
                     #items
                     [(selectedRowKeys)]="selectedItems"
                     keyExpr="code"
-                    [hidden]="!currentUser"
                     [filterValue]="filterValue"
                     [dataSource]="source"
                     [rtlEnabled]="lang"
@@ -50,7 +55,7 @@
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
                     <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
+                    <dxi-column dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
                     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
                     <dxi-column dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"

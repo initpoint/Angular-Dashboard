@@ -19,11 +19,11 @@ export class PermissionComponent implements OnInit {
     lang;
     materialSelectedRows = {};
     rankingSelectedRows = {};
-    filterValue: Array<any>;
-    currentFitler: Array<any>;
+    filterValue = [];
+    currentFilter: Array<any>;
     currentUser;
     selectedItems: any;
-    canChangePermissions = false;
+    showCurrentPermissions = true;
     currentUserPermissions: [];
 
     constructor(private itemsService: ItemsService,
@@ -95,42 +95,27 @@ export class PermissionComponent implements OnInit {
     }
 
     saveCustomerPermissions() {
-        console.log(this.selectedItems);
-        console.log(this.currentUser);
         this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems);
-        // this.currentDeselectedRowKeys.forEach(DeselectedKey => {
-        //     this.permissionService.removePermission(this.currentRow, this.source.items().find(item => item.key === DeselectedKey).data);
-        // });
-        // this.selectedRowKeys.forEach(SelectedRow => {
-        //     this.permissionService.addPermission(this.currentRow, this.selectedRowData.find(item => item.id === SelectedRow));
-        // });
     }
 
     onFocusedRowChanged(e: any) {
         this.currentUser = e.row.data;
-        this.currentFitler = [];
-        // this.filterValue = ['code', 'startswith', '9311'];
         this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
             this.currentUserPermissions = doc.data().items;
-            doc.data().items.forEach(item => {
-                this.currentFitler.push(['code', '=', item]);
-                this.currentFitler.push(['or']);
-            });
+            this.currentFilter = [];
+            for (let i = 0; i < doc.data().items.length; i++) {
+                this.currentFilter.push(['code', '=', doc.data().items[i]]);
+                if (doc.data().items.length - i > 1) {
+                    this.currentFilter.push('or');
+                }
+            }
+            this.filterValue = this.currentFilter;
         });
-        this.currentFitler.slice(0, this.currentFitler.length - 1);
-        this.filterValue = this.currentFitler;
+        this.showCurrentPermissions = true;
     }
 
-    // uid: "b8gWFvNAYmRVpZCzTzvuISMHdRD2"
-    // code: "sadsda"
-    // email: "customer2@mailinator.com"
-    // isActive: true
-    // lastLoginAt: 1578938483679
-    // mobile: 123456
-    // name: "Customer"
-    // pricelist: null
     filterItems(e: any) {
-        this.filterValue = e.value ? this.currentFitler : undefined;
+        this.filterValue = e.value ? this.currentFilter : [];
         if (e.value) {
             this.dataGrids.instance.deselectAll();
         } else {
