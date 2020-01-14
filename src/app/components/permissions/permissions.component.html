@@ -19,20 +19,29 @@
                                 [(rtlEnabled)]="lang"
                                 class="btn-success send"
                                 icon="fa fa-save"
-                                (click)="SaveCustomerPermissions()"
+                                (click)="saveCustomerPermissions()"
                                 text="Save ">
                         </dx-button>
                     </div>
                 </div>
+                <div [hidden]="!currentUser" class="dx-field m-15">
+                    <div class="dx-field-value">
+                        <dx-check-box [value]="!canChangePermissions" (onValueChanged)="filterItems($event)">
+                            Only Show filtered Items
+                        </dx-check-box>
+                    </div>
+                </div>
+
                 <dx-data-grid
-                        [(selectedRowKeys)]="selectedItems"
-                        keyExpr="code"
-                        [hidden]="!currentUser"
-                        [filterValue]="filterValue"
-                        [dataSource]="source"
-                        [rtlEnabled]="lang"
-                        [columnAutoWidth]="true"
-                        [hoverStateEnabled]="true">
+                    #items
+                    [(selectedRowKeys)]="selectedItems"
+                    keyExpr="code"
+                    [hidden]="!currentUser"
+                    [filterValue]="filterValue"
+                    [dataSource]="source"
+                    [rtlEnabled]="lang"
+                    [columnAutoWidth]="true"
+                    [hoverStateEnabled]="true">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>

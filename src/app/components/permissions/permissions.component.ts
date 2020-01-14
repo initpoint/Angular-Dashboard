@@ -20,8 +20,11 @@ export class PermissionComponent implements OnInit {
     materialSelectedRows = {};
     rankingSelectedRows = {};
     filterValue: Array<any>;
+    currentFitler: Array<any>;
     currentUser;
     selectedItems: any;
+    canChangePermissions = false;
+    currentUserPermissions: [];
 
     constructor(private itemsService: ItemsService,
                 private permissionService: PermissionService) {
@@ -34,19 +37,7 @@ export class PermissionComponent implements OnInit {
                         resolve({data: res});
                     });
                 });
-            },
-            update: (key, values) => {
-                return this.permissionService.updatePermission(key, values);
-            },
-            remove: (key) => {
-                let item = this.customersSource.items().find(item => item.id === key);
-                item.isActive = !item.isActive;
-                return this.permissionService.updatePermission(key, item);
-            },
-            insert: (values) => {
-                return this.permissionService.createPermission(values);
-            },
-
+            }
         }));
         this.itemsService.getItemsSync().subscribe(res => {
             this.source = Object.keys(res.data()).map(key => res.data()[key]);
@@ -103,8 +94,10 @@ export class PermissionComponent implements OnInit {
         return this.rankingSelectedRows[ranking.key[0]];
     }
 
-    SaveCustomerPermissions() {
+    saveCustomerPermissions() {
         console.log(this.selectedItems);
+        console.log(this.currentUser);
+        this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems);
         // this.currentDeselectedRowKeys.forEach(DeselectedKey => {
         //     this.permissionService.removePermission(this.currentRow, this.source.items().find(item => item.key === DeselectedKey).data);
         // });
@@ -115,16 +108,17 @@ export class PermissionComponent implements OnInit {
 
     onFocusedRowChanged(e: any) {
         this.currentUser = e.row.data;
-        this.filterValue = [];
+        this.currentFitler = [];
         // this.filterValue = ['code', 'startswith', '9311'];
         this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
+            this.currentUserPermissions = doc.data().items;
             doc.data().items.forEach(item => {
-                this.filterValue.push(['code', '=', item]);
-                this.filterValue.push(['or']);
+                this.currentFitler.push(['code', '=', item]);
+                this.currentFitler.push(['or']);
             });
         });
-        this.filterValue.slice(0, this.filterValue.length - 1);
-        console.log('filter', this.filterValue);
+        this.currentFitler.slice(0, this.currentFitler.length - 1);
+        this.filterValue = this.currentFitler;
     }
 
     // uid: "b8gWFvNAYmRVpZCzTzvuISMHdRD2"
@@ -135,4 +129,12 @@ export class PermissionComponent implements OnInit {
     // mobile: 123456
     // name: "Customer"
     // pricelist: null
+    filterItems(e: any) {
+        this.filterValue = e.value ? this.currentFitler : undefined;
+        if (e.value) {
+            this.dataGrids.instance.deselectAll();
+        } else {
+            this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
+        }
+    }
 }
