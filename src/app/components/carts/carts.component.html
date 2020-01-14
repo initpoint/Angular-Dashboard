@@ -1,0 +1,41 @@
+<!-- Container-fluid starts -->
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <dx-data-grid [dataSource]="cartsSource" [showBorders]="true" [rtlEnabled]="lang">
+                        <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                        <dxo-header-filter [visible]="true"></dxo-header-filter>
+                        <dxo-search-panel [visible]="true"></dxo-search-panel>
+                        <dxo-editing
+                                mode="form"
+                                [allowUpdating]="true"
+                                [useIcons]="true"
+                                [allowDeleting]="true">
+                        </dxo-editing>
+                        <dxo-export [enabled]="true" fileName="Carts" [allowExportSelectedData]="true"></dxo-export>
+                        <dxo-group-panel [visible]="true"></dxo-group-panel>
+                        <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
+                        <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
+                        <dxi-column dataField="customerName" groupIndex="0" [caption]="'Customer'|translate"></dxi-column>
+                        <dxi-column dataField="items" [cellTemplate]="'items'" [caption]="'Items'|translate"></dxi-column>
+                        <dxi-column [formItem]="{visible: false}" dataField="isActive" datatype="boolean" [allowSearch]="false" [allowSorting]="false" [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
+                         <div *dxTemplate="let data of 'ActiveButton'">
+                            <button (click)="data.value = !data.value;activeCart(data)"
+                                    title="Click to {{data.value ? 'Pending' : 'Done'}}"
+                                    class="btn btn-sm btn-pill"
+                                    [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Done' : 'Pending'}}</button>
+                        </div>
+                        <div *dxTemplate="let data of 'items'">
+                           {{data.value}}
+                        </div>
+                    </dx-data-grid>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends -->

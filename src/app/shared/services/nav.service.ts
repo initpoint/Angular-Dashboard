@@ -48,7 +48,9 @@ export class NavService {
         {
             title: 'Price List', path: '/pricelist/show', icon: 'list', type: 'link', active: false,
         },
-
+        {
+            title: 'Carts', path: '/carts', icon: 'shopping-cart', type: 'link', active: false,
+        },
         {
             title: 'Permissions', path: '/permissions/show', icon: 'git-pull-request', type: 'link', active: false,
         },

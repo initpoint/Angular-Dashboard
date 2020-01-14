@@ -14,7 +14,7 @@ export class PriceListService {
     }
 
     getCombinations() {
-        return this.db.collection('combination').snapshotChanges().pipe(
+        return this.db.collection('combinations').snapshotChanges().pipe(
             map(x => x.map(y => {
                 return {
                     id: y.payload.doc.id,
@@ -40,7 +40,7 @@ export class PriceListService {
     }
     updateItem(key, values) {
         this.toastr.success('Item updated.');
-        return this.db.collection('combination').doc(key).set(values, {merge: true});
+        return this.db.collection('combinations').doc(key).set(values, {merge: true});
     }
     updatePriceList(key, values) {
         this.toastr.success('Item updated.');

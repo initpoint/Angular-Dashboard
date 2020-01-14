@@ -6,10 +6,14 @@ import {ToastrService} from 'ngx-toastr';
     providedIn: 'root'
 })
 export class ImportService {
+    itemArray;
 
     constructor(public db: AngularFirestore,
                 private toastr: ToastrService
     ) {
+        this.db.doc('item/itemArray').get().subscribe(res => {
+            this.itemArray = res.data();
+        });
     }
 
     importJSON(data) {
@@ -30,14 +34,19 @@ export class ImportService {
         data.isActive = true;
         data.prices = {};
         data.pics = [];
-        data.users = []
+        data.users = [];
         this.db.collection('combinations').doc(data.code).set(data, {merge: true});
     }
 
-    importPriceList(name,rows) {
-        let data;
-        data.code = rows.code;
-        data.name = name;
-        this.db.collection('combinations').add(data);
+    importPriceList(rows,listID) {
+        if (this.itemArray[rows.code]) {
+
+                this.itemArray[rows.code].prices= {};
+                this.itemArray[rows.code].prices[listID] = rows.price
+                this.db.collection('combinations').doc(rows.code).set(this.itemArray[rows.code],{merge:true});
+                this.db.doc('item/itemArray').set(this.itemArray,{merge:true})
+                console.log(this.itemArray[rows.code]);
+
+        }
     }
 }
