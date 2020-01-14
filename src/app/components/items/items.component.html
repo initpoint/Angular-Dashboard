@@ -4,7 +4,9 @@
             <div class="card">
                 <dx-data-grid
                         [showBorders]="true"
+                        (onRowClick)="RowClicked($event)"
                         [dataSource]="source"
+                        keyExpr="code"
                         [rtlEnabled]="lang"
                         [showRowLines]="true"
                         [columnAutoWidth]="true"
@@ -13,15 +15,15 @@
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-filter-row [applyFilter]="applyFilterTypes"></dxo-filter-row>
-                    <dxo-group-panel [visible]="false"></dxo-group-panel>
+                    <dxo-group-panel [visible]="true"></dxo-group-panel>
                     <dxo-selection mode="multiple"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
                     <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
+                    <dxi-column dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
                     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
+                    <dxi-column [formItem]="{visible: false}" dataField="isNew" datatype="boolean" [allowSearch]="false" [allowSorting]="false" [cellTemplate]="'ActiveButton'" [caption]="'Is New'|translate"></dxi-column>
                     <dxi-column dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
                                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
@@ -36,7 +38,54 @@
                                       (onValueChanged)="materialRowSelected($event,material.key,material.data.items,material.data.collapsedItems,material.component)"></dx-check-box>
                         {{material.value}}
                     </div>
+                    <div *dxTemplate="let data of 'ActiveButton'">
+                        <button (click)="data.value = !data.value;toggleNew(data)"
+                                class="btn btn-sm btn-pill"
+                                [ngClass]="data.value ? 'btn-danger' : 'btn-light'">{{'New'|translate}}</button>
+                    </div>
                 </dx-data-grid>
+                <dx-popup
+                        width="700"
+                        height="auto"
+                        [showTitle]="true"
+                        [title]="'Photos'|translate"
+                        [dragEnabled]="false"
+                        [closeOnOutsideClick]="true"
+                        [(visible)]="popupVisible">
+                    <div *dxTemplate="let data of 'content'">
+                        <ul *ngIf="currentRow.pics.length >0" class="list-group ">
+                            <li class="list-group-item list-group-item-action avatars">
+                                <div class="avatar" style="margin-left: 0;" *ngFor="let pic of currentRow.pics" (click)="deleteImage(pic)" id="{{pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/').split('/')[1]}}">
+                                    <img class="b-r-8" title="Click to delete!"
+                                         style="height: 128px;width: 128px;padding-top: 3px"
+                                         [src]="pic" width="300" height="300" alt=""/>
+                                    <button title="Delete" style="right: -1px;bottom: -1px;" class="status status-100 bg-danger"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="widget-container">
+                            <form id="form" #form method="post" action="" enctype="multipart/form-data">
+
+                                <div id="fileuploader-container">
+                                    <dx-file-uploader
+                                            selectButtonText="Select photo"
+                                            labelText=""
+                                            accept="image/*"
+                                            [(value)]='value'
+                                            [(rtlEnabled)]="lang"
+                                            [showFileList]="true"
+                                            multiple="true"
+                                            uploadMode="useForm">
+                                    </dx-file-uploader>
+
+                                    <button class="mr-2 btn btn-primary" type="submit" (click)="uploadImages()">
+                                        {{'Submit' |translate}}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </dx-popup>
             </div>
         </div>
     </div>

@@ -53,7 +53,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         }),
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
-        // ToDo angular FireStorage module
         AngularFirestoreModule.enablePersistence()
     ],
     providers: [AuthService, AdminGuard, SecureInnerPagesGuard, CookieService],

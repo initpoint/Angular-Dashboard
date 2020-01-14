@@ -21,4 +21,13 @@ export class ImportService {
         });
         this.db.collection('item').doc('itemArray').set(newItem, {merge: true});
     }
+
+    importToPhones(data) {
+        data.isNew = true;
+        data.isActive = true;
+        data.prices = {};
+        data.pics = [];
+        data.users = []
+        this.db.collection('combinations').doc(data.code).set(data, {merge: true});
+    }
 }
