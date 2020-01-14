@@ -2,41 +2,58 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <dx-data-grid [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
-                              [hoverStateEnabled]="true"
-                              [focusedRowEnabled]="true"
-                              (onFocusedRowChanged)="onFocusedRowChanged($event)">
+                <dx-data-grid
+                        (onRowClick)="RowClicked($event)"
+                        [focusedRowIndex]="0"
+                        [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
+                        [hoverStateEnabled]="true"
+                        [focusedRowEnabled]="true"
+                        keyExpr="uid"
+                        (onFocusedRowChanged)="onFocusedRowChanged($event)">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
                     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
-                </dx-data-grid>
-                <div [hidden]="!currentUser" class="dx-field m-15">
-                    <div class="dx-field-value">
-                        <dx-button
-                                [(rtlEnabled)]="lang"
-                                class="btn-success send"
-                                icon="fa fa-save"
-                                (click)="saveCustomerPermissions()"
-                                text="Save ">
-                        </dx-button>
-                    </div>
-                </div>
-                <div [hidden]="!currentUser" class="dx-field m-15">
-                    <div class="dx-field-value">
-                        <dx-check-box [value]="!canChangePermissions" (onValueChanged)="filterItems($event)">
-                            Only Show filtered Items
-                        </dx-check-box>
-                    </div>
-                </div>
 
+                    <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
+                                [cellTemplate]="'Upload'" [caption]="'Copy'|translate"></dxi-column>
+                    <div *dxTemplate="let data of 'Upload'">
+                        <button class="btn btn-sm btn-pill btn-primary">{{'Copy'|translate}}</button>
+                    </div>
+                </dx-data-grid>
+                <div class="dx-fieldset" [hidden]="!currentUser">
+                    <dx-box [rtlEnabled]="lang" direction="row" width="100%" [height]="75">
+                        <dxi-item [ratio]="1">
+                            <div [hidden]="showCurrentPermissions" class="dx-field m-15">
+                                <div class="dx-field-value">
+                                    <dx-button
+                                            [(rtlEnabled)]="lang"
+                                            class="btn-success send"
+                                            icon="fa fa-save"
+                                            (click)="saveCustomerPermissions()"
+                                            text="Save ">
+                                    </dx-button>
+                                </div>
+                            </div>
+                        </dxi-item>
+                        <dxi-item [ratio]="1"></dxi-item>
+                        <dxi-item [ratio]="1">
+                            <div class="dx-field">
+                                <div class="dx-field-label ">{{'Only Show filtered Items'|translate}}</div>
+                                <div class="dx-field-value">
+                                    <dx-switch [rtlEnabled]="lang" [(value)]="showCurrentPermissions"
+                                               (onValueChanged)="filterItems($event)"></dx-switch>
+                                </div>
+                            </div>
+                        </dxi-item>
+                    </dx-box>
+                </div>
                 <dx-data-grid
                     #items
                     [(selectedRowKeys)]="selectedItems"
                     keyExpr="code"
-                    [hidden]="!currentUser"
                     [filterValue]="filterValue"
                     [dataSource]="source"
                     [rtlEnabled]="lang"
@@ -46,17 +63,19 @@
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
-                    <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
+                    <dxo-selection *ngIf="!showCurrentPermissions" mode="multiple"
+                                   showCheckBoxesMode="always"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
                     <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="nameAr" [caption]="'Name Ar'|translate"></dxi-column>
+                    <dxi-column dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
                     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
                     <dxi-column dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
                                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
                                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
+
                     <div *dxTemplate="let ranking of 'rankingTemplate'">
                         <dx-check-box (onValueChanged)="rankingRowSelected($event,ranking)"
                                       [value]="getRankingSelectValue(ranking)  || false"></dx-check-box>
@@ -68,6 +87,22 @@
                         {{material.value}}
                     </div>
                 </dx-data-grid>
+                <dx-popup
+                        width="700"
+                        height="auto"
+                        [showTitle]="true"
+                        [title]="'Copy From'|translate"
+                        [dragEnabled]="false"
+                        [closeOnOutsideClick]="true"
+                        [(visible)]="popupVisible">
+                    <div *dxTemplate="let data of 'content'">
+                        <dx-select-box #company
+                                       displayExpr="name"
+                                       [dataSource]="customersSource"
+                                       [(value)]="selectedForCopy"></dx-select-box>
+                        <dx-button class="pull-right" (onClick)="click($event)">{{'Submit'|translate}}</dx-button>
+                    </div>
+                </dx-popup>
             </div>
         </div>
     </div>
