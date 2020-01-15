@@ -68,4 +68,4 @@ node_modules/
 # Jetbrain Folder
 .idea/
 dist/
-src/app/shared/services/firebase/permission.service.ts
+package.rar
