@@ -21,6 +21,11 @@
                 </dx-data-grid>
                 <dx-data-grid *ngIf="currentRow" [dataSource]="itemSource" [showBorders]="true" [rtlEnabled]="lang">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                    <dxo-pager
+                            [showPageSizeSelector]="true"
+                            [allowedPageSizes]="[5, 10, 20]"
+                            [showInfo]="true">
+                    </dxo-pager>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-editing

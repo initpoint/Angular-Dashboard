@@ -34,14 +34,12 @@ export class ImportComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
             /* save data */
-            let data = XLSX.utils.sheet_to_json(ws, {header: ['barCodeId', 'code', 'nameArFull', 'materialCode', 'materialNameAr', 'rankingCode', 'rankingNameAr', 'unitCode', 'unitNameAr', 'size']}).slice(1);
+            const data = XLSX.utils.sheet_to_json(ws, {header: ['barCodeId', 'code', 'nameArFull', 'materialCode', 'materialNameAr', 'rankingCode', 'rankingNameAr', 'unitCode', 'unitNameAr', 'size']}).slice(1);
             this.importService.db.doc('item/itemArray').delete().then(() => {
-                data.forEach(data => {
-                    this.importService.importToPhones(data);
-                    this.importService.importJSON(data);
+                Promise.all([this.importService.importToPhones(data), this.importService.importJSON(data)]).then(res => {
+                    this.show = false;
                 });
             });
-            this.show = false;
         };
         reader.readAsBinaryString(target.files[0]);
     }
