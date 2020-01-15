@@ -95,15 +95,17 @@ export class PermissionComponent implements OnInit {
     onFocusedRowChanged(e: any) {
         this.currentUser = e.row.data;
         this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
-            this.currentUserPermissions = doc.data().items;
-            this.currentFilter = [];
-            for (let i = 0; i < doc.data().items.length; i++) {
-                this.currentFilter.push(['code', '=', doc.data().items[i]]);
-                if (doc.data().items.length - i > 1) {
-                    this.currentFilter.push('or');
+            if (doc.exists) { // Check if Permission doc is exists
+                this.currentUserPermissions = doc.data().items;
+                this.currentFilter = [];
+                for (let i = 0; i < doc.data().items.length; i++) {
+                    this.currentFilter.push(['code', '=', doc.data().items[i]]);
+                    if (doc.data().items.length - i > 1) {
+                        this.currentFilter.push('or');
+                    }
                 }
+                this.filterValue = this.currentFilter;
             }
-            this.filterValue = this.currentFilter;
         });
         this.showCurrentPermissions = true;
     }

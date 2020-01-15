@@ -20,7 +20,7 @@
                     <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
                                 [cellTemplate]="'Upload'" [caption]="'Copy'|translate"></dxi-column>
                     <div *dxTemplate="let data of 'Upload'">
-                        <button class="btn btn-sm btn-pill btn-primary">{{'Copy'|translate}}</button>
+                        <button class="btn btn-sm btn-pill btn-secondary">{{'Copy'|translate}}</button>
                     </div>
                 </dx-data-grid>
                 <div class="dx-fieldset" [hidden]="!currentUser">
@@ -60,7 +60,7 @@
                     [columnAutoWidth]="true"
                     [hoverStateEnabled]="true">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
-                    <dxo-pager
+                    <dxo-pager [showNavigationButtons]="true"
                             [showPageSizeSelector]="true"
                             [allowedPageSizes]="[5, 10, 20]"
                             [showInfo]="true">

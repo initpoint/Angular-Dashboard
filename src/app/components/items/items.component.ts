@@ -29,9 +29,10 @@ export class ItemsComponent implements OnInit {
             this.currentRow = $event.data;
            if ($event.event.target.className == 'btn btn-sm btn-pill btn-success') {
                this.itemsService.getItemPhotos(this.currentRow.code).subscribe(res => {
-                   this.currentRow.pics = res.data().pics
+                   if (res.exists) {
+                       this.currentRow.pics = res.data().pics
+                   }
                    this.popupVisible = true;
-                   console.log(this.currentRow)
                    if (document.getElementsByClassName('newPhotos').length != 0) {
                        for (let i = 0; i < document.getElementsByClassName('newPhotos').length; i++) {
                            document.getElementsByClassName('newPhotos')[i].remove();

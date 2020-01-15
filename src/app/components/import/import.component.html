@@ -2,15 +2,37 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-title">Import Combinations</div>
+                <div class="card-header"><h5>{{'Import' | translate}} {{'Combinations' | translate}}</h5></div>
                 <div class="card-body">
-                <input type="file" (change)="onFileChange($event)" multiple="false"/>
+                    <dx-file-uploader
+                            selectButtonText="Select XLSX File"
+                            labelText=""
+                            accept=".xlsx"
+                            [(rtlEnabled)]="lang"
+                            (change)="onFileChange($event)"
+                            multiple="false"
+                            uploadMode="instantly">
+                    </dx-file-uploader>
+                <!--<input type="file" (change)="onFileChange($event)" multiple="false"/>-->
                 </div>
             </div>
             <div class="card">
-                <div class="card-title">Import PriceList</div>
+                <div class="card-header"><h5>{{'Import' | translate}} {{'Price List' | translate}}</h5>
+            </div>
                 <div class="card-body">
-                    <input type="file" (change)="uploadPriceList($event)" multiple="false"/>
+                    <div id="fileuploader-container">
+                        <dx-file-uploader
+                                selectButtonText="Select XLSX File"
+                                labelText=""
+                                accept=".xlsx"
+                                [(rtlEnabled)]="lang"
+                                (change)="uploadPriceList($event)"
+                                multiple="false"
+                                uploadMode="instantly">
+                        </dx-file-uploader>
+
+                    </div>
+                    <!--<input type="file" (change)="uploadPriceList($event)" multiple="false"/>-->
                 </div>
             </div>
         </div>

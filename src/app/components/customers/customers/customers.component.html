@@ -23,7 +23,7 @@
                         <dxi-column dataField="email" [caption]="'Email'|translate"></dxi-column>
                         <dxi-column dataField="password" [caption]="'Password'|translate" [allowSearch]="false" [allowSorting]="false" [formItem]="{visible: fieldView}" [visible]="false"></dxi-column>
                         <dxi-column dataField="mobile" [caption]="'Mobile'|translate"></dxi-column>
-                        <dxi-column dataField="pricelist" caption="Price List"> <dxo-lookup
+                        <dxi-column dataField="pricelist" [caption]="'Price List'|translate"> <dxo-lookup
                                 [dataSource]="priceLists"
                                 displayExpr="name"
                                 valueExpr="id">
@@ -35,7 +35,7 @@
                             <button (click)="data.value = !data.value;activeCustomer(data)"
                                     title="Click to {{data.value ? 'Disable' : 'Active'}}"
                                     class="btn btn-sm btn-pill"
-                                    [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Active' : 'Pending'}}</button>
+                                    [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Active' : "Pending" }}</button>
                         </div>
                     </dx-data-grid>
 
