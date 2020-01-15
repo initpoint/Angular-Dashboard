@@ -23,10 +23,12 @@ export class ImportService {
         newItem[data.code].prices = {};
         newItem[data.code].pics = [];
         newItem[data.code].users = [];
+        newItem[data.code].isNew = false;
+        newItem[data.code].isActive = true;
         Object.keys(data).forEach(row => {
             newItem[data.code][row] = data[row];
         });
-        this.db.collection('item').doc('itemArray').set(newItem, {merge: true});
+         this.db.collection('item').doc('itemArray').set(newItem, {merge: true});
     }
 
     importToPhones(data) {
@@ -44,8 +46,7 @@ export class ImportService {
                 this.itemArray[rows.code].prices= {};
                 this.itemArray[rows.code].prices[listID] = rows.price
                 this.db.collection('combinations').doc(rows.code).set(this.itemArray[rows.code],{merge:true});
-                this.db.doc('item/itemArray').set(this.itemArray,{merge:true})
-                console.log(this.itemArray[rows.code]);
+                this.db.doc('item/itemArray').set(this.itemArray,{merge:true});
 
         }
     }
