@@ -19,7 +19,18 @@
                     <dxo-selection mode="single"></dxo-selection>
                     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
                 </dx-data-grid>
-                <dx-data-grid *ngIf="currentRow" [dataSource]="itemSource" [showBorders]="true" [rtlEnabled]="lang">
+                <div [hidden]="!showSaveButton" class="dx-field m-15">
+                    <div class="dx-field-value">
+                        <dx-button
+                                [(rtlEnabled)]="lang"
+                                class="btn-success send"
+                                icon="fa fa-save"
+                                (click)="savePrices()"
+                                text="{{'Save'|translate}}">
+                        </dx-button>
+                    </div>
+                </div>
+                <dx-data-grid *ngIf="currentRow" keyExpr="barCodeId" [dataSource]="itemService.itemArray" [showBorders]="true" [rtlEnabled]="lang">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-pager
                             [showPageSizeSelector]="true"
@@ -36,6 +47,8 @@
                     </dxo-editing>
                     <dxo-export [enabled]="true" fileName="Combinations" [allowExportSelectedData]="true"></dxo-export>
                     <dxo-selection mode="multiple"></dxo-selection>
+                    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
+                                [formItem]="{visible: false}" [allowEditing]="false"></dxi-column>
                     <dxi-column dataField="code" [allowEditing]='false' [caption]="'Code'|translate"></dxi-column>
                     <dxi-column dataField="nameArFull" [allowEditing]='false' [caption]="'Name Ar'|translate"></dxi-column>
                     <dxi-column dataField="isActive" [allowEditing]='false' dataType="boolean"
@@ -48,7 +61,7 @@
                         </div>
                     </div>
                     <div *dxTemplate="let cellInfo of 'tagBoxEditor'">
-                        <dx-number-box [value]="cellInfo.data.prices[currentRow.id]"  (onValueChanged)="cellInfo.setValue($event.value)"></dx-number-box>
+                        <dx-number-box [value]="cellInfo.data.prices[currentRow.id]"  (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
                     </div>
                 </dx-data-grid>
             </div>

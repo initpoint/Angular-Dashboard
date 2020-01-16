@@ -2,11 +2,9 @@
   <div class="logo-wrapper"><a href="javascript:void(0)"><img class="ml-4" src="assets/images/alsenedy-logo-small.png" alt=""></a></div>
 </div>
 <div class="sidebar custom-scrollbar">
-  <!--<div class="sidebar-user text-center">-->
-
-    <!--<h6 class="mt-3 f-14">{{navServices.authService.currentUser.name ==null ? navServices.authService.currentUser.email : navServices.authService.currentUser.name}}</h6>-->
-    <!--<p>{{navServices.authService.currentUser.userType ==null ? 'Unassigned user type' : navServices.authService.currentUser.userType}}.</p>-->
-  <!--</div>-->
+  <div class="sidebar-user text-center">
+  <button class="btn btn-round btn-danger btn-pill" (click)="reset($event)"><i class="fa fa-refresh"></i> Reset Collections</button>
+  </div>
   <ul class="sidebar-menu">
     <li *ngFor="let menuItem of menuItems" [ngClass]="{active: menuItem.active}">
       <!-- Sub -->

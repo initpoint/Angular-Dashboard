@@ -33,7 +33,7 @@
                                             class="btn-success send"
                                             icon="fa fa-save"
                                             (click)="saveCustomerPermissions()"
-                                            text="Save ">
+                                            text="{{'Save'|translate}}">
                                     </dx-button>
                                 </div>
                             </div>
@@ -53,9 +53,9 @@
                 <dx-data-grid
                     #items
                     [(selectedRowKeys)]="selectedItems"
-                    keyExpr="code"
+                    keyExpr="barCodeId"
                     [filterValue]="filterValue"
-                    [dataSource]="source"
+                    [dataSource]="itemsService.itemArray"
                     [rtlEnabled]="lang"
                     [columnAutoWidth]="true"
                     [hoverStateEnabled]="true">
@@ -71,6 +71,8 @@
                     <dxo-selection *ngIf="!showCurrentPermissions" mode="multiple"
                                    showCheckBoxesMode="always"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
+                    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
+                                [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>

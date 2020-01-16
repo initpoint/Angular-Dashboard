@@ -13,6 +13,7 @@ import {
     DxTreeListModule,
     DxFileUploaderModule,
     DxPopupModule,
+    DxButtonModule,
     DxRadioGroupModule,
     DxTemplateModule,
     DxDataGridModule,
@@ -27,6 +28,7 @@ import {TranslateModule} from '@ngx-translate/core';
     imports: [
         DxTextBoxModule,
         DxDataGridModule,
+        DxButtonModule,
         DxPopupModule,
         DxTemplateModule,DxRadioGroupModule,
         DxFileUploaderModule,

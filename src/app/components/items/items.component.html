@@ -2,11 +2,22 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
+                <div [hidden]="!showSaveButton" class="dx-field m-15">
+                    <div class="dx-field-value">
+                        <dx-button
+                                [(rtlEnabled)]="lang"
+                                class="btn-success send"
+                                icon="fa fa-save"
+                                (click)="saveItems()"
+                                text="{{'Save'|translate}}">
+                        </dx-button>
+                    </div>
+                </div>
                 <dx-data-grid
-                        keyExpr="code"
+                        keyExpr="barCodeId"
                         [showBorders]="true"
                         (onRowClick)="RowClicked($event)"
-                        [dataSource]="source"
+                        [dataSource]="itemsService.itemArray"
                         [rtlEnabled]="lang"
                         [showRowLines]="true"
                         [columnAutoWidth]="true"
@@ -20,10 +31,12 @@
                             [showInfo]="true">
                     </dxo-pager>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
-                    <dxo-search-panel [visible]="true"></dxo-search-panel>
+                    <dxo-search-panel [visible]="false"></dxo-search-panel>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
                     <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
+                    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
+                                [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>

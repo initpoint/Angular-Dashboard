@@ -33,9 +33,6 @@ export class PermissionComponent implements OnInit {
         this.permissionService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
-        this.itemsService.getItemsSync().subscribe(res => {
-            this.source = Object.keys(res.data()).map(key => res.data()[key]);
-        });
     }
 
     ngOnInit() {
@@ -48,18 +45,18 @@ export class PermissionComponent implements OnInit {
         if (items) {
             items.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.code, true);
+                    component.selectRows(item.barCodeId, true);
                 } else {
-                    component.deselectRows(item.code);
+                    component.deselectRows(item.barCodeId);
                 }
             });
         }
         if (collapsedItems) {
             collapsedItems.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.code, true);
+                    component.selectRows(item.barCodeId, true);
                 } else {
-                    component.deselectRows(item.code);
+                    component.deselectRows(item.barCodeId);
                 }
             });
         }
@@ -99,7 +96,7 @@ export class PermissionComponent implements OnInit {
                 this.currentUserPermissions = doc.data().items;
                 this.currentFilter = [];
                 for (let i = 0; i < doc.data().items.length; i++) {
-                    this.currentFilter.push(['code', '=', doc.data().items[i]]);
+                    this.currentFilter.push(['barCodeId', '=', doc.data().items[i]]);
                     if (doc.data().items.length - i > 1) {
                         this.currentFilter.push('or');
                     }

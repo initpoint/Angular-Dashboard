@@ -10,10 +10,11 @@
                             accept=".xlsx"
                             [(rtlEnabled)]="lang"
                             (change)="onFileChange($event)"
-                            multiple="false"
+                            [showFileList]="false"
+                            [maxFileSize]="3000000"
+                            [multiple]="false"
                             uploadMode="instantly">
                     </dx-file-uploader>
-                <!--<input type="file" (change)="onFileChange($event)" multiple="false"/>-->
                 </div>
             </div>
             <div class="card">
@@ -27,7 +28,9 @@
                                 accept=".xlsx"
                                 [(rtlEnabled)]="lang"
                                 (change)="uploadPriceList($event)"
-                                multiple="false"
+                                [showFileList]="false"
+                                [maxFileSize]="3000000"
+                                [multiple]="false"
                                 uploadMode="instantly">
                         </dx-file-uploader>
 

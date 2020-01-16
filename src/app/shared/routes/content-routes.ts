@@ -3,13 +3,6 @@ import { Routes } from '@angular/router';
 export const content: Routes = [
 
   {
-    path: 'products',
-    loadChildren: './components/products/products.module#ProductsModule',
-    data: {
-      breadcrumb: "Products"
-    }
-  },
-  {
     path: 'carts',
     loadChildren: './components/carts/carts.module#CartsModule',
     data: {

@@ -14,10 +14,11 @@ export class ItemsComponent implements OnInit {
     currentRow: any;
     popupVisible: boolean;
     value: any[]=[];
+    private showSaveButton: boolean = false;
     constructor(private itemsService: ItemsService) {
-        this.itemsService.getItemsSync().subscribe(res => {
-            this.source = Object.keys(res.data()).map(key => res.data()[key]);
-        });
+        // this.itemsService.getItemsSync().subscribe(res => {
+        //     this.source = Object.keys(res.data()).map(key => res.data()[key]);
+        // });
 
     }
 
@@ -28,7 +29,7 @@ export class ItemsComponent implements OnInit {
         if ($event.rowType == 'data') {
             this.currentRow = $event.data;
            if ($event.event.target.className == 'btn btn-sm btn-pill btn-success') {
-               this.itemsService.getItemPhotos(this.currentRow.code).subscribe(res => {
+               this.itemsService.getItemPhotos(this.currentRow.barCodeId).subscribe(res => {
                    if (res.exists) {
                        this.currentRow.pics = res.data().pics
                    }
@@ -71,18 +72,18 @@ export class ItemsComponent implements OnInit {
         if (items) {
             items.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.code, true);
+                    component.selectRows(item.barCodeId, true);
                 } else {
-                    component.deselectRows(item.code);
+                    component.deselectRows(item.barCodeId);
                 }
             });
         }
         if (collapsedItems) {
             collapsedItems.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.code, true);
+                    component.selectRows(item.barCodeId, true);
                 } else {
-                    component.deselectRows(item.code);
+                    component.deselectRows(item.barCodeId);
                 }
             });
         }
@@ -110,17 +111,13 @@ export class ItemsComponent implements OnInit {
     getRankingSelectValue(ranking) {
         return this.rankingSelectedRows[ranking.key[0]];
     }
-
+    saveItems() {
+        this.itemsService.updateItems();
+        this.showSaveButton = false;
+    }
     toggleNew(data) {
-        console.log(data)
-        this.itemsService.toggleItem(data.data.code, data).then(res => {
-           this.source.find(x=> x.code == data.data.code).isNew = data.value;
-           let newItem = {};
-           newItem[data.data.code] = {}
-           newItem[data.data.code].isNew = data.value;
-           this.itemsService.db.doc('item/itemArray').set(newItem,{merge:true})
-        }).catch(err => {
-            console.log(err);
-        });
+        this.showSaveButton = true;
+        this.itemsService.itemArray.find(x => x.barCodeId === data.data.barCodeId).isNew = data.value;
+        this.itemsService.toggleItem(data.data.barCodeId,data)
     }
 }

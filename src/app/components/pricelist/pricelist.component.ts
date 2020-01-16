@@ -4,6 +4,7 @@ import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
+import {ItemsService} from '../../shared/services/firebase/items.service';
 
 @Component({
     selector: 'app-PriceList',
@@ -16,7 +17,7 @@ export class PriceListComponent implements OnInit {
     value: any[] = [];
     categories: Category[];
     pricelistStore: CustomeStore;
-    ExpandedRow;
+    showSaveButton: boolean = false;
     lang;
     currentRow;
     itemStore: CustomeStore;
@@ -24,7 +25,9 @@ export class PriceListComponent implements OnInit {
     pricelistSource: DataSource;
 
     constructor(
-        private PriceListservice: PriceListService) {
+        private PriceListservice: PriceListService,
+        private itemService: ItemsService
+    ) {
         this.pricelistStore = new CustomeStore({
             key: 'id',
             load: (opts) => {
@@ -52,28 +55,9 @@ export class PriceListComponent implements OnInit {
             store: this.pricelistStore,
         });
         this.itemStore = new CustomeStore({
-            key: 'id',
-            load: (opts) => {
-                return new Promise((resolve, reject) => {
-                    this.lang = localStorage.getItem('lang') == 'ar';
-                    this.PriceListservice.getCombinations().subscribe(res => {
-                        resolve({data: res});
-                    });
-                });
-            },
-            update: (key, values) => {
-                let newItem = {
-                    prices: {}
-                };
-                newItem.prices[this.currentRow.id] = values.prices
-                console.log(newItem)
-                return this.PriceListservice.updateItem(key, newItem).then(ass => {
-                    console.log(ass);
-                });
-            },
             remove: (itemKey) => {
                 let priceListKey = this.currentRow.id;
-                return this.PriceListservice.removeItem(itemKey,priceListKey);
+                return this.PriceListservice.removeItem(itemKey, priceListKey);
             }
 
         });
@@ -91,5 +75,13 @@ export class PriceListComponent implements OnInit {
         this.currentRow = $event.data;
     }
 
+    savePrices() {
+        this.itemService.updateItems();
+        this.showSaveButton = false;
+    }
 
+    setPrice(value: any, cellInfo: any) {
+        this.showSaveButton = true;
+        this.itemService.itemArray.find(x => x.barCodeId === cellInfo.data.barCodeId).prices[this.currentRow.id] = value;
+    }
 }
