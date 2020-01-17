@@ -1,7 +1,7 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
+<!--<div class="container-fluid">-->
+<!--    <div class="row">-->
+<!--        <div class="col-sm-12">-->
+<!--            <div class="card">-->
                 <dx-data-grid [dataSource]="pricelistSource" [showBorders]="true" [rtlEnabled]="lang" [hoverStateEnabled]="true"
                               [focusedRowEnabled]="true"
                               (onRowClick)="RowClicked($event)">
@@ -30,13 +30,17 @@
                         </dx-button>
                     </div>
                 </div>
-                <dx-data-grid *ngIf="currentRow" keyExpr="barCodeId" [dataSource]="itemService.itemArray" [showBorders]="true" [rtlEnabled]="lang">
-                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
-                    <dxo-pager
-                            [showPageSizeSelector]="true"
-                            [allowedPageSizes]="[5, 10, 20]"
-                            [showInfo]="true">
-                    </dxo-pager>
+                <dx-data-grid *ngIf="currentRow" keyExpr="barCodeId" [dataSource]="itemService.itemArray"
+
+                              [showBorders]="false"
+                              [rtlEnabled]="lang"
+                              [showRowLines]="false"
+                              [columnAutoWidth]="true"
+                              [hoverStateEnabled]="true"
+                              [focusedRowEnabled]="true"
+                              [wordWrapEnabled]="true">
+
+                    <dxo-scrolling mode="infinite"></dxo-scrolling>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-editing
@@ -64,7 +68,7 @@
                         <dx-number-box [value]="cellInfo.data.prices[currentRow.id]"  (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
                     </div>
                 </dx-data-grid>
-            </div>
-        </div>
-    </div>
-</div>
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->

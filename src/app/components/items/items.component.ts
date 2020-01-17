@@ -132,4 +132,8 @@ export class ItemsComponent implements OnInit {
         this.itemsService.itemArray.find(x => x.barCodeId === data.data.barCodeId).isNew = data.value;
         this.itemsService.toggleItem(data.data.barCodeId, data);
     }
+
+    rowExpanded(e: any) {
+        console.log(e);
+    }
 }

@@ -1,7 +1,7 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
+<!--<div class="container-fluid">-->
+<!--    <div class="row">-->
+<!--        <div class="col-sm-12">-->
+<!--            <div class="card">-->
                 <dx-data-grid
                         (onRowClick)="RowClicked($event)"
                         [focusedRowIndex]="0"
@@ -56,21 +56,23 @@
                     keyExpr="barCodeId"
                     [filterValue]="filterValue"
                     [dataSource]="itemsService.itemArray"
+
+                    [showBorders]="false"
                     [rtlEnabled]="lang"
+                    [showRowLines]="false"
                     [columnAutoWidth]="true"
-                    [hoverStateEnabled]="true">
-                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
-                    <dxo-pager [showNavigationButtons]="true"
-                            [showPageSizeSelector]="true"
-                            [allowedPageSizes]="[5, 10, 20]"
-                            [showInfo]="true">
-                    </dxo-pager>
+                    [hoverStateEnabled]="true"
+                    [focusedRowEnabled]="true"
+                    [wordWrapEnabled]="true">
+
+                    <dxo-scrolling mode="virtual"></dxo-scrolling>
+
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
                     <dxo-selection *ngIf="!showCurrentPermissions" mode="multiple"
                                    showCheckBoxesMode="always"></dxo-selection>
-                    <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
+                    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
                     <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
                     <dxi-column dataField="code" [caption]="'Code'|translate"
@@ -110,7 +112,7 @@
                         <dx-button class="pull-right" (onClick)="click($event)">{{'Submit'|translate}}</dx-button>
                     </div>
                 </dx-popup>
-            </div>
-        </div>
-    </div>
-</div>
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
