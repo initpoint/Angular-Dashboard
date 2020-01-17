@@ -29,14 +29,24 @@
                             <div class="Typeahead-menu" [class.is-open]="searchResult" *ngIf="menuItems?.length"
                                  id="search-outer">
                                 <div class="ProfileCard u-cf" *ngFor="let menuItem of menuItems | slice:0:8">
-                                    <div class="ProfileCard-avatar">
+                                    <div *ngIf="menuItem.type != 'product'" class="ProfileCard-avatar">
                                         <app-feather-icons [icon]="menuItem.icon"
                                                            class="header-search"></app-feather-icons>
                                     </div>
-                                    <div class="ProfileCard-details">
+                                    <div *ngIf="menuItem.type != 'product'" class="ProfileCard-details">
                                         <div class="ProfileCard-realName">
                                             <a [routerLink]="menuItem?.path" class="realname"
                                                (click)="removeFix()">{{menuItem?.title | translate}}</a>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="menuItem.type == 'product'" class="ProfileCard-avatar">
+                                        <app-feather-icons [icon]="'shopping-bag'"
+                                                           class="header-search"></app-feather-icons>
+                                    </div>
+                                    <div *ngIf="menuItem.type == 'product'" class="ProfileCard-details">
+                                        <div class="ProfileCard-realName">
+                                            <a href="/items" class="realname"
+                                               (click)="setBarCodeId(menuItem.barCodeId);removeFix();">{{menuItem?.nameArFull}}</a>
                                         </div>
                                     </div>
                                 </div>

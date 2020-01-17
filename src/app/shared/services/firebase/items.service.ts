@@ -8,10 +8,9 @@ import {map} from 'rxjs/operators';
     providedIn: 'root'
 })
 export class ItemsService implements OnInit {
-    itemMap;
     itemArray;
     lastDocIndex: number = 0;
-
+    barCodeIdToSearch: string;
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
 
         this.db.collection('item').snapshotChanges().pipe(
@@ -91,11 +90,12 @@ export class ItemsService implements OnInit {
                     this.db.collection('combinations').doc(data.barCodeId).update({
                         pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
                     });
-                    //this.itemArray.find(x => x.barCodeId === data.barCodeId).pics.push(downloadURL);
-                    document.getElementsByClassName('list-group-item')[0]
-                        .insertAdjacentHTML('afterbegin',
-                            '<div class="avatar newPhotos" style="margin-left: 0;"><img class="b-r-8" style="height: 128px;width: 128px;padding-top: 3px" alt="" src="' + downloadURL + '"> <button title="Success" style="right: -1px;bottom: -1px;" class="status status-100 bg-success"><i style="margin-left: -1px;" class="fa fa-check"></i></button>\n' +
-                            '</div>');
+                    if (data.code) {
+                        document.getElementsByClassName('list-group-item')[0]
+                            .insertAdjacentHTML('afterbegin',
+                                '<div class="avatar newPhotos" style="margin-left: 0;"><img class="b-r-8" style="height: 128px;width: 128px;padding-top: 3px" alt="" src="' + downloadURL + '"> <button title="Success" style="right: -1px;bottom: -1px;" class="status status-100 bg-success"><i style="margin-left: -1px;" class="fa fa-check"></i></button>\n' +
+                                '</div>');
+                    }
                 });
             }
         );

@@ -14,15 +14,16 @@
                     </div>
                 </div>
                 <dx-data-grid
-                        keyExpr="barCodeId"
-                        [showBorders]="true"
-                        (onRowClick)="RowClicked($event)"
-                        [dataSource]="itemsService.itemArray"
-                        [rtlEnabled]="lang"
-                        [showRowLines]="true"
-                        [columnAutoWidth]="true"
-                        [hoverStateEnabled]="true"
-                        [remoteOperations]="{filtering: true,sorting:true}">
+                    #items
+                    keyExpr="barCodeId"
+                    [showBorders]="true"
+                    (onRowClick)="RowClicked($event)"
+                    [dataSource]="itemsService.itemArray"
+                    [rtlEnabled]="lang"
+                    [showRowLines]="true"
+                    [columnAutoWidth]="true"
+                    [hoverStateEnabled]="true"
+                    [remoteOperations]="{filtering: true,sorting:true}">
                     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                     <dxo-pager
                             [showNavigationButtons]="true"
@@ -31,7 +32,7 @@
                             [showInfo]="true">
                     </dxo-pager>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
-                    <dxo-search-panel [visible]="false"></dxo-search-panel>
+                    <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
                     <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>

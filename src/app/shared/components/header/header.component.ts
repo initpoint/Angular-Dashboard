@@ -2,7 +2,7 @@ import {Component, OnInit, Output, EventEmitter} from '@angular/core';
 import {NavService, Menu} from '../../services/nav.service';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from '../../services/firebase/auth.service';
-import {UserService} from '../../services/firebase/user.service';
+import {ItemsService} from '../../services/firebase/items.service';
 
 var body = document.getElementsByTagName('body')[0];
 
@@ -18,7 +18,6 @@ export class HeaderComponent implements OnInit {
     public searchResult: boolean = false;
     public searchResultEmpty: boolean = false;
     public openNav: boolean = false;
-    public right_sidebar: boolean = false;
     public text: string;
     public lang: string;
     public direction: string;
@@ -26,7 +25,7 @@ export class HeaderComponent implements OnInit {
     @Output() rightSidebarEvent = new EventEmitter<boolean>();
 
     constructor(public navServices: NavService,
-                private userService: UserService,
+                private itemsService: ItemsService,
                 private translate: TranslateService,
                 public authService: AuthService) {
         this.lang = localStorage.getItem('lang') != null ? localStorage.getItem('lang') : 'en';
@@ -73,12 +72,21 @@ export class HeaderComponent implements OnInit {
         if (!term) {
             return this.menuItems = [];
         }
-        let items = [];
+        let itemsArray = this.itemsService.itemArray;
+        let searchItems = [];
         term = term.toLowerCase();
+        itemsArray.filter(items => {
+            items.type = 'product';
+            if (items.barCodeId.includes(term) || items.code.includes(term) || items.materialCode.includes(term) || items.rankingCode.includes(term)) {
+                searchItems.push(items);
+            }
 
+            // this.checkSearchResultEmpty(items);
+        });
         this.items.filter(menuItems => {
+
             if (menuItems.title.toLowerCase().includes(term) && menuItems.type === 'link') {
-                items.push(menuItems);
+                searchItems.push(menuItems);
             }
             if (!menuItems.children) {
                 return false;
@@ -86,7 +94,7 @@ export class HeaderComponent implements OnInit {
             menuItems.children.filter(subItems => {
                 if (subItems.title.toLowerCase().includes(term) && subItems.type === 'link') {
                     subItems.icon = menuItems.icon;
-                    items.push(subItems);
+                    searchItems.push(subItems);
                 }
                 if (!subItems.children) {
                     return false;
@@ -94,15 +102,14 @@ export class HeaderComponent implements OnInit {
                 subItems.children.filter(suSubItems => {
                     if (suSubItems.title.toLowerCase().includes(term)) {
                         suSubItems.icon = menuItems.icon;
-                        items.push(suSubItems);
+                        searchItems.push(suSubItems);
                     }
                 });
             });
 
-            this.checkSearchResultEmpty(items);
+            this.checkSearchResultEmpty(searchItems);
         });
-        this.menuItems = items;
-        console.log(this.menuItems);
+        this.menuItems = searchItems;
     }
 
     checkSearchResultEmpty(items) {
@@ -123,7 +130,11 @@ export class HeaderComponent implements OnInit {
         body.classList.remove('offcanvas');
         this.text = '';
     }
+    setBarCodeId(barCodeId) {
 
+            localStorage.setItem('barCodeId', barCodeId);
+
+    }
     ngOnInit() {
         this.navServices.items.subscribe(menuItems => {
             this.items = menuItems;

@@ -1,4 +1,5 @@
 {
+  "Reset Collections": "Reset",
   "Carts": "Carts",
   "Copy From": "Copy From",
   "Copy": "Copy",
@@ -29,9 +30,9 @@
   "Photos": "Photos",
   "Unit": "Unit",
   "Size": "Size",
-  "Combinations / FullList": "Combinations / FullList",
+  "Combinations": "Combinations",
   "Name Ar": "Name Ar",
-  "Name En": "Name En",
+  "Settings": "Settings",
   "Add User": "Add User",
   "Delete": "Delete",
   "Edit": "Edit",

@@ -71,40 +71,4 @@ export class SidebarComponent {
     }
     item.active = !item.active
   }
-
-  reset($event) {
-    if (confirm('Are you sure about this?')) {
-      console.log('Deleting Database')
-       this.db.collection('item').ref.get().then(res=> {
-         res.docs.forEach(doc => {
-           doc.ref.delete();
-         })
-         console.log('item deleted');
-       })
-      this.db.collection('permission').ref.get().then(res=> {
-        res.docs.forEach(doc => {
-          doc.ref.delete();
-        })
-        console.log('permissions deleted');
-      })
-      this.db.collection('pricelist').ref.get().then(res=> {
-        res.docs.forEach(doc => {
-          doc.ref.delete();
-        })
-        console.log('pricelist deleted');
-      })
-      this.db.collection('carts').ref.get().then(res=> {
-        res.docs.forEach(doc => {
-          doc.ref.delete();
-        })
-        console.log('carts deleted');
-      })
-      this.db.collection('combinations').ref.get().then(res=> {
-        res.docs.forEach(doc => {
-          doc.ref.delete();
-        })
-        console.log('combinations deleted');
-      })
-    }
-  }
 }

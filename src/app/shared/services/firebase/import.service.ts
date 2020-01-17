@@ -14,7 +14,7 @@ export class ImportService {
     ) {
     }
 
-    importJSONBeta(data) {
+    importJSON(data) {
         let chunk = 100;
         let allNewCombinations = [];
         data.forEach(dataItem => {

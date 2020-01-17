@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-4">
             <div class="card">
                 <div class="card-header"><h5>{{'Import' | translate}} {{'Combinations' | translate}}</h5></div>
                 <div class="card-body">
@@ -17,6 +17,8 @@
                     </dx-file-uploader>
                 </div>
             </div>
+        </div>
+        <div class="col-sm-4">
             <div class="card">
                 <div class="card-header"><h5>{{'Import' | translate}} {{'Price List' | translate}}</h5>
             </div>
@@ -36,6 +38,35 @@
 
                     </div>
                     <!--<input type="file" (change)="uploadPriceList($event)" multiple="false"/>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header"><h5>{{'Import' | translate}} {{'Photos' | translate}}</h5></div>
+                <div class="card-body">
+                    <dx-file-uploader
+                            selectButtonText="Select Image Files"
+                            labelText=""
+                            accept="image/*"
+                            [(rtlEnabled)]="lang"
+                            [(value)]='value'
+                            [showFileList]="true"
+                            [maxFileSize]="3000000"
+                            [multiple]="true"
+                            uploadMode="useForm">
+                    </dx-file-uploader>
+                    <button class="ml-2 btn btn-primary" type="submit" (click)="uploadImages()">
+                        {{'Upload' |translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header"><h5>{{'Reset Collections' | translate}}</h5></div>
+                <div class="card-body">
+                    <button class="btn btn-danger btn-air-danger" (click)="reset()"><i class="fa fa-trash"></i> {{'Reset Collections' | translate}}</button>
                 </div>
             </div>
         </div>
