@@ -22,7 +22,6 @@ export class HeaderComponent implements OnInit {
     public lang: string;
     public direction: string;
     public isOpenMobile: boolean = false;
-    @Output() rightSidebarEvent = new EventEmitter<boolean>();
 
     constructor(public navServices: NavService,
                 private itemsService: ItemsService,
@@ -131,19 +130,12 @@ export class HeaderComponent implements OnInit {
         this.text = '';
     }
     setBarCodeId(barCodeId) {
-
-            localStorage.setItem('barCodeId', barCodeId);
-
+        localStorage.setItem('barCodeId', barCodeId);
     }
     ngOnInit() {
         this.navServices.items.subscribe(menuItems => {
             this.items = menuItems;
         });
-        // this.userService.getUsers().subscribe(users => {
-        //     users.forEach(User=> {
-        //         this.items.push(User.payload.doc.data());
-        //     })
-        // });
     }
 
 }

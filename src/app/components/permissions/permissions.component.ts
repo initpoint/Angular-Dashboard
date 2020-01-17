@@ -1,9 +1,5 @@
 import {Component, OnInit, ViewChild, QueryList} from '@angular/core';
 import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
-import {Category} from 'src/app/shared/model/category.model';
-import DataSource from 'devextreme/data/data_source';
-import CustomeStore from 'devextreme/data/custom_store';
-import {NgForm} from '@angular/forms';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {DxDataGridComponent} from 'devextreme-angular';
 

@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {PriceListService} from 'src/app/shared/services/firebase/pricelist.service';
-import {Category} from 'src/app/shared/model/category.model';
 import DataSource from 'devextreme/data/data_source';
 import CustomeStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
@@ -15,7 +14,6 @@ export class PriceListComponent implements OnInit {
     @ViewChild('form', {static: false}) form: NgForm;
     popupVisible = false;
     value: any[] = [];
-    categories: Category[];
     pricelistStore: CustomeStore;
     showSaveButton: boolean = false;
     lang;

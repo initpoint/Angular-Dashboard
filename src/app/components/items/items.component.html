@@ -17,7 +17,7 @@
     (onRowExpanding)="rowExpanded($event)"
     [dataSource]="itemsService.itemArray"
     [remoteOperations]="{filtering: true,sorting:true}"
-
+    [allowColumnReordering]="true"
     [showBorders]="false"
     [rtlEnabled]="lang"
     [showRowLines]="false"
@@ -32,21 +32,21 @@
     <dxo-search-panel [visible]="true"></dxo-search-panel>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
     <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
-    <dxo-grouping [autoExpandAll]="false"  expandMode="rowClick"[contextMenuEnabled]="true"></dxo-grouping>
+    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick" [contextMenuEnabled]="true"></dxo-grouping>
 
-    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
+    <dxi-column [allowReordering]="false" [allowGrouping]="false" [allowFiltering]="false" dataField="barCodeId" [caption]="'Bar Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
-    <dxi-column dataField="code" [caption]="'Code'|translate"
+    <dxi-column [allowReordering]="false" dataField="code" [caption]="'Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
-    <dxi-column dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
+    <dxi-column [allowReordering]="false" [allowFiltering]="false" [allowGrouping]="false" dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
     <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
 
-    <dxi-column [formItem]="{visible: false}" dataField="isNew" datatype="boolean" [allowSearch]="false"
+    <dxi-column  [allowReordering]="false" [formItem]="{visible: false}" dataField="isNew" datatype="boolean" [allowSearch]="false"
                 [allowSorting]="false" [cellTemplate]="'ActiveButton'"
                 [caption]="'Is New'|translate"></dxi-column>
-    <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
-                [cellTemplate]="'Upload'" [caption]="'Photos'|translate"></dxi-column>
+    <dxi-column [allowGrouping]="false" [allowReordering]="false" [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
+                [cellTemplate]="'Upload'"  [caption]="' '"></dxi-column>
     <dxi-column dataField="rankingCode" groupIndex="0"  groupCellTemplate="rankingTemplate"
                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
     <dxi-column dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"

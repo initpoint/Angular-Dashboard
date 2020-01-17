@@ -1,11 +1,11 @@
-<!-- Container-fluid starts -->
-<div class="container-fluid">
 
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <dx-data-grid (onEditorPreparing)="onEditorPreparing($event)" [dataSource]="customerSource" [showBorders]="true" [rtlEnabled]="lang">
+                    <dx-data-grid (onEditorPreparing)="onEditorPreparing($event)" [dataSource]="customerSource" [showBorders]="false"
+                                  [rtlEnabled]="lang"
+                                  [showRowLines]="false"
+                                  [columnAutoWidth]="true"
+                                  [hoverStateEnabled]="true"
+                                  [focusedRowEnabled]="true"
+                                  [wordWrapEnabled]="true">
                         <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
                         <dxo-header-filter [visible]="true"></dxo-header-filter>
                         <dxo-search-panel [visible]="true"></dxo-search-panel>
@@ -16,32 +16,28 @@
                                 [useIcons]="true"
                                 [allowDeleting]="true">
                         </dxo-editing>
+                        <dxo-group-panel [visible]="true"></dxo-group-panel>
                         <dxo-export [enabled]="true" fileName="Customers" [allowExportSelectedData]="true"></dxo-export>
                         <dxo-selection mode="multiple"></dxo-selection>
-                        <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
-                        <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
-                        <dxi-column dataField="email" [caption]="'Email'|translate"></dxi-column>
+                        <dxi-column dataField="code" [allowFiltering]="false" [allowGrouping]="false"  [caption]="'Code'|translate"></dxi-column>
+                        <dxi-column dataField="name" [allowFiltering]="false" [allowGrouping]="false"  [caption]="'Name'|translate"></dxi-column>
+                        <dxi-column dataField="email" [allowFiltering]="false" [allowGrouping]="false" [caption]="'Email'|translate"></dxi-column>
                         <dxi-column dataField="password" [caption]="'Password'|translate" [allowSearch]="false" [allowSorting]="false" [formItem]="{visible: fieldView}" [visible]="false"></dxi-column>
-                        <dxi-column dataField="mobile" [caption]="'Mobile'|translate"></dxi-column>
+                        <dxi-column dataField="mobile" [allowFiltering]="false" [caption]="'Mobile'|translate"></dxi-column>
                         <dxi-column dataField="pricelist" [caption]="'Price List'|translate"> <dxo-lookup
                                 [dataSource]="priceLists"
                                 displayExpr="name"
                                 valueExpr="id">
                         </dxo-lookup>
                         </dxi-column>
-                        <dxi-column [formItem]="{visible: false}" dataField="isActive" datatype="boolean" [allowSearch]="false" [allowSorting]="false" [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
-                        <dxi-column [formItem]="{visible: false}" dataField="lastLoginAt" [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
+                        <dxi-column [formItem]="{visible: false}" dataField="isActive" datatype="boolean" [allowFiltering]="false" [allowSearch]="false" [allowSorting]="false" [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
+                        <dxi-column [formItem]="{visible: false}" [allowGrouping]="false"  dataField="lastLoginAt" [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
                         <div *dxTemplate="let data of 'ActiveButton'">
                             <button (click)="data.value = !data.value;activeCustomer(data)"
                                     title="Click to {{data.value ? 'Disable' : 'Active'}}"
-                                    class="btn btn-sm btn-pill"
+                                    class="btn btn-xs btn-pill"
                                     [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Active' : "Pending" }}</button>
                         </div>
                     </dx-data-grid>
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Container-fluid Ends -->
+
