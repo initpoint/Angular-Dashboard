@@ -23,7 +23,6 @@ export class PriceListService {
             }))
         );
     }
-    /* Categories */
     getPriceLists() {
         return this.db.collection<any>('pricelist').snapshotChanges().pipe(
             map(x => x.map(y => {

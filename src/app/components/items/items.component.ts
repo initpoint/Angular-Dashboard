@@ -25,9 +25,9 @@ export class ItemsComponent implements OnInit {
     ngOnInit() {
         this.lang = localStorage.getItem('lang') === 'ar';
         setTimeout(() => {
-            if (this.dataGrid && localStorage.getItem('barCodeId')) {
-                this.dataGrid.instance.searchByText(localStorage.getItem('barCodeId'));
-                localStorage.removeItem('barCodeId');
+            if (this.dataGrid && localStorage.getItem('code')) {
+                this.dataGrid.instance.searchByText(localStorage.getItem('code'));
+                localStorage.removeItem('code');
             }
         }, 200);
     }
@@ -36,7 +36,7 @@ export class ItemsComponent implements OnInit {
         if ($event.rowType == 'data') {
             this.currentRow = $event.data;
             if ($event.event.target.className == 'btn btn-sm btn-pill btn-success') {
-                this.itemsService.getItemPhotos(this.currentRow.barCodeId).subscribe(res => {
+                this.itemsService.getItemPhotos(this.currentRow.code).subscribe(res => {
                     if (res.exists) {
                         this.currentRow.pics = res.data().pics;
                     }
@@ -82,18 +82,18 @@ export class ItemsComponent implements OnInit {
         if (items) {
             items.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.barCodeId, true);
+                    component.selectRows(item.code, true);
                 } else {
-                    component.deselectRows(item.barCodeId);
+                    component.deselectRows(item.code);
                 }
             });
         }
         if (collapsedItems) {
             collapsedItems.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.barCodeId, true);
+                    component.selectRows(item.code, true);
                 } else {
-                    component.deselectRows(item.barCodeId);
+                    component.deselectRows(item.code);
                 }
             });
         }
@@ -129,8 +129,8 @@ export class ItemsComponent implements OnInit {
 
     toggleNew(data) {
         this.showSaveButton = true;
-        this.itemsService.itemArray.find(x => x.barCodeId === data.data.barCodeId).isNew = data.value;
-        this.itemsService.toggleItem(data.data.barCodeId, data);
+        this.itemsService.itemArray.find(x => x.code === data.data.code).isNew = data.value;
+        this.itemsService.toggleItem(data.data.code, data);
     }
 
     rowExpanded(e: any) {

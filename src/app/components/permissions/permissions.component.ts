@@ -23,8 +23,9 @@ export class PermissionComponent implements OnInit {
     currentUserPermissions: [];
     popupVisible: boolean;
     selectedForCopy;
+    enableUpdateCombinations: boolean = true;
 
-    constructor(private itemsService: ItemsService,
+    constructor(public itemsService: ItemsService,
                 private permissionService: PermissionService) {
         this.permissionService.getCustomers().subscribe(res => {
             this.customersSource = res;
@@ -41,18 +42,18 @@ export class PermissionComponent implements OnInit {
         if (items) {
             items.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.barCodeId, true);
+                    component.selectRows(item.code, true);
                 } else {
-                    component.deselectRows(item.barCodeId);
+                    component.deselectRows(item.code);
                 }
             });
         }
         if (collapsedItems) {
             collapsedItems.forEach(item => {
                 if (event.value) {
-                    component.selectRows(item.barCodeId, true);
+                    component.selectRows(item.code, true);
                 } else {
-                    component.deselectRows(item.barCodeId);
+                    component.deselectRows(item.code);
                 }
             });
         }
@@ -92,7 +93,7 @@ export class PermissionComponent implements OnInit {
                 this.currentUserPermissions = doc.data().items;
                 this.currentFilter = [];
                 for (let i = 0; i < doc.data().items.length; i++) {
-                    this.currentFilter.push(['barCodeId', '=', doc.data().items[i]]);
+                    this.currentFilter.push(['code', '=', doc.data().items[i]]);
                     if (doc.data().items.length - i > 1) {
                         this.currentFilter.push('or');
                     }
@@ -105,11 +106,13 @@ export class PermissionComponent implements OnInit {
 
     filterItems(e: any) {
         this.filterValue = e.value ? this.currentFilter : [];
+        this.enableUpdateCombinations = false;
         if (e.value) {
             this.dataGrids.instance.deselectAll();
         } else {
             this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
         }
+        this.enableUpdateCombinations = true;
     }
 
 
@@ -127,5 +130,23 @@ export class PermissionComponent implements OnInit {
             this.saveCustomerPermissions();
         });
         this.popupVisible = false;
+    }
+
+    selectionChanged(e) {
+
+        if (!this.enableUpdateCombinations) {
+            return;
+        }
+        console.log(e);
+        if (e.currentSelectedRowKeys) {
+            e.currentSelectedRowKeys.forEach(key => {
+                this.permissionService.addCombinationUsers(this.currentUser.uid, key);
+            });
+        }
+        if (e.currentDeselectedRowKeys) {
+            e.currentDeselectedRowKeys.forEach(key => {
+                this.permissionService.removeCombinationUsers(this.currentUser.uid, key);
+            });
+        }
     }
 }

@@ -10,7 +10,6 @@ import {map} from 'rxjs/operators';
 export class ItemsService implements OnInit {
     itemArray;
     lastDocIndex: number = 0;
-    barCodeIdToSearch: string;
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
 
         this.db.collection('item').snapshotChanges().pipe(
@@ -61,7 +60,7 @@ export class ItemsService implements OnInit {
 
 
     removeImage(row, path, pic) {
-        return this.db.collection('combinations').doc(row.barCodeId).update({
+        return this.db.collection('combinations').doc(row.code).update({
             pics: firebase.firestore.FieldValue.arrayRemove(pic)
         }).then(() => {
             firebase.storage().ref().child(path).delete().then(() => {
@@ -75,7 +74,7 @@ export class ItemsService implements OnInit {
 
     uploadImage(file, data) {
         let storageRef = firebase.storage().ref();
-        let uploadTask = storageRef.child(`${data.barCodeId}/${file.newName}`).put(file);
+        let uploadTask = storageRef.child(`${data.code}/${file.newName}`).put(file);
         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
             (snapshot) => {
                 // upload in progress
@@ -86,8 +85,8 @@ export class ItemsService implements OnInit {
                 console.log(error);
             },
             () => {
-                storageRef.child(`${data.barCodeId}/${file.newName}`).getDownloadURL().then(downloadURL => {
-                    this.db.collection('combinations').doc(data.barCodeId).update({
+                storageRef.child(`${data.code}/${file.newName}`).getDownloadURL().then(downloadURL => {
+                    this.db.collection('combinations').doc(data.code).update({
                         pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
                     });
                     if (data.code) {

@@ -71,10 +71,10 @@ export class AuthService implements OnInit {
                             this.SetUserData(result.user, this);
                             this.SendVerificationMail();
                             this.toster.success('Authentication successful.');
-                            this.router.navigateByUrl('/cusomters/show');
+                            this.router.navigateByUrl('/customers/show');
                         } else if (result.user.emailVerified == false) {
                             this.toster.success('Authentication successful.');
-                            this.router.navigateByUrl('/cusomters/show');
+                            this.router.navigateByUrl('/customers/show');
                         } else {
                             this.showLoader = false;
                             this.ngZone.run(() => {

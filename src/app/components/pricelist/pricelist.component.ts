@@ -80,6 +80,6 @@ export class PriceListComponent implements OnInit {
 
     setPrice(value: any, cellInfo: any) {
         this.showSaveButton = true;
-        this.itemService.itemArray.find(x => x.barCodeId === cellInfo.data.barCodeId).prices[this.currentRow.id] = value;
+        this.itemService.itemArray.find(x => x.code === cellInfo.data.code).prices[this.currentRow.id] = value;
     }
 }

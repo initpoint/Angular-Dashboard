@@ -53,10 +53,10 @@
                 <dx-data-grid
                     #items
                     [(selectedRowKeys)]="selectedItems"
-                    keyExpr="barCodeId"
+                    keyExpr="code"
                     [filterValue]="filterValue"
                     [dataSource]="itemsService.itemArray"
-
+(onSelectionChanged)="selectionChanged($event)"
                     [showBorders]="false"
                     [rtlEnabled]="lang"
                     [showRowLines]="false"
