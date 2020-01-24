@@ -25,18 +25,25 @@ export class ImportService {
             const docData = [];
             this.itemsService.lastDocIndex++;
             newCombination.forEach(dataItem => {
-                let Item = this.itemsService.itemArray.find(item => item.code === dataItem.code);
-                if (this.itemsService.itemArray && Item) {
-                    if (!Item.barCodeId.find(code => code === dataItem.barCodeId)) {
-                        Item.barCodeId.push(dataItem.barCodeId);
+                let item = this.itemsService.itemArray.find(item => item.code === dataItem.code);
+                if (this.itemsService.itemArray && item) {
+                    if (!this.itemsService.itemArray.find(item => item.code === dataItem.code).barCodeId.find(code => code === dataItem.barCodeId)) {
+                        this.itemsService.itemArray.find(item => item.code === dataItem.code).barCodeId.push(dataItem.barCodeId);
+                        // item.barCodeId.push(dataItem.barCodeId);
                     }
-                    Item.size = dataItem.size || null;
-                    Item.unitCode = dataItem.unitCode || null;
-                    Item.unitNameAr = dataItem.unitNameAr || null;
-                    Item.nameArFull = dataItem.nameArFull || null;
+                    this.itemsService.itemArray.find(item => item.code === dataItem.code).size = dataItem.size || null;
+                    this.itemsService.itemArray.find(item => item.code === dataItem.code).unitCode = dataItem.unitCode || null;
+                    this.itemsService.itemArray.find(item => item.code === dataItem.code).unitNameAr = dataItem.unitNameAr || null;
+                    this.itemsService.itemArray.find(item => item.code === dataItem.code).nameArFull = dataItem.nameArFull || null;
+                    this.itemsService.itemArray.find(item => item.code === dataItem.code).docIndex = item.docIndex;
+                    // item.size = dataItem.size || null;
+                    // item.unitCode = dataItem.unitCode || null;
+                    // item.unitNameAr = dataItem.unitNameAr || null;
+                    // item.nameArFull = dataItem.nameArFull || null;
                 } else {
-                    let item =
+                    item =
                         {
+                            code: dataItem.code || null,
                             prices: {},
                             pics: [],
                             barCodeId: [],
@@ -54,18 +61,22 @@ export class ImportService {
                         }
                     });
                     docData.push(item);
+                    this.itemsService.itemArray.push(item);
                 }
+                this.db.collection('combinations').doc(item.code).set(item)
             });
-            this.itemsService.updateItems();
+
             if (docData.length != 0) {
-                return this.db.collection('item').doc(`array-${this.itemsService.lastDocIndex}`).set({items: docData}).then(res => {
+                return this.db.collection('item').doc(`array-${this.itemsService.lastDocIndex}`).set({items: docData},{merge:true}).then(res => {
                     this.toastr.success('ItemArray updated.');
                 });
             }
+            this.itemsService.updateItems();
         });
     }
 
     importToPhones(data) {
+        const docData = [];
         data.forEach(dataItem => {
                 let item = this.itemsService.itemArray.find(item => item.code === dataItem.code);
                 if (this.itemsService.itemArray && item) {
@@ -76,6 +87,7 @@ export class ImportService {
                     item.unitCode = dataItem.unitCode || null;
                     item.unitNameAr = dataItem.unitNameAr || null;
                     item.nameArFull = dataItem.nameArFull || null;
+                    console.log('item duplicated',item)
                 } else {
                    item =
                         {
@@ -90,15 +102,25 @@ export class ImportService {
                             unitNameAr: dataItem.unitNameAr || null
                         };
                     item.barCodeId.push(dataItem.barCodeId);
+                    console.log('new item',item)
                     Object.keys(dataItem).forEach(row => {
                         if (row != 'barCodeId') {
                             item[row] = dataItem[row];
                         }
                     });
                 }
+            docData.push(item);
+            this.itemsService.itemArray.push(item);
+
             this.db.collection('combinations').doc(item.code).set(item)
         });
+        if (docData.length != 0) {
+            return this.db.collection('item').doc(`array-${this.itemsService.lastDocIndex}`).set({items: docData}).then(res => {
+                this.toastr.success('ItemArray updated.');
+            });
+        }
         this.itemsService.updateItems();
+        //this.itemsService.updateItems();
         // const b = this.db.firestore.batch();
         // data.forEach(item => {
         //     console.log(data.find(items=> items.barCodeId === item.barCodeId))

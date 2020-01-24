@@ -39,7 +39,7 @@ export class ImportComponent implements OnInit {
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws, {header: ['barCodeId', 'code', 'nameArFull', 'materialCode', 'materialNameAr', 'rankingCode', 'rankingNameAr', 'unitCode', 'unitNameAr', 'size']}).slice(1);
 
-            Promise.all([this.importService.importToPhones(data), this.importService.importJSON(data)]).then(res => {
+            Promise.all([this.importService.importJSON(data)]).then(res => {
                 this.show = false;
             });
         };
