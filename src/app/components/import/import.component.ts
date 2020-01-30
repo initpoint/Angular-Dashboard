@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import * as XLSX from 'xlsx';
 import {ImportService} from '../../shared/services/firebase/import.service';
-import {ItemsService} from '../../shared/services/firebase/items.service';
 
 @Component({
     selector: 'app-import',
@@ -15,8 +14,7 @@ export class ImportComponent implements OnInit {
     value: any[] = [];
 
     // wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
-    constructor(private importService: ImportService,
-                private itemsService: ItemsService) {
+    constructor(private importService: ImportService,) {
         this.lang = localStorage.getItem('lang') === 'ar';
     }
 
@@ -67,7 +65,7 @@ export class ImportComponent implements OnInit {
             const wsname: string = wb.SheetNames[0];
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
-            let data = XLSX.utils.sheet_to_json(ws, {header: ['no', 'bla1', 'barCodeId', 'bla3', 'bla4', 'bla5', 'code', 'bla7', 'bla8', 'bla9', 'bla10', 'bla11', 'price', 'bla13', 'bla14', 'bla15', 'bla16', 'bla17', 'pricelistCode', 'name', 'bla20', 'bla21', 'bla22', 'bla23', 'bla24', 'bla25', 'qty']}).slice(1);
+            let data = XLSX.utils.sheet_to_json(ws, {header: ['no', 'column1', 'barCodeId', 'column3', 'column4', 'column5', 'code', 'column7', 'column8', 'column9', 'column10', 'column11', 'price', 'column13', 'column14', 'column15', 'column16', 'column17', 'pricelistCode', 'name', 'column20', 'column21', 'column22', 'column23', 'column24', 'column25', 'qty']}).slice(1);
             this.importService.db.collection('pricelist').doc(data[0]['pricelistCode']).set({
                 name: data[0]['name'],
                 code: data[0]['pricelistCode']
@@ -75,7 +73,7 @@ export class ImportComponent implements OnInit {
                 data.forEach(rows => {
                     this.importService.importPriceList(rows, data[0]['pricelistCode']);
                 });
-                this.itemsService.updateItems();
+                this.importService.itemsService.updateItems();
                 this.show = false;
             });
         };
@@ -84,31 +82,31 @@ export class ImportComponent implements OnInit {
     reset() {
         if (confirm('Are you sure about this?\n This will delete all the data you have\n This cannot be undone \nهل تريد مسح كل البيانات؟ \n لا يمكن التراجع عن ذلك')) {
             console.log('Deleting Database')
-            this.itemsService.db.collection('item').ref.get().then(res=> {
+            this.importService.itemsService.db.collection('item').ref.get().then(res=> {
                 res.docs.forEach(doc => {
                     doc.ref.delete();
                 })
                 console.log('item deleted');
             })
-            this.itemsService.db.collection('permission').ref.get().then(res=> {
+            this.importService.itemsService.db.collection('permission').ref.get().then(res=> {
                 res.docs.forEach(doc => {
                     doc.ref.delete();
                 })
                 console.log('permissions deleted');
             })
-            this.itemsService.db.collection('pricelist').ref.get().then(res=> {
+            this.importService.itemsService.db.collection('pricelist').ref.get().then(res=> {
                 res.docs.forEach(doc => {
                     doc.ref.delete();
                 })
                 console.log('pricelist deleted');
             })
-            this.itemsService.db.collection('carts').ref.get().then(res=> {
+            this.importService.itemsService.db.collection('carts').ref.get().then(res=> {
                 res.docs.forEach(doc => {
                     doc.ref.delete();
                 })
                 console.log('carts deleted');
             })
-            this.itemsService.db.collection('combinations').ref.get().then(res=> {
+            this.importService.itemsService.db.collection('combinations').ref.get().then(res=> {
                 res.docs.forEach(doc => {
                     doc.ref.delete();
                 })
@@ -123,8 +121,100 @@ export class ImportComponent implements OnInit {
             let data = {
                 barCodeId:file.name.split('.')[0],
             };
-            this.itemsService.uploadImage(file, data);
+            this.importService.itemsService.uploadImage(file, data);
             i++;
         });
     }
+    // تحديث الرصيد
+    updateBalance(evt: any) {
+        /* wire up file reader */
+        const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
+        }
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            /* read workbook */
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+            /* grab first sheet */
+            const wsname: string = wb.SheetNames[0];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            /* save data */
+            const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','storageBalance','branchBalance']}).slice(1);
+            console.log(wsname,data)
+            data.forEach(newItem => {
+                if (this.importService.itemsService.itemArray.find(item => item.code === newItem.code)) {
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem.code).storageBalance = newItem.storageBalance;
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem.code).branchBalance = newItem.branchBalance;
+                }
+            });
+            this.importService.itemsService.updateItems();
+        };
+        reader.readAsBinaryString(target.files[0]);
+    }
+    // تحديث السعر و الشد
+    updatePrice(evt: any) {
+        /* wire up file reader */
+        const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
+        }
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            /* read workbook */
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+            /* grab first sheet */
+            const wsname: string = wb.SheetNames[1];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            /* save data */
+            const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','unitNameAr','price','size']}).slice(1);
+            console.log(wsname,data)
+        };
+        reader.readAsBinaryString(target.files[0]);
+    }
+    // تحديث الاصناف التي بيعت للعميل
+    customerOrderList(evt: any) {
+        /* wire up file reader */
+        const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
+        }
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            /* read workbook */
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+            /* grab first sheet */
+            const wsname: string = wb.SheetNames[2];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            /* save data */
+            const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','amount']}).slice(1);
+            console.log(wsname,data)
+        };
+        reader.readAsBinaryString(target.files[0]);
+    }
+    // تحديث حجم و وزن التركيبات
+    combinationDetails(evt: any) {
+        /* wire up file reader */
+        const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
+        }
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            /* read workbook */
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+            /* grab first sheet */
+            const wsname: string = wb.SheetNames[3];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            /* save data */
+            const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','length','width','height','weight','size']}).slice(1);
+            console.log(wsname,data)
+        };
+        reader.readAsBinaryString(target.files[0]);
+    }
+
 }
