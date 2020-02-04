@@ -22,6 +22,7 @@ export class CartsService {
             }))
         );
     }
+
     deleteCart(key) {
         return this.db.collection('carts' ).doc(key).delete().then(res=> {
             this.toastr.error('Cart Deleted.');
@@ -32,7 +33,19 @@ export class CartsService {
             this.toastr.success('Cart Updated.');
         });
     }
-    setCart(id,attr) {
-        return this.updateCart(id,attr);
+    addShipment(key,item) {
+        return this.db.collection('carts').doc(key).collection('shipments').add(item).then(res => {
+            this.toastr.success('Shipment Added.');
+        });
+    }
+    getShipments(key) {
+        return  this.db.collection(`carts/${key}/shipments`).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    id: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
     }
 }

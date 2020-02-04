@@ -66,23 +66,23 @@
                     [wordWrapEnabled]="true">
 
                     <dxo-scrolling mode="virtual"></dxo-scrolling>
-
+                    <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
                     <dxo-header-filter [visible]="true"></dxo-header-filter>
                     <dxo-search-panel [visible]="true"></dxo-search-panel>
                     <dxo-group-panel [visible]="true"></dxo-group-panel>
                     <dxo-selection *ngIf="!showCurrentPermissions" mode="multiple"
                                    showCheckBoxesMode="always"></dxo-selection>
                     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
-                    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
+                    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId" [caption]="'Bar Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="code" [caption]="'Code'|translate"
+                    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="code" [caption]="'Code'|translate"
                                 [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
-                    <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
-                    <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>
-                    <dxi-column dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
+                    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
+                    <dxi-column [visible]="false" dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
+                    <dxi-column [visible]="false" dataField="size" [caption]="'Size'|translate"></dxi-column>
+                    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
                                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
-                    <dxi-column dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
+                    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
                                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
 
                     <div *dxTemplate="let ranking of 'rankingTemplate'">

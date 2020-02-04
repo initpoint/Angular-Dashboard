@@ -9,8 +9,8 @@ const routes: Routes = [
         path: '',
         component: CartsComponent,
         data: {
-          title: "Customers",
-          breadcrumb: "Customers"
+          title: "Carts",
+          breadcrumb: "Carts"
         }
       },
     ]

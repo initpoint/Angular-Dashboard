@@ -134,6 +134,6 @@ export class ItemsComponent implements OnInit {
     }
 
     rowExpanded(e: any) {
-        console.log(e);
+
     }
 }

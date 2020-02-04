@@ -94,6 +94,12 @@ export class ImportComponent implements OnInit {
                 })
                 console.log('permissions deleted');
             })
+            this.importService.itemsService.db.collection('carts').ref.get().then(res=> {
+                res.docs.forEach(doc => {
+                    doc.ref.delete();
+                })
+                console.log('carts deleted');
+            })
             this.importService.itemsService.db.collection('pricelist').ref.get().then(res=> {
                 res.docs.forEach(doc => {
                     doc.ref.delete();

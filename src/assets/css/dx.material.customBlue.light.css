@@ -5997,7 +5997,7 @@
   padding-right: 40px;
 }
 .dx-rtl .dx-treeview-item-with-checkbox .dx-checkbox {
-  right: 35px;
+  left: 35px !important;
 }
 .dx-rtl .dx-treeview-select-all-item {
   padding-left: 0;
@@ -9635,7 +9635,7 @@
 .dx-rtl .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-datagrid-invalid:not(.dx-field-item-content):first-of-type,
 .dx-rtl .dx-datagrid-container .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-datagrid-invalid:not(.dx-field-item-content):first-of-type {
   padding-left: 14px;
-  padding-right: 18px;
+  padding-right: 10px;
 }
 .dx-rtl .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td:last-of-type,
 .dx-rtl .dx-datagrid-container .dx-datagrid-content .dx-datagrid-table .dx-row > td:last-of-type,
@@ -9644,7 +9644,7 @@
 .dx-rtl .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-datagrid-invalid:not(.dx-field-item-content):last-of-type,
 .dx-rtl .dx-datagrid-container .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-datagrid-invalid:not(.dx-field-item-content):last-of-type {
   padding-right: 14px;
-  padding-left: 18px;
+  padding-left: 14px;
 }
 .dx-rtl .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-command-select,
 .dx-rtl .dx-datagrid-container .dx-datagrid-content .dx-datagrid-table .dx-row > td.dx-command-select,
