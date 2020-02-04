@@ -36,7 +36,7 @@ export class ItemsService implements OnInit {
 
     updateItem(key, newValues) {
         return new Promise(resolve => {
-            this.db.collection('item').doc(key).set(newValues, {merge: true}).then(value => {
+            this.db.collection('combinations').doc(key).set(newValues, {merge: true}).then(value => {
                 this.toastr.success('Item updated.');
                 resolve();
             });

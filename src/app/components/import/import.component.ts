@@ -147,6 +147,10 @@ export class ImportComponent implements OnInit {
                 if (this.importService.itemsService.itemArray.find(item => item.code === newItem['code'])) {
                     this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).storageBalance = newItem['storageBalance'];
                     this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).branchBalance = newItem['branchBalance'];
+                    // this.importService.itemsService.updateItem(newItem['code'],{
+                    //     storageBalance:newItem['storageBalance'],
+                    //     branchBalance:newItem['branchBalance']
+                    // })
                 }
             });
             this.importService.itemsService.updateItems();
@@ -166,7 +170,7 @@ export class ImportComponent implements OnInit {
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
             /* grab first sheet */
-            const wsname: string = wb.SheetNames[1];
+            const wsname: string = wb.SheetNames[0];
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','unitNameAr','price','size']}).slice(1);
@@ -187,7 +191,7 @@ export class ImportComponent implements OnInit {
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
             /* grab first sheet */
-            const wsname: string = wb.SheetNames[2];
+            const wsname: string = wb.SheetNames[0];
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','amount']}).slice(1);
@@ -208,10 +212,27 @@ export class ImportComponent implements OnInit {
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
             /* grab first sheet */
-            const wsname: string = wb.SheetNames[3];
+            const wsname: string = wb.SheetNames[0];
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
-            const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','length','width','height','weight','size']}).slice(1);
+            const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','length','width','height','weight','volume']}).slice(1);
+            data.forEach( newItem => {
+                if (this.importService.itemsService.itemArray.find(item => item.code === newItem['code'])) {
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).length = newItem['length'];
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).width = newItem['width'];
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).height = newItem['height'];
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).weight = newItem['weight'];
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).volume = newItem['volume'];
+                    this.importService.itemsService.updateItem(newItem['code'],{
+                        length:newItem['length'],
+                        width:newItem['width'],
+                        height:newItem['height'],
+                        weight:newItem['weight'],
+                        volume:newItem['volume'],
+                    })
+                }
+            });
+            this.importService.itemsService.updateItems();
             console.log(wsname,data)
         };
         reader.readAsBinaryString(target.files[0]);
