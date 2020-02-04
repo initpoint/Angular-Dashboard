@@ -142,11 +142,11 @@ export class ImportComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws,{header:['no','code','barCodeId','nameArFUll','storageBalance','branchBalance']}).slice(1);
-            console.log(wsname,data)
-            data.forEach(newItem => {
-                if (this.importService.itemsService.itemArray.find(item => item.code === newItem.code)) {
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem.code).storageBalance = newItem.storageBalance;
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem.code).branchBalance = newItem.branchBalance;
+
+            data.forEach( newItem => {
+                if (this.importService.itemsService.itemArray.find(item => item.code === newItem['code'])) {
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).storageBalance = newItem['storageBalance'];
+                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).branchBalance = newItem['branchBalance'];
                 }
             });
             this.importService.itemsService.updateItems();
