@@ -25,9 +25,9 @@ export class ItemsComponent implements OnInit {
     ngOnInit() {
         this.lang = localStorage.getItem('lang') === 'ar';
         setTimeout(() => {
-            if (this.dataGrid && localStorage.getItem('code')) {
-                this.dataGrid.instance.searchByText(localStorage.getItem('code'));
-                localStorage.removeItem('code');
+            if (this.dataGrid && localStorage.getItem('barCodeId')) {
+                this.dataGrid.instance.searchByText(localStorage.getItem('barCodeId'));
+                localStorage.removeItem('barCodeId');
             }
         }, 200);
     }
