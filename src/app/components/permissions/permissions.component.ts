@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild, QueryList} from '@angular/core';
 import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {DxDataGridComponent} from 'devextreme-angular';
+import * as XLSX from 'xlsx';
 
 @Component({
     selector: 'app-Permission',
@@ -27,7 +28,7 @@ export class PermissionComponent implements OnInit {
 
     constructor(public itemsService: ItemsService,
                 private permissionService: PermissionService) {
-        this.permissionService.getCustomers().subscribe(res => {
+        this.permissionService.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
     }
@@ -83,7 +84,7 @@ export class PermissionComponent implements OnInit {
     }
 
     saveCustomerPermissions() {
-        this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems);
+        this.permissionService.updateUserPermission(this.currentUser.uid, this.currentUserPermissions, this.selectedItems);
     }
 
     onFocusedRowChanged(e: any) {
@@ -99,6 +100,9 @@ export class PermissionComponent implements OnInit {
                     }
                 }
                 this.filterValue = this.currentFilter;
+            } else {
+                console.log('Permission Doc does not exist, creating empty one.');
+                this.permissionService.createDoc(e.row.data.uid);
             }
         });
         this.showCurrentPermissions = true;
@@ -132,21 +136,41 @@ export class PermissionComponent implements OnInit {
         this.popupVisible = false;
     }
 
-    selectionChanged(e) {
+    // selectionChanged(e) {
+    //     if (!this.enableUpdateCombinations) {
+    //         return;
+    //     }
+    //     if (e.currentSelectedRowKeys) {
+    //         e.currentSelectedRowKeys.forEach(key => {
+    //             this.permissionService.addCombinationUsers(this.currentUser.uid, key);
+    //         });
+    //     }
+    //     if (e.currentDeselectedRowKeys) {
+    //         e.currentDeselectedRowKeys.forEach(key => {
+    //             this.permissionService.removeCombinationUsers(this.currentUser.uid, key);
+    //         });
+    //     }
+    // }
 
-        if (!this.enableUpdateCombinations) {
-            return;
+    importPermissions(evt, customerId) {
+        /* wire up file reader */
+        const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
         }
-        console.log(e);
-        if (e.currentSelectedRowKeys) {
-            e.currentSelectedRowKeys.forEach(key => {
-                this.permissionService.addCombinationUsers(this.currentUser.uid, key);
-            });
-        }
-        if (e.currentDeselectedRowKeys) {
-            e.currentDeselectedRowKeys.forEach(key => {
-                this.permissionService.removeCombinationUsers(this.currentUser.uid, key);
-            });
-        }
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            /* read workbook */
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+            /* grab first sheet */
+            const wsname: string = wb.SheetNames[0];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            /* save data */
+            const data = XLSX.utils.sheet_to_json(ws, {header: ['no', 'code', 'barCodeId', 'nameArFUll', 'soldQty']}).slice(1);
+            this.selectedItems = data.map(item => item['code']);
+            this.saveCustomerPermissions();
+        };
+        reader.readAsBinaryString(target.files[0]);
     }
 }

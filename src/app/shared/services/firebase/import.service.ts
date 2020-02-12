@@ -58,11 +58,11 @@ export class ImportService {
                     docData.push(item);
                     this.itemsService.itemArray.push(item);
                 }
-                this.db.collection('combinations').doc(item.code).set(item)
+                this.db.collection('combinations').doc(item.code).set(item);
             });
 
             if (docData.length != 0) {
-                return this.db.collection('item').doc(`array-${this.itemsService.lastDocIndex}`).set({items: docData},{merge:true}).then(res => {
+                return this.db.collection('item').doc(`array-${this.itemsService.lastDocIndex}`).set({items: docData}, {merge: true}).then(res => {
                     this.toastr.success('ItemArray updated.');
                 });
             }

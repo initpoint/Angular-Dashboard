@@ -18,7 +18,8 @@ import {
     DxDataGridModule,
     DxCheckBoxModule,
     DxListModule,
-    DxSwitchModule
+    DxSwitchModule,
+    DxFileUploaderModule
 } from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 
@@ -27,6 +28,7 @@ import {TranslateModule} from '@ngx-translate/core';
 
     imports: [
         DxButtonModule,
+        DxFileUploaderModule,
         DxDataGridModule,
         DxBoxModule,
         DxSelectBoxModule,
