@@ -23,12 +23,12 @@ export class PermissionService {
         return this.db.doc('permission/' + uid).get();
     }
 
-    updateUserPermission(uid, currentPermissions, newPermissions) {
-        Promise.all(currentPermissions.map(docId => this.removeCombinationUsers(uid, docId))).then(res1 => {
-            this.toastr.success('Old Permissions Cleared');
+    updateUserPermission(uid, newPermissions, addedPerms, removedPerms) {
+        Promise.all(removedPerms.map(docId => this.removeCombinationUsers(uid, docId))).then(res1 => {
+            this.toastr.success(`Removed ${removedPerms.length} Permissions`);
             this.db.doc('permission/' + uid).set({items: newPermissions}).then(res => {
-                Promise.all(newPermissions.map(docId => this.addCombinationUsers(uid, docId))).then(res2 => {
-                    this.toastr.success('Permissions Updated.');
+                Promise.all(addedPerms.map(docId => this.addCombinationUsers(uid, docId))).then(res2 => {
+                    this.toastr.success(`Added ${addedPerms.length} Permissions`);
                 });
             });
         });

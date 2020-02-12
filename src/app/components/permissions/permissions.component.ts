@@ -84,7 +84,9 @@ export class PermissionComponent implements OnInit {
     }
 
     saveCustomerPermissions() {
-        this.permissionService.updateUserPermission(this.currentUser.uid, this.currentUserPermissions, this.selectedItems);
+        const addedPerms = this.selectedItems.filter(newitem => !this.currentUserPermissions.find(item => item === newitem));
+        const removedPerms = this.currentUserPermissions.filter(olditem => !this.selectedItems.find(item => item === olditem));
+        this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms);
     }
 
     onFocusedRowChanged(e: any) {
