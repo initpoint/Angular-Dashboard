@@ -1,6 +1,5 @@
 <!--Customers datagrid-->
 <dx-data-grid
-        (onRowClick)="RowClicked($event)"
         [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
         [hoverStateEnabled]="true"
         [focusedRowEnabled]="true"
@@ -14,11 +13,6 @@
     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
 
     <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
-                [cellTemplate]="'copyBtn'" [caption]="'Copy'|translate"></dxi-column>
-    <div *dxTemplate="let data of 'copyBtn'">
-        <button class="btn btn-sm btn-pill btn-secondary">{{'Copy'|translate}}</button>
-    </div>
-    <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
                 [cellTemplate]="'importPermissionBtn'" [caption]="'Import Permissions'|translate"></dxi-column>
     <div *dxTemplate="let data of 'importPermissionBtn'">
         <dx-file-uploader
@@ -26,7 +20,7 @@
                 labelText=""
                 accept=".xlsx"
                 [(rtlEnabled)]="lang"
-                (change)="importPermissions($event,data.data.uid )"
+                (change)="importPermissions($event)"
                 [showFileList]="false"
                 [maxFileSize]="3000000"
                 [multiple]="false"
@@ -37,7 +31,7 @@
 
 <!--Options-->
 <div class="dx-fieldset" [hidden]="!currentUser">
-    <dx-box [rtlEnabled]="lang" direction="row" width="100%" [height]="75">
+    <dx-box [rtlEnabled]="lang" direction="row" width="100%" [height]="20">
         <dxi-item [ratio]="1">
             <div [hidden]="showCurrentPermissions" class="dx-field m-15">
                 <div class="dx-field-value">
@@ -84,8 +78,7 @@
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
-    <dxo-selection *ngIf="!showCurrentPermissions" mode="multiple"
-                   showCheckBoxesMode="always"></dxo-selection>
+    <dxo-selection mode="multiple" [showCheckBoxesMode]="showCurrentPermissions?'none':'always'"></dxo-selection>
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId" [caption]="'Bar Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
@@ -94,6 +87,14 @@
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
     <dxi-column [visible]="false" dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
     <dxi-column [visible]="false" dataField="size" [caption]="'Size'|translate"></dxi-column>
+
+    <dxi-column dataField="isNewList" datatype="boolean" [cellTemplate]="'ActiveButton'" [caption]="'Is New'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'ActiveButton'">
+        <button (click)="data.value = !data.value;"
+                class="btn btn-xs btn-pill"
+                [ngClass]="isNew(data) ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
+    </div>
+
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
@@ -110,21 +111,3 @@
         {{'Material'|translate}}: {{material.value}}
     </div>
 </dx-data-grid>
-
-<!--Copy permissions from popup-->
-<dx-popup
-        width="700"
-        height="auto"
-        [showTitle]="true"
-        [title]="'Copy From'|translate"
-        [dragEnabled]="false"
-        [closeOnOutsideClick]="true"
-        [(visible)]="popupVisible">
-    <div *dxTemplate="let data of 'content'">
-        <dx-select-box #company
-                       displayExpr="name"
-                       [dataSource]="customersSource"
-                       [(value)]="selectedForCopy"></dx-select-box>
-        <dx-button class="pull-right" (onClick)="click($event)">{{'Submit'|translate}}</dx-button>
-    </div>
-</dx-popup>

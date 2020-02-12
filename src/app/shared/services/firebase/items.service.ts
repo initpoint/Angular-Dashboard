@@ -10,6 +10,7 @@ import {map} from 'rxjs/operators';
 export class ItemsService implements OnInit {
     itemArray;
     lastDocIndex: number = 0;
+
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
 
         this.db.collection('item').snapshotChanges().pipe(

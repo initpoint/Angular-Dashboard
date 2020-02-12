@@ -24,7 +24,6 @@ export class PermissionComponent implements OnInit {
     currentUserPermissions: [];
     popupVisible: boolean;
     selectedForCopy;
-    enableUpdateCombinations: boolean = true;
 
     constructor(public itemsService: ItemsService,
                 private permissionService: PermissionService) {
@@ -84,15 +83,21 @@ export class PermissionComponent implements OnInit {
     }
 
     saveCustomerPermissions() {
-        const addedPerms = this.selectedItems.filter(newitem => !this.currentUserPermissions.find(item => item === newitem));
-        const removedPerms = this.currentUserPermissions.filter(olditem => !this.selectedItems.find(item => item === olditem));
-        this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms);
+        const addedPerms = this.selectedItems.filter(newItem => !this.currentUserPermissions.find(item => item === newItem));
+        const removedPerms = this.currentUserPermissions.filter(oldItem => !this.selectedItems.find(item => item === oldItem));
+        const unchangedPerms = this.currentUserPermissions.filter(oldItem => this.selectedItems.find(item => item === oldItem));
+        const proceed = confirm(`${addedPerms.length} New Premissions\n
+        ${removedPerms.length} Removed Premissions\n
+        ${unchangedPerms.length} Unchanged Premissions\n`);
+        if (proceed) {
+            this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms, unchangedPerms);
+        }
     }
 
     onFocusedRowChanged(e: any) {
         this.currentUser = e.row.data;
         this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
-            if (doc.exists) { // Check if Permission doc is exists
+            if (doc.exists) { // Check if Permission doc exists
                 this.currentUserPermissions = doc.data().items;
                 this.currentFilter = [];
                 for (let i = 0; i < doc.data().items.length; i++) {
@@ -102,6 +107,8 @@ export class PermissionComponent implements OnInit {
                     }
                 }
                 this.filterValue = this.currentFilter;
+
+                this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
             } else {
                 console.log('Permission Doc does not exist, creating empty one.');
                 this.permissionService.createDoc(e.row.data.uid);
@@ -112,49 +119,9 @@ export class PermissionComponent implements OnInit {
 
     filterItems(e: any) {
         this.filterValue = e.value ? this.currentFilter : [];
-        this.enableUpdateCombinations = false;
-        if (e.value) {
-            this.dataGrids.instance.deselectAll();
-        } else {
-            this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
-        }
-        this.enableUpdateCombinations = true;
     }
 
-
-    RowClicked($event: any) {
-        if ($event.rowType === 'data') {
-            if ($event.event.target.className === 'btn btn-sm btn-pill btn-primary') {
-                this.popupVisible = true;
-            }
-        }
-    }
-
-    click(e: any) {
-        this.permissionService.getUserPermissions(this.selectedForCopy.uid).subscribe(doc => {
-            this.selectedItems = doc.data().items;
-            this.saveCustomerPermissions();
-        });
-        this.popupVisible = false;
-    }
-
-    // selectionChanged(e) {
-    //     if (!this.enableUpdateCombinations) {
-    //         return;
-    //     }
-    //     if (e.currentSelectedRowKeys) {
-    //         e.currentSelectedRowKeys.forEach(key => {
-    //             this.permissionService.addCombinationUsers(this.currentUser.uid, key);
-    //         });
-    //     }
-    //     if (e.currentDeselectedRowKeys) {
-    //         e.currentDeselectedRowKeys.forEach(key => {
-    //             this.permissionService.removeCombinationUsers(this.currentUser.uid, key);
-    //         });
-    //     }
-    // }
-
-    importPermissions(evt, customerId) {
+    importPermissions(evt) {
         /* wire up file reader */
         const target: DataTransfer = <DataTransfer>(evt.target);
         if (target.files.length !== 1) {
@@ -174,5 +141,12 @@ export class PermissionComponent implements OnInit {
             this.saveCustomerPermissions();
         };
         reader.readAsBinaryString(target.files[0]);
+    }
+
+    isNew(data) {
+        if (data.value && this.currentUser && data.value.includes(this.currentUser.uid)) {
+            return true;
+        }
+        return false;
     }
 }
