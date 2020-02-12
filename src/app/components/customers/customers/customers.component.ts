@@ -61,12 +61,13 @@ export class CustomersComponent implements OnInit {
     }
 
 
-    activeCustomer(data) {
-        this.customerService.setCustomer(data.data.uid, {isActive: data.value}).then(res => {
-            this.toastr.success('Customer is active');
-        }).catch(err => {
-            console.error(err);
-        });
+    updateCustomerActivation(data) {
+        this.customerService.updateCustomer(data.data.uid, {isActive: data.value});
+    }
+
+
+    updateCustomerTax(data) {
+        this.customerService.updateCustomer(data.data.uid, {hasTax: data.value});
     }
 
     ngOnInit() {
