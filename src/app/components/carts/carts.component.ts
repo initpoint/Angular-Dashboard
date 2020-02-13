@@ -2,8 +2,6 @@ import {Component, OnInit, Output} from '@angular/core';
 import {CartsService} from '../../shared/services/firebase/carts.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
-import CustomeStore from 'devextreme/data/custom_store';
-import DataSource from 'devextreme/data/data_source';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -14,18 +12,16 @@ import * as XLSX from 'xlsx';
 export class CartsComponent implements OnInit {
     cartSource;
     lang = localStorage.getItem('lang') === 'ar';
-    shipmentData: any[] = [];
 
     constructor(private cartService: CartsService, private router: Router, private toastr: ToastrService) {
         this.cartService.getCarts().subscribe(res => {
-
-            res.map(any => cart => {
+            res.map(cartRaw => {
+                const cart: any = cartRaw;
                 cart.itemsArray = Object.keys(cart.items).map(code => {
                     return {code: code, qty: cart.items[code]};
                 });
             });
             this.cartSource = res;
-            console.log(this.cartSource);
         });
     }
 
@@ -66,13 +62,6 @@ export class CartsComponent implements OnInit {
             });
         };
         reader.readAsBinaryString(target.files[0]);
-    }
-
-    getShipments(event) {
-        this.cartService.getShipments(event.key).subscribe(res => {
-            this.shipmentData = res;
-        });
-
     }
 
     rowClick(e) {

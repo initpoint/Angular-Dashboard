@@ -13,7 +13,7 @@ export class CartsService {
     }
 
     getCarts() {
-        return this.db.collection('carts' ).snapshotChanges().pipe(
+        return this.db.collection('carts').snapshotChanges().pipe(
             map(x => x.map(y => {
                 return {
                     id: y.payload.doc.id,
@@ -24,30 +24,22 @@ export class CartsService {
     }
 
     deleteCart(key) {
-        return this.db.collection('carts' ).doc(key).delete().then(res=> {
+        return this.db.collection('carts').doc(key).delete().then(res => {
             this.toastr.error('Cart Deleted.');
         });
     }
+
     updateCart(key, value) {
-        return this.db.collection('carts').doc(key).set(value,{merge:true}).then(res=> {
+        return this.db.collection('carts').doc(key).set(value, {merge: true}).then(res => {
             this.toastr.success('Cart Updated.');
         });
     }
-    addShipment(key,item) {
+
+    addShipment(key, item) {
         return this.db.collection('carts').doc(key).update({
             bills: firebase.firestore.FieldValue.arrayUnion(item)
-        }).then(res=>{
+        }).then(res => {
             this.toastr.success('Bill Added');
         });
-    }
-    getShipments(key) {
-        return  this.db.collection(`carts/${key}/shipments`).snapshotChanges().pipe(
-            map(x => x.map(y => {
-                return {
-                    id: y.payload.doc.id,
-                    ...y.payload.doc.data()
-                };
-            }))
-        );
     }
 }

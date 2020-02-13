@@ -1,5 +1,4 @@
-<dx-data-grid (onRowExpanding)="getShipments($event)"
-              [dataSource]="cartSource"
+<dx-data-grid [dataSource]="cartSource"
               [masterDetail]="{ enabled: true, template: 'detail' }"
               [showBorders]="false"
               [rtlEnabled]="lang"
