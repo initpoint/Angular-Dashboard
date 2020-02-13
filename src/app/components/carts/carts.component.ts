@@ -18,19 +18,21 @@ export class CartsComponent implements OnInit {
 
     constructor(private cartService: CartsService, private router: Router, private toastr: ToastrService) {
         this.cartService.getCarts().subscribe(res => {
+
             res.map(cart => {
                 cart.itemsArray = Object.keys(cart.items).map(code => {
-                    return {code: code, name: 'ali', qty: cart.items[code]};
+                    return {code: code, qty: cart.items[code]};
                 });
             });
             this.cartSource = res;
+            console.log(this.cartSource);
         });
     }
 
     ngOnInit() {
     }
 
-    addBill(event, data) {
+    addBill(event, cart) {
         /* wire up file reader */
         const target: DataTransfer = <DataTransfer>(event.target);
         if (target.files.length !== 1) {
@@ -50,23 +52,30 @@ export class CartsComponent implements OnInit {
                     ['no', 'barCodeId', 'code', 'nameArFull', 'Qty', 'freeQty', 'unitNameAr', 'pricePerPiece', 'total']
             }).slice(1);
 
-            ArrayFromXLSX.forEach(item => {
-                let oldItem = data.items.find(x => x.code === item['code']);
-                oldItem.shippedQty += item['Qty'];
-                let newItems = data.items.filter(x => x.code !== item['code']);
-                newItems.push(oldItem);
-                this.cartService.updateCart(data.id, {items: newItems});
-                this.cartService.addShipment(data.id, item);
+            // ArrayFromXLSX.forEach(item => {
+            //     let oldItem = cart.itemsArray.find(x => x.code === item['code']);
+            //     oldItem.shippedQty += item['Qty'];
+            //     let newItems = cart.itemsArray.filter(x => x.code !== item['code']);
+            //     newItems.push(oldItem);
+            //     this.cartService.updateCart(cart.id, {items: newItems});
+            // });
+            const newId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            this.cartService.addShipment(cart.id, {
+                id: newId,
+                items: ArrayFromXLSX
             });
         };
         reader.readAsBinaryString(target.files[0]);
     }
 
     getShipments(event) {
-        event.component.collapseAll(-1);
         this.cartService.getShipments(event.key).subscribe(res => {
             this.shipmentData = res;
         });
 
+    }
+
+    rowClick(e) {
+        e.component.isRowExpanded(e.key) ? e.component.collapseRow(e.key) : e.component.expandRow(e.key);
     }
 }

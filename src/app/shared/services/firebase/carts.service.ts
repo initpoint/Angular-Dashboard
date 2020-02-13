@@ -34,8 +34,10 @@ export class CartsService {
         });
     }
     addShipment(key,item) {
-        return this.db.collection('carts').doc(key).collection('shipments').add(item).then(res => {
-            this.toastr.success('Shipment Added.');
+        return this.db.collection('carts').doc(key).update({
+            bills: firebase.firestore.FieldValue.arrayUnion(item)
+        }).then(res=>{
+            this.toastr.success('Bill Added');
         });
     }
     getShipments(key) {

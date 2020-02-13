@@ -1,4 +1,5 @@
-<dx-data-grid (onRowExpanding)="getShipments($event)" [dataSource]="cartSource"
+<dx-data-grid (onRowExpanding)="getShipments($event)"
+              [dataSource]="cartSource"
               [masterDetail]="{ enabled: true, template: 'detail' }"
               [showBorders]="false"
               [rtlEnabled]="lang"
@@ -7,7 +8,8 @@
               [hoverStateEnabled]="true"
               [focusedRowEnabled]="true"
               [wordWrapEnabled]="true"
-              keyExpr="id">
+              keyExpr="id"
+              (onRowClick)="rowClick($event)">
 
     <dxo-export [enabled]="true"></dxo-export>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
@@ -18,9 +20,12 @@
     <dxo-selection mode="multiple" [showCheckBoxesMode]="'always'"></dxo-selection>
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
 
-    <dxi-column dataField="customerId" calculateDisplayValue="customerName"></dxi-column>
+    <dxi-column dataField="id" [caption]="'id'|translate"></dxi-column>
+    <dxi-column dataField="customerId" [caption]="'Customer ID'|translate"></dxi-column>
+    <dxi-column dataField="customerName" [caption]="'Customer Name'|translate"></dxi-column>
     <dxi-column dataField="isActive" [caption]="'Is Active'|translate"></dxi-column>
     <dxi-column dataField="totalPrice" [caption]="'Total Price'|translate"></dxi-column>
+    <dxi-column dataField="itemsArray.length" [caption]="'#items'|translate"></dxi-column>
 
     <dxi-column dataField="creatonDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"
                 [caption]="'Creat On'|translate"></dxi-column>
@@ -31,7 +36,6 @@
 
         <dx-data-grid [dataSource]="cart.data.itemsArray">
             <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
-            <dxi-column dataField="name" [caption]="'Name' |translate"></dxi-column>
             <dxi-column dataField="qty" [caption]="'Quantity'|translate"></dxi-column>
         </dx-data-grid>
 
@@ -50,7 +54,7 @@
         <div class="master-detail-caption">{{'Bills'|translate}}</div>
 
         <dx-data-grid
-                [dataSource]="shipmentData"
+                [dataSource]="cart.data.bills"
                 [showBorders]="true"
                 [columnAutoWidth]="true">
             <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>

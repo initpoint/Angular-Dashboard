@@ -1,4 +1,9 @@
 {
+  "#items": "# Items",
+  "id": "ID",
+  "Customer Name": "Customer Name",
+  "Customer ID": "Customer ID",
+  "Creat On": "Creation Date",
   "Add Bill": "Add Bill",
   "Bills": "Bills",
   "Cart Items": "Cart Items",
@@ -21,7 +26,7 @@
   "Edit User": "Edit User",
   "Price List": "Price List",
   "PriceList": "PriceList",
-  "Bar Code" : "Bar Code",
+  "Bar Code": "Bar Code",
   "Apply": "Apply",
   "Code": "Code",
   "Mobile": "Mobile",
