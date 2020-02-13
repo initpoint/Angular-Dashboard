@@ -19,7 +19,7 @@ export class CartsComponent implements OnInit {
     constructor(private cartService: CartsService, private router: Router, private toastr: ToastrService) {
         this.cartService.getCarts().subscribe(res => {
 
-            res.map(cart => {
+            res.map(any => cart => {
                 cart.itemsArray = Object.keys(cart.items).map(code => {
                     return {code: code, qty: cart.items[code]};
                 });
