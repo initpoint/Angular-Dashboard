@@ -21,7 +21,7 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header"><h5>{{'Import' | translate}} {{'Price List' | translate}}</h5>
-            </div>
+                </div>
                 <div class="card-body">
                     <div id="fileuploader-container">
                         <dx-file-uploader
@@ -66,7 +66,8 @@
             <div class="card">
                 <div class="card-header"><h5>{{'Reset Collections' | translate}}</h5></div>
                 <div class="card-body" style="align-self: center;">
-                    <button class="btn btn-danger btn-air-danger" (click)="reset()"><i class="fa fa-trash"></i> {{'Reset Collections' | translate}}</button>
+                    <button class="btn btn-danger btn-air-danger" (click)="reset()"><i
+                            class="fa fa-trash"></i> {{'Reset Collections' | translate}}</button>
                 </div>
             </div>
         </div>
@@ -133,12 +134,58 @@
                             labelText=""
                             accept=".xlsx"
                             [(rtlEnabled)]="lang"
-                            (change)="combinationDetails($event)"
+                            (change)="TestFile($event)"
                             [showFileList]="false"
                             [maxFileSize]="3000000"
                             [multiple]="false"
                             uploadMode="instantly">
                     </dx-file-uploader>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row" *ngIf="columnObjects.length != 0">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header"><h5>Comparison</h5></div>
+                <div class="card-body">
+                    <dx-data-grid #dataTable
+                                  keyExpr="text"
+                                  [dataSource]="columnToShow"
+                                  [showColumnHeaders]="false"
+                                  [rtlEnabled]="lang">
+                        <!--(onRowPrepared)="rowPrepared($event)"-->
+                        <dxo-editing
+                                mode="cell"
+                                [allowUpdating]="true">
+                        </dxo-editing>
+                        <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
+                        <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
+                        <dxi-column dataField="valueField" [setCellValue]="rowFound">
+                            <dxo-lookup
+                                    [dataSource]="columnObjects"
+                                    displayExpr="value"
+                                    valueExpr="valueField">
+                            </dxo-lookup>
+                        </dxi-column>
+                    </dx-data-grid>
+                    <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
+                    <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel</button>
+                    <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">Total rows: {{rowCounter}}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header"><h5>Columns from file</h5></div>
+                <div class="card-body">
+
+                    <dx-data-grid [dataSource]="columnObjects" [showColumnHeaders]="false"
+                                  [rtlEnabled]="lang">
+                        <dxi-column [allowEditing]="false" dataField="value"></dxi-column>
+                        <dxi-column [allowEditing]="false" dataField="valueField"></dxi-column>
+                    </dx-data-grid>
                 </div>
             </div>
         </div>
@@ -151,6 +198,6 @@
 </style>
 <div class="loader-wrapper" [class.loderhide]="!show">
     <div class="loader bg-white">
-        <div class="whirly-loader"> </div>
+        <div class="whirly-loader"></div>
     </div>
 </div>
