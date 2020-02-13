@@ -76,7 +76,7 @@ export class HeaderComponent implements OnInit {
         term = term.toLowerCase();
         itemsArray.filter(items => {
             items.type = 'product';
-            if (items.barCodeId.includes(term) || items.code.includes(term) || items.materialCode.includes(term) || items.rankingCode.includes(term)) {
+            if (items.nameArFull.includes(term) || items.barCodeId.includes(term) || items.code.includes(term) || items.materialCode.includes(term) || items.rankingCode.includes(term)) {
                 searchItems.push(items);
             }
 
