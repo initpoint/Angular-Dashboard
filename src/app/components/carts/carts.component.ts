@@ -58,6 +58,7 @@ export class CartsComponent implements OnInit {
             const newId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             this.cartService.addShipment(cart.id, {
                 id: newId,
+                uploadDate: Date.now(),
                 items: ArrayFromXLSX
             });
         };
@@ -65,6 +66,6 @@ export class CartsComponent implements OnInit {
     }
 
     rowClick(e) {
-        e.component.isRowExpanded(e.key) ? e.component.collapseRow(e.key) : e.component.expandRow(e.key);
+        // e.component.isRowExpanded(e.key) ? e.component.collapseRow(e.key) : e.component.expandRow(e.key);
     }
 }

@@ -52,14 +52,12 @@
 
         <div class="master-detail-caption">{{'Bills'|translate}}</div>
 
-        <dx-data-grid
-                [dataSource]="cart.data.bills"
-                [showBorders]="true"
-                [columnAutoWidth]="true">
-            <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
-            <dxi-column dataField="nameArFull" [caption]="'Name' |translate"></dxi-column>
-            <dxi-column dataField="Qty" [caption]="'Quantity'|translate"></dxi-column>
-            <dxi-column dataField="pricePerPiece" [caption]="'Price Per Piece'|translate"></dxi-column>
+        <dx-data-grid [dataSource]="cart.data.bills">
+            <dxi-column dataField="id" [caption]="'id'|translate"></dxi-column>
+            <dxi-column dataField="uploadDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"
+                        [caption]="'Upload Date'|translate"></dxi-column>
+            <!--            <dxi-column dataField="Qty" [caption]="'Quantity'|translate"></dxi-column>-->
+            <!--            <dxi-column dataField="pricePerPiece" [caption]="'Price Per Piece'|translate"></dxi-column>-->
         </dx-data-grid>
     </div>
 </dx-data-grid>
