@@ -1,58 +1,62 @@
-<!-- Container-fluid starts -->
-<div class="container-fluid">
+<dx-data-grid (onRowExpanding)="getShipments($event)" [dataSource]="cartSource"
+              [masterDetail]="{ enabled: true, template: 'detail' }"
+              [showBorders]="false"
+              [rtlEnabled]="lang"
+              [showRowLines]="false"
+              [columnAutoWidth]="true"
+              [hoverStateEnabled]="true"
+              [focusedRowEnabled]="true"
+              [wordWrapEnabled]="true"
+              keyExpr="id">
 
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <dx-data-grid (onRowExpanding)="getShipments($event)" [dataSource]="cartsSource" [masterDetail]="{ enabled: true, template: 'detail' }" [showBorders]="true" [rtlEnabled]="lang">
-                        <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
-                        <dxo-header-filter [visible]="true"></dxo-header-filter>
-                        <dxo-search-panel [visible]="true"></dxo-search-panel>
-                        <!--<dxo-editing-->
-                                <!--mode="form"-->
-                                <!--[allowUpdating]="true"-->
-                                <!--[useIcons]="true"-->
-                                <!--[allowDeleting]="true">-->
-                        <!--</dxo-editing>-->
-                        <!--<dxo-export [enabled]="true" fileName="Carts" [allowExportSelectedData]="true"></dxo-export>-->
-                        <!--<dxo-group-panel [visible]="true"></dxo-group-panel>-->
-                        <!--<dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>-->
-                        <dxo-grouping [autoExpandAll]="false" expandMode="buttonClick"></dxo-grouping>
-                        <dxi-column [cellTemplate]="'customerCell'" dataField="customer" [caption]="'Customer'|translate"></dxi-column>
-                        <dxi-column dataField="creatonDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'Creat On'|translate"></dxi-column>
-                        <div *dxTemplate="let customer of 'customerCell'">
-                            {{customer.data.customer.name}}
-                        </div>
-                        <div *dxTemplate="let cart of 'detail'">
-                            <div class="master-detail-caption">Cart Items</div>
-                            <dx-data-grid
-                                    [dataSource]="cart.data.items"
-                                    [showBorders]="true"
-                                    [columnAutoWidth]="true">
-                                <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
-                                <dxi-column dataField="name" [caption]="'Name' |translate"></dxi-column>
-                                <dxi-column dataField="qty" [caption]="'Quantity'|translate"></dxi-column>
-                                <dxi-column dataField="shippedQty" [caption]="'Shipped quantity'|translate"></dxi-column>
-                            </dx-data-grid>
-                            <button class="float-right btn btn-primary mt-3"><i class="fa fa-plus"></i> {{'Add Bill'|translate}}<input accept=".xlsx" (change)="addBill($event,cart.data);" style="position: absolute;font-size: 25px;opacity: 0;cursor: inherit;left: 0;margin-top: -9px;width: 100%;" type="file"/></button>
-<br/><hr>
-                            <div class="master-detail-caption">Shipments</div>
-                            <dx-data-grid
-                                    [dataSource]="shipmentData"
-                                    [showBorders]="true"
-                                    [columnAutoWidth]="true">
-                                <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
-                                <dxi-column dataField="nameArFull" [caption]="'Name' |translate"></dxi-column>
-                                <dxi-column dataField="Qty" [caption]="'Quantity'|translate"></dxi-column>
-                                <dxi-column dataField="pricePerPiece" [caption]="'Price Per Piece'|translate"></dxi-column>
-                            </dx-data-grid>
-                        </div>
-                    </dx-data-grid>
+    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxo-selection mode="multiple" [showCheckBoxesMode]="'always'"></dxo-selection>
+    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
 
-                </div>
-            </div>
-        </div>
+    <dxi-column dataField="customerId" calculateDisplayValue="customerName"></dxi-column>
+    <dxi-column dataField="isActive" [caption]="'Is Active'|translate"></dxi-column>
+    <dxi-column dataField="totalPrice" [caption]="'Total Price'|translate"></dxi-column>
+
+    <dxi-column dataField="creatonDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"
+                [caption]="'Creat On'|translate"></dxi-column>
+
+    <div *dxTemplate="let cart of 'detail'">
+
+        <div class="master-detail-caption">{{'Cart Items'|translate}}</div>
+
+        <dx-data-grid [dataSource]="cart.data.itemsArray">
+            <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+            <dxi-column dataField="name" [caption]="'Name' |translate"></dxi-column>
+            <dxi-column dataField="qty" [caption]="'Quantity'|translate"></dxi-column>
+        </dx-data-grid>
+
+        <dx-file-uploader
+                [selectButtonText]="'Add Bill'|translate"
+                labelText=""
+                accept=".xlsx"
+                [(rtlEnabled)]="lang"
+                (change)="addBill($event,cart.data)"
+                [showFileList]="false"
+                [maxFileSize]="3000000"
+                [multiple]="false"
+                uploadMode="instantly">
+        </dx-file-uploader>
+
+        <div class="master-detail-caption">{{'Bills'|translate}}</div>
+
+        <dx-data-grid
+                [dataSource]="shipmentData"
+                [showBorders]="true"
+                [columnAutoWidth]="true">
+            <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+            <dxi-column dataField="nameArFull" [caption]="'Name' |translate"></dxi-column>
+            <dxi-column dataField="Qty" [caption]="'Quantity'|translate"></dxi-column>
+            <dxi-column dataField="pricePerPiece" [caption]="'Price Per Piece'|translate"></dxi-column>
+        </dx-data-grid>
     </div>
-</div>
-<!-- Container-fluid Ends -->
+</dx-data-grid>

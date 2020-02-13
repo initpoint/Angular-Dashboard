@@ -9,13 +9,14 @@ import {CartsComponent} from './carts.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import {DxDataGridModule} from 'devextreme-angular';
+import {DxDataGridModule,DxFileUploaderModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 @NgModule({
     declarations: [CartsComponent],
 
     imports: [
         DxDataGridModule,
+        DxFileUploaderModule,
         CommonModule,
         CartsRoutingModule,
         FormsModule,

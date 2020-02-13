@@ -1,4 +1,8 @@
 {
+  "Add Bill": "إضافة فاتورة",
+  "Bills": "الفواتير",
+  "Cart Items": "محتويات العربة",
+  "Total Price": "إجمالي السعر",
   "Select XLSX File": "اختر ملف الاكسل",
   "Import Permissions": "استيراد الصلاحيات",
   "Has Tax": "اضافة الضريبة",

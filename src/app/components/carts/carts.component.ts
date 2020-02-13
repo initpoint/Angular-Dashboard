@@ -12,33 +12,18 @@ import * as XLSX from 'xlsx';
     styleUrls: ['./carts.component.scss']
 })
 export class CartsComponent implements OnInit {
-    cartsSource: DataSource;
-    cartsData: CustomeStore;
-    lang = localStorage.getItem('lang') == 'ar';
+    cartSource;
+    lang = localStorage.getItem('lang') === 'ar';
     shipmentData: any[] = [];
 
     constructor(private cartService: CartsService, private router: Router, private toastr: ToastrService) {
-
-        this.cartsData = new CustomeStore({
-            key: 'id',
-            load: (opts) => {
-                return new Promise((resolve, reject) => {
-                    this.lang = localStorage.getItem('lang') == 'ar';
-                    this.cartService.getCarts().subscribe(res => {
-                        resolve({data: res});
-                    });
+        this.cartService.getCarts().subscribe(res => {
+            res.map(cart => {
+                cart.itemsArray = Object.keys(cart.items).map(code => {
+                    return {code: code, name: 'ali', qty: cart.items[code]};
                 });
-            },
-            update: (key, values) => {
-                return this.cartService.updateCart(key, values);
-            },
-            remove: (key) => {
-                return this.cartService.deleteCart(key);
-            },
-
-        });
-        this.cartsSource = new DataSource({
-            store: this.cartsData,
+            });
+            this.cartSource = res;
         });
     }
 
@@ -60,7 +45,10 @@ export class CartsComponent implements OnInit {
             const wsname: string = wb.SheetNames[0];
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
-            const ArrayFromXLSX = XLSX.utils.sheet_to_json(ws, {header: ['no', 'barCodeId', 'code', 'nameArFull', 'Qty', 'freeQty', 'unitNameAr', 'pricePerPiece', 'total']}).slice(1);
+            const ArrayFromXLSX = XLSX.utils.sheet_to_json(ws, {
+                header:
+                    ['no', 'barCodeId', 'code', 'nameArFull', 'Qty', 'freeQty', 'unitNameAr', 'pricePerPiece', 'total']
+            }).slice(1);
 
             ArrayFromXLSX.forEach(item => {
                 let oldItem = data.items.find(x => x.code === item['code']);
@@ -72,7 +60,6 @@ export class CartsComponent implements OnInit {
             });
         };
         reader.readAsBinaryString(target.files[0]);
-        event.srcElement.value = null;
     }
 
     getShipments(event) {
@@ -82,5 +69,4 @@ export class CartsComponent implements OnInit {
         });
 
     }
-
 }
