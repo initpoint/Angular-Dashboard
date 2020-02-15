@@ -145,8 +145,16 @@
         </div>
 
     </div>
-    <div class="row" *ngIf="columnObjects.length != 0">
-        <div class="col-md-8">
+    <dx-popup
+            width="auto"
+            height="auto"
+            [showTitle]="true"
+            [title]="'Data View'"
+            [dragEnabled]="false"
+            [closeOnOutsideClick]="true"
+            [(visible)]="popupVisible">
+        <div class="row">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header"><h5>Comparison</h5></div>
                 <div class="card-body">
@@ -176,11 +184,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header"><h5>Columns from file</h5></div>
                 <div class="card-body">
-
                     <dx-data-grid [dataSource]="columnObjects" [showColumnHeaders]="false"
                                   [rtlEnabled]="lang">
                         <dxi-column [allowEditing]="false" dataField="value"></dxi-column>
@@ -189,7 +196,8 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    </dx-popup>
 </div>
 <style>
     .loader-wrapper.loderhide {

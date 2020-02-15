@@ -7,11 +7,12 @@ import {ImportComponent} from './import.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {TranslateModule} from '@ngx-translate/core';
-import {DxFileUploaderModule,DxDataGridModule,DxLookupModule} from 'devextreme-angular';
+import {DxFileUploaderModule,DxDataGridModule,DxLookupModule,DxPopupModule} from 'devextreme-angular';
 @NgModule({
     declarations: [ImportComponent],
 
     imports: [
+        DxPopupModule,
         DxLookupModule,
         DxDataGridModule,
         DxFileUploaderModule,

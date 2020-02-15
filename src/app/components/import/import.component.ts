@@ -17,7 +17,7 @@ export class ImportComponent implements OnInit {
     value: any[] = [];
     combinationsDetailsColumns = ['رمز التركيبة', 'الرمز الخطي', 'إسم الصنف', 'الطول', 'العرض', 'الارتفاع', 'الوزن', 'الحجم'];
     balanceColumns = ['رمز التركيبة', ' الرمز الخطي ', 'إسم الصنف', 'رصيد المخازن', 'رصيد الفروع'];
-
+    popupVisible: boolean = false;
     combinationsData = [
         {
             field: 'barCodeId',
@@ -64,6 +64,7 @@ export class ImportComponent implements OnInit {
     columnObjects: any[] = [];
     columnToShow: any[] = [];
     rowCounter: number = 0;
+    dataFromFile: any[] = [];
 
     // wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
     constructor(private importService: ImportService) {
@@ -97,7 +98,7 @@ export class ImportComponent implements OnInit {
     }
 
     TestFile(evt: any) {
-
+        this.popupVisible = true;
         /* wire up file reader */
         const target: DataTransfer = <DataTransfer>(evt.target);
         if (target.files.length !== 1) {
@@ -114,6 +115,7 @@ export class ImportComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws, {header: 'A'});
+            this.dataFromFile = data.slice(1);
             this.columnToShow = [];
             this.columnObjects = [];
             let i = 0;
@@ -124,9 +126,21 @@ export class ImportComponent implements OnInit {
             i = 0;
             this.combinationsData.forEach(column => {
                 if (Object.values(data[0]).find(row => row === column.text)) {
-                    this.columnToShow.push({text: column.text, isFound: true, value: column.text, valueField: Object.keys(data[0])[i]});
+                    this.columnToShow.push({
+                        text: column.text,
+                        isFound: true,
+                        value: column.text,
+                        valueField: Object.keys(data[0])[i],
+                        field: column.field
+                    });
                 } else {
-                    this.columnToShow.push({text: column.text, isFound: false, value: column.text, valueField: Object.keys(data[0])[i]});
+                    this.columnToShow.push({
+                        text: column.text,
+                        isFound: false,
+                        value: column.text,
+                        valueField: Object.keys(data[0])[i],
+                        field: column.field
+                    });
                 }
                 i++;
             });
@@ -348,7 +362,59 @@ export class ImportComponent implements OnInit {
     }
 
     saveData() {
-        console.log(this.columnToShow);
+        this.dataFromFile.forEach(item => {
+            Object.keys(item).forEach(key => {
+                if (this.columnToShow.find(column => column.valueField == key)) {
+                    // replace old keys (A,B,C,....) with the fields names
+                    item[this.columnToShow.find(column => column.valueField == key).field] = item[key];
+                    // Delete old key
+                    delete item[key];
+                    // O/P exmp. => {
+                    // barCodeId: "0304042002201"
+                    // size: "شد 18"
+                    // pics: []
+                    // users: []
+                    // prices: {}
+                    // isNew: true
+                    // isActive: false
+                    // code: "933101001098"
+                    // nameArFull: "ابريق شاي غرش دائري سعة 2.5 لتر نقشة شعبية ابيض مقبض حديد السنيدي SNHW-0196W-2.5"
+                    // materialCode: "933101001"
+                    // materialNameAr: "ابريق شاي"
+                    // rankingCode: "933101"
+                    // rankingNameAr: "اواني منزلية - اباريق شاي"
+                    // unitCode: "01001"
+                    // unitNameAr: "حبة"
+                    // }
+                    item['size'] = item.size || null;
+                    item['pics'] = [];
+                    item['users'] = [];
+                    item['prices'] = {};
+                    item['isNew'] = true;
+                    item['isActive'] = false;
+                    if (this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code'])) {
+                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).length = item['length'];
+                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).width = item['width'];
+                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).height = item['height'];
+                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).weight = item['weight'];
+                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).volume = item['volume'];
+                        this.importService.itemsService.updateItem(item['code'], {
+                            length: item['length'],
+                            width: item['width'],
+                            height: item['height'],
+                            weight: item['weight'],
+                            volume: item['volume'],
+                        });
+                    } else {
+                        this.importService.itemsService.itemArray.push(item);
+                    }
+
+                }
+
+            });
+
+        });
+        console.log(this.importService.itemsService.itemArray)
     }
 
     rowFound(row, value) {
