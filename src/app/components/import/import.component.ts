@@ -9,8 +9,6 @@ import {DxDataGridComponent} from 'devextreme-angular';
     styleUrls: ['./import.component.scss'],
 })
 export class ImportComponent implements OnInit {
-    @ViewChild('dataTable', {static: false}) dataGrid: DxDataGridComponent;
-
     data: any;
     public show: boolean;
     lang;
@@ -362,6 +360,7 @@ export class ImportComponent implements OnInit {
     }
 
     saveData() {
+        return;
         this.dataFromFile.forEach(item => {
             Object.keys(item).forEach(key => {
                 if (this.columnToShow.find(column => column.valueField == key)) {
@@ -414,7 +413,7 @@ export class ImportComponent implements OnInit {
             });
 
         });
-        console.log(this.importService.itemsService.itemArray)
+        console.log(this.importService.itemsService.itemArray);
     }
 
     rowFound(row, value) {
@@ -427,5 +426,6 @@ export class ImportComponent implements OnInit {
         this.columnToShow = [];
         this.columnObjects = [];
         this.rowCounter = 0;
+        this.popupVisible = false;
     }
 }

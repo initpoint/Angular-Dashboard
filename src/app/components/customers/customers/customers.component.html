@@ -51,6 +51,15 @@
                 class="btn btn-xs btn-pill"
                 [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Has Taxes' : "No Taxes"}}</button>
     </div>
+    <dxi-column [formItem]="{visible: false}" dataField="canSeeSoldStock" datatype="boolean" [allowSearch]="false"
+                [cellTemplate]="'SeeSoldStockButton'"
+                [caption]="'Can See Sold Stock'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'SeeSoldStockButton'">
+        <button (click)="data.value = !data.value;updateCustomerCanSeeSoldStock(data)"
+                title="Click to {{data.value ? 'Disable' : 'Enable'}}"
+                class="btn btn-xs btn-pill"
+                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Enabled' : "Disabled"}}</button>
+    </div>
     <dxi-column [formItem]="{visible: false}" [allowGrouping]="false" dataField="lastLoginAt"
                 [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
 </dx-data-grid>

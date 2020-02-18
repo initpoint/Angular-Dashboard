@@ -146,59 +146,53 @@
 
     </div>
     <dx-popup
-            width="auto"
-            height="auto"
             [showTitle]="true"
             [title]="'Data View'"
             [dragEnabled]="false"
-            [closeOnOutsideClick]="true"
+            [closeOnOutsideClick]="false"
+            (onHiding)="cancelData()"
             [(visible)]="popupVisible">
-        <div class="row">
-        <div class="col-md-6">
-            <div class="card">
+        <div class="row" >
+            <div class="col-md-8">
                 <div class="card-header"><h5>Comparison</h5></div>
-                <div class="card-body">
-                    <dx-data-grid #dataTable
-                                  keyExpr="text"
-                                  [dataSource]="columnToShow"
-                                  [showColumnHeaders]="false"
-                                  [rtlEnabled]="lang">
-                        <!--(onRowPrepared)="rowPrepared($event)"-->
-                        <dxo-editing
-                                mode="cell"
-                                [allowUpdating]="true">
-                        </dxo-editing>
-                        <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
-                        <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
-                        <dxi-column dataField="valueField" [setCellValue]="rowFound">
-                            <dxo-lookup
-                                    [dataSource]="columnObjects"
-                                    displayExpr="value"
-                                    valueExpr="valueField">
-                            </dxo-lookup>
-                        </dxi-column>
-                    </dx-data-grid>
-                    <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
-                    <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel</button>
-                    <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">Total rows: {{rowCounter}}</h6>
-                </div>
+                <dx-data-grid #dataTable
+                              keyExpr="text"
+                              [dataSource]="columnToShow"
+                              columnAutoWidth="true"
+                              [paging]="{enabled:false}" height="550" showBorders="true"
+                              [rtlEnabled]="lang">
+                    <dxo-editing
+                            mode="cell"
+                            [allowUpdating]="true">
+                    </dxo-editing>
+                    <dxo-scrolling mode="Infinite" showScrollbar="Always"></dxo-scrolling>
+                    <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
+                    <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
+                    <dxi-column dataField="valueField" [setCellValue]="rowFound">
+                        <dxo-lookup
+                                [dataSource]="columnObjects"
+                                displayExpr="value"
+                                valueExpr="valueField">
+                        </dxo-lookup>
+                    </dxi-column>
+                </dx-data-grid>
+                <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
+                <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel</button>
+                <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">Total rows: {{rowCounter}}</h6>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
+            <div class="col-md-4">
                 <div class="card-header"><h5>Columns from file</h5></div>
-                <div class="card-body">
-                    <dx-data-grid [dataSource]="columnObjects" [showColumnHeaders]="false"
-                                  [rtlEnabled]="lang">
-                        <dxi-column [allowEditing]="false" dataField="value"></dxi-column>
-                        <dxi-column [allowEditing]="false" dataField="valueField"></dxi-column>
-                    </dx-data-grid>
-                </div>
+                <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="600" showBorders="true" [dataSource]="columnObjects"
+                              [rtlEnabled]="lang">
+                    <dxo-scrolling mode="Infinite" useNative="false" showScrollbar="Always"></dxo-scrolling>
+                    <dxi-column [allowEditing]="false" dataField="value" caption="Column Name"></dxi-column>
+                    <dxi-column [allowEditing]="false" dataField="valueField" caption="Column Letter"></dxi-column>
+                </dx-data-grid>
             </div>
-        </div>
         </div>
     </dx-popup>
 </div>
+
 <style>
     .loader-wrapper.loderhide {
         display: none;

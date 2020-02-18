@@ -70,6 +70,10 @@ export class CustomersComponent implements OnInit {
         this.customerService.updateCustomer(data.data.uid, {hasTax: data.value});
     }
 
+    updateCustomerCanSeeSoldStock(data) {
+        this.customerService.updateCustomer(data.data.uid, {canSeeSoldStock: data.value});
+    }
+
     ngOnInit() {
     }
 }
