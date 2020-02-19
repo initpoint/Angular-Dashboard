@@ -33,7 +33,7 @@ export class CustomerService {
                     isActive: value.isActive || true,
                     hasTax: value.isActive || true,
                     lastLoginAt: Date.now(),
-                    isOnline: false
+                    online: false
                 });
                 return true;
             }).catch(function (error) {
