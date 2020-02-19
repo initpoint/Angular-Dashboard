@@ -50,5 +50,11 @@ export const content: Routes = [
     data: {
       breadcrumb: "Import"
     }
+  },{
+    path: 'chat',
+    loadChildren: './components/chat/chat.module#ChatModule',
+    data: {
+      breadcrumb: "Chat"
+    }
   },
 ];

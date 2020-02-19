@@ -1,4 +1,9 @@
 {
+  "Online":"Online",
+  "Offline":"Offline",
+  "Type a message": "Type a message",
+  "Chat": "Chat",
+  "Send": "Send",
   "Export": "Export",
   "Can See Sold Stock": "See Sold Stock",
   "Upload Date": "Upload Date",
@@ -66,7 +71,6 @@
   "Products": "Products",
   "Product": "Product",
   "Quantity": "Quantity",
-  "Add Bill": "Add Bill",
   "Order History": "Order History",
   "Shipped quantity": "Shipped quantity",
   "Error 400": "Error 400",

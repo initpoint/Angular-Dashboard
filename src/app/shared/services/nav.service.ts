@@ -60,6 +60,9 @@ export class NavService {
         {
             title: 'Users', path: '/users/show', icon: 'users', type: 'link', active: false,
         },
+        {
+            path: '/chat', title: 'Chat', icon: 'message-square', type: 'link', bookmark: true
+        },
     ];
     // Array
     items = new BehaviorSubject<Menu[]>(this.MENUITEMS);

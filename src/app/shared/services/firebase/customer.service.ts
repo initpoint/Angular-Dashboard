@@ -32,7 +32,8 @@ export class CustomerService {
                     pricelist: value.pricelist || null,
                     isActive: value.isActive || true,
                     hasTax: value.isActive || true,
-                    lastLoginAt: Date.now()
+                    lastLoginAt: Date.now(),
+                    isOnline: false
                 });
                 return true;
             }).catch(function (error) {

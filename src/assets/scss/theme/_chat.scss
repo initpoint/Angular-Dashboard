@@ -150,7 +150,7 @@
         padding: 20px;
         border-top: 1px solid $light-body-bg-color;
         position: absolute;
-        width: calc(100% - 15px);
+        width: calc(100% - 30px);
         background-color: $white;
         bottom: 0;
         .smiley-box{
@@ -347,8 +347,7 @@
   width: 10px;
   height: 10px;
   position: absolute;
-  top:40px;
-  left:40px;
+  top:10px;
   border-radius: 50%;
   border:2px solid $white;
 }

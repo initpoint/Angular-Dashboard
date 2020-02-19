@@ -387,7 +387,7 @@ export class ImportComponent implements OnInit {
                     // }
                     item['size'] = item.size || null;
                     item['pics'] = [];
-                    item['users'] = [];
+                    item['customerList'] = [];
                     item['prices'] = {};
                     item['isNew'] = true;
                     item['isActive'] = false;

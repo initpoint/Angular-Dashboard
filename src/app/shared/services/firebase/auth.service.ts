@@ -130,6 +130,7 @@ export class AuthService implements OnInit {
                 userRef.set(userData, {
                     merge: true
                 });
+                localStorage.setItem('user', JSON.stringify(doc.data()));
             }
         });
     }
