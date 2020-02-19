@@ -3,6 +3,7 @@ import {NavService, Menu} from '../../services/nav.service';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthService} from '../../services/firebase/auth.service';
 import {ItemsService} from '../../services/firebase/items.service';
+import {NotificationService} from '../../services/firebase/notification.service';
 
 var body = document.getElementsByTagName('body')[0];
 
@@ -26,7 +27,8 @@ export class HeaderComponent implements OnInit {
     constructor(public navServices: NavService,
                 private itemsService: ItemsService,
                 private translate: TranslateService,
-                public authService: AuthService) {
+                public authService: AuthService,
+                public notification: NotificationService) {
         this.lang = localStorage.getItem('lang') != null ? localStorage.getItem('lang') : 'en';
         translate.setDefaultLang(this.lang);
         if (this.lang == 'ar') {
@@ -129,13 +131,18 @@ export class HeaderComponent implements OnInit {
         body.classList.remove('offcanvas');
         this.text = '';
     }
+
     setBarCodeId(barCodeId) {
         localStorage.setItem('barCodeId', barCodeId);
     }
+
     ngOnInit() {
         this.navServices.items.subscribe(menuItems => {
             this.items = menuItems;
         });
     }
 
+    setChatId(customerId) {
+        localStorage.setItem('chatId',customerId)
+    }
 }

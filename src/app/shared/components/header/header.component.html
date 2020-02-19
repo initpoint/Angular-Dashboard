@@ -63,9 +63,9 @@
                     </form>
                 </li>
                 <!--<li>-->
-                    <!--<a href="javascript:void(0)" class="text-dark" toggleFullscreen>-->
-                        <!--<app-feather-icons [icon]="'maximize'"></app-feather-icons>-->
-                    <!--</a>-->
+                <!--<a href="javascript:void(0)" class="text-dark" toggleFullscreen>-->
+                <!--<app-feather-icons [icon]="'maximize'"></app-feather-icons>-->
+                <!--</a>-->
                 <!--</li>-->
                 <li class="onhover-dropdown">
                     <a class="txt-dark" href="javascript:void(0)">
@@ -78,7 +78,32 @@
                                 class="flag-icon flag-icon-sa"></i> Arabic</a></li>
                     </ul>
                 </li>
-
+                <li class="onhover-dropdown">
+                    <app-feather-icons [icon]="'bell'"></app-feather-icons>
+                    <span *ngIf="notification.notifications.length > 0" class="dot"></span>
+                    <ul class="notification-dropdown onhover-show-div">
+                        <li>Notification <span *ngIf="notification.notifications.length > 0"
+                                               class="badge badge-pill badge-primary pull-right">{{notification.notifications.length}}</span>
+                        </li>
+                        <li *ngFor="let notification of notification.notifications"><a
+                                (click)="setChatId(notification.customerId)" [routerLink]="notification.url">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h6 class="mt-0"><span>
+                      <app-feather-icons class="shopping-color" [icon]="notification.icon"></app-feather-icons>
+                    </span>{{'New Message from'|translate}} {{notification.customerName}}
+                                        <small class="pull-right">{{notification.createdAt | date:'H:mm a'}}</small>
+                                    </h6>
+                                    <p class="mb-0 text-dark"
+                                       *ngIf="notification.text.length >= 100 ">{{notification.text.substring(0, 100 - 3) + '...'}}</p>
+                                    <p class="mb-0 text-dark"
+                                       *ngIf="notification.text.length < 100 ">{{notification.text}}</p>
+                                </div>
+                            </div>
+                        </a></li>
+                        <li *ngIf="notification.notifications.length == 0" class="bg-light text-center txt-dark">No new notifications</li>
+                    </ul>
+                </li>
                 <li class="onhover-dropdown">
 
                     <div class="media align-items-center"
@@ -88,7 +113,7 @@
                     <ul class="profile-dropdown onhover-show-div p-20">
 
                         <li *ngIf="authService.currentUser as user"><a href="javascript:void(0)"
-                                                                    (click)="authService.SignOut()">
+                                                                       (click)="authService.SignOut()">
                             <app-feather-icons [icon]="'log-out'"></app-feather-icons>
                             {{'Log Out' | translate}}
                         </a></li>

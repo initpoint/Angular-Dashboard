@@ -70,17 +70,15 @@
                     <ul>
                     <li *ngFor="let chat of chats" [ngClass]="{'clearfix': chat.sender == profile.uid }">
                       <div class="message my-message " *ngIf="chat.sender != profile.uid; else myChat">
-                          <img class="rounded-circle float-left chat-user-img img-30" [src]="'https://angular.pixelstrap.com/endless/assets/images/user/1.jpg'" alt="">
-                        <div class="message-data text-right">
+                         <div class="message-data text-right">
                           <span class="message-data-time">{{chat?.createdAt | date:'d/M/y H:mm'}}</span>
                         </div>{{chat.customerName}}: {{chat?.text}}
                       </div>
                       <ng-template #myChat>
                         <div class="message other-message pull-right">
-                            <img class="rounded-circle float-right chat-user-img img-30" [src]="'https://angular.pixelstrap.com/endless/assets/images/user/3.jpg'" alt="">
-                          <div class="message-data">
+                           <div class="message-data">
                             <span class="message-data-time">{{chat?.createdAt | date:'d/M/y H:mm'}}</span>
-                          </div>Me: {{chat?.text}}
+                          </div>{{chat?.text}}
                         </div>
                       </ng-template>
                     </li>
@@ -100,7 +98,7 @@
                       <div class="col-xl-12 d-flex">
                         <div class="input-group text-box">
                           <input class="form-control input-txt-bx" [class.border-danger]="error" [(ngModel)]="chatText"
-                            id="message-to-send" ngModel type="text" name="message" placeholder="{{'Type a message'|translate}}......">
+                            id="message-to-send" ngModel type="text" autocomplete="off" name="message" placeholder="{{'Type a message'|translate}}......">
                           <div class="input-group-append">
                             <button class="btn btn-primary" (click)="sendMessage(chatForm)" type="button">{{'Send'|translate}}</button>
                           </div>

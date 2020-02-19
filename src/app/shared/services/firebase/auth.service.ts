@@ -58,7 +58,6 @@ export class AuthService implements OnInit {
     }
 
     ngOnInit(): void {
-
     }
     // sign in function
     SignIn(email, password) {

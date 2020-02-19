@@ -4,7 +4,6 @@ import {Observable, Subscriber} from 'rxjs';
 import {map, filter, scan} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {CustomerService} from './firebase/customer.service';
-
 var today = new Date().toLocaleString('en-US', {hour: 'numeric', minute: 'numeric', hour12: true});
 
 @Injectable({
@@ -67,24 +66,18 @@ export class ChatService {
 
     // Send Message to user
     public sendMessage(chat) {
-        this.chat.filter(chats => {
-            if (chats.id == chat.receiver) {
-                this.db.collection('messages').add(
-                    {
-                        userId: chat.sender,
-                        customerId: chat.receiver,
-                        customerName: chat.receiver_name,
-                        text: chat.message,
-                        createdAt: Date.now(),
-                        sender: chat.sender
-                    }).then(res => {
-                    setTimeout(function () {
-                        document.querySelector('.chat-history').scrollBy({top: 200, behavior: 'smooth'});
-                    }, 310);
-                });
-
-
-            }
+        this.db.collection('messages').add(
+            {
+                userId: chat.sender,
+                customerId: chat.receiver,
+                customerName: chat.receiver_name,
+                text: chat.message,
+                createdAt: Date.now(),
+                sender: chat.sender
+            }).then(res => {
+            setTimeout(function () {
+                document.querySelector('.chat-history').scrollBy({top: 200, behavior: 'smooth'});
+            }, 310);
         });
     }
     //

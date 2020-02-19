@@ -18,6 +18,7 @@ import 'mousetrap';
 
 // services
 import { NavService } from "./services/nav.service";
+
 // Directives
 import { ToggleFullscreenDirective } from "./directives/fullscreen.directive";
 
@@ -34,6 +35,7 @@ import { ToggleFullscreenDirective } from "./directives/fullscreen.directive";
     BreadcrumbComponent,
   ],
   imports: [
+
     CommonModule,
     RouterModule,
     FormsModule,
@@ -43,7 +45,8 @@ import { ToggleFullscreenDirective } from "./directives/fullscreen.directive";
   exports: [
     LoaderComponent,
     FeatherIconsComponent,
-    TranslateModule
+    TranslateModule,
+    // NotificationService
   ],
   providers: [
     NavService,
