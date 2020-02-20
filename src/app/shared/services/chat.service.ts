@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
-import {ChatUsers, chat} from '../../../../../theme/src/app/shared/model/chat.model';
+import {ChatUsers} from '../model/chat.model';
 import {Observable, Subscriber} from 'rxjs';
-import {map, filter, scan} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {CustomerService} from './firebase/customer.service';
-var today = new Date().toLocaleString('en-US', {hour: 'numeric', minute: 'numeric', hour12: true});
 
 @Injectable({
     providedIn: 'root'
