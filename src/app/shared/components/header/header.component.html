@@ -86,22 +86,37 @@
                                                class="badge badge-pill badge-primary pull-right">{{notification.notifications.length}}</span>
                         </li>
                         <li *ngFor="let notification of notification.notifications"><a
+                                *ngIf="notification.url == '/chat'"
                                 (click)="setChatId(notification.customerId)" [routerLink]="notification.url">
                             <div class="media">
                                 <div class="media-body">
                                     <h6 class="mt-0"><span>
                       <app-feather-icons class="shopping-color" [icon]="notification.icon"></app-feather-icons>
-                    </span>{{'New Message from'|translate}} {{notification.customerName}}
+                    </span>{{'New message from'|translate}} {{notification.customerName}}
                                         <small class="pull-right">{{notification.createdAt | date:'H:mm a'}}</small>
                                     </h6>
                                     <p class="mb-0 text-dark"
-                                       *ngIf="notification.text.length >= 100 ">{{notification.text.substring(0, 100 - 3) + '...'}}</p>
+                                       *ngIf="notification.text && notification.text.length >= 100 ">{{notification.text.substring(0, 100 - 3) + '...'}}</p>
                                     <p class="mb-0 text-dark"
-                                       *ngIf="notification.text.length < 100 ">{{notification.text}}</p>
+                                       *ngIf="notification.text && notification.text.length < 100 ">{{notification.text}}</p>
                                 </div>
                             </div>
-                        </a></li>
-                        <li *ngIf="notification.notifications.length == 0" class="bg-light text-center txt-dark">No new notifications</li>
+                        </a>
+                            <a *ngIf="notification.url == '/carts'" [routerLink]="notification.url">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <h6 class="mt-0 txt-success"><span>
+                      <app-feather-icons class="shopping-color txt-success" [icon]="notification.icon"></app-feather-icons>
+                    </span>{{'New cart from'|translate}} {{notification.customerName}}
+                                            <small class="pull-right">{{notification.createdAt | date:'H:mm a'}}</small>
+                                        </h6>
+                                        <p class="mb-0 text-dark">{{notification.customerName}} added new cart</p>
+                                    </div>
+                                </div>
+                            </a></li>
+                        <li *ngIf="notification.notifications.length == 0" class="bg-light text-center txt-dark">No new
+                            notifications
+                        </li>
                     </ul>
                 </li>
                 <li class="onhover-dropdown">

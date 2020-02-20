@@ -14,6 +14,7 @@ export class NotificationService {
         this.toastr.toastrConfig.newestOnTop = true;
         this.toastr.toastrConfig.autoDismiss = true;
         let newMessages = [];
+        let newCarts = [];
         this.db.collection('messages').stateChanges().subscribe(docs => {
             docs.forEach(doc => {
                 if (doc.type == 'added') {
@@ -21,11 +22,11 @@ export class NotificationService {
                     data['icon'] = 'message-square';
                     data['url'] = '/chat';
                     //doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user')['uid']) &&
-                    if (doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user')['uid']) && Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60) <= 5) {
+                    if (doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user'))['uid'] && Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60) <= 5) {
                         newMessages.push(doc.payload.doc.data());
                     }
                     // Allow only 24 hours to display the notification on the notification list
-                    if (doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user')['uid']) && Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60 / 60) <= 24) {
+                    if (doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user'))['uid'] && Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60 / 60) <= 24) {
                         this.notifications.push(data);
                     }
                 }
@@ -48,7 +49,44 @@ export class NotificationService {
                         positionClass: 'toast-top-left'
                     }).onTap.subscribe(notify => {
                         this.router.navigateByUrl('/chat');
-                        localStorage.setItem('chatId',doc['customerId']);
+                        localStorage.setItem('chatId', doc['customerId']);
+                    });
+                });
+            }
+        });
+        this.db.collection('carts').stateChanges().subscribe(docs => {
+            docs.forEach(doc => {
+                if (doc.type == 'added') {
+                    let data = doc.payload.doc.data();
+                    data['icon'] = 'shopping-cart';
+                    data['url'] = '/carts';
+                    if (Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60) <= 5) {
+                        newCarts.push(doc.payload.doc.data());
+                    }
+                    // Allow only 24 hours to display the notification on the notification list
+                    if (Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60 / 60) <= 24) {
+                        this.notifications.push(data);
+                    }
+                }
+            });
+            if (newCarts.length >= this.toastr.toastrConfig.maxOpened) {
+                this.toastr.show('You have ' + newCarts.length + ' new carts', 'New Carts', {
+                    progressBar: true,
+                    tapToDismiss: false,
+                    positionClass: 'toast-top-left'
+                }).onTap.subscribe(notify => {
+                    this.router.navigateByUrl('/carts');
+                });
+            } else {
+                newCarts.forEach(doc => {
+                    doc['icon'] = 'shopping-cart';
+                    doc['url'] = '/carts';
+                    this.toastr.show(doc['customerName'] + ' Added new cart', 'New Cart', {
+                        progressBar: true,
+                        tapToDismiss: true,
+                        positionClass: 'toast-top-left'
+                    }).onTap.subscribe(notify => {
+                        this.router.navigateByUrl('/carts');
                     });
                 });
             }
