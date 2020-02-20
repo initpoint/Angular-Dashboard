@@ -2,6 +2,24 @@
     <div class="row">
         <div class="col-sm-4">
             <div class="card">
+                <div class="card-header"><h5>{{'Import' | translate}} {{'Promotions' | translate}}</h5></div>
+                <div class="card-body">
+                    <dx-file-uploader
+                            selectButtonText="Select XLSX File"
+                            labelText=""
+                            accept=".xlsx"
+                            [(rtlEnabled)]="lang"
+                            (change)="promotionImport($event)"
+                            [showFileList]="false"
+                            [maxFileSize]="3000000"
+                            [multiple]="false"
+                            uploadMode="instantly">
+                    </dx-file-uploader>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
                 <div class="card-header"><h5>{{'Import' | translate}} {{'Combinations' | translate}}</h5></div>
                 <div class="card-body">
                     <dx-file-uploader
@@ -171,7 +189,7 @@
                     <dxi-column dataField="valueField" [setCellValue]="rowFound">
                         <dxo-lookup
                                 [dataSource]="columnObjects"
-                                displayExpr="value"
+                                displayExpr="columnName"
                                 valueExpr="valueField">
                         </dxo-lookup>
                     </dxi-column>

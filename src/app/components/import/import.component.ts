@@ -58,7 +58,140 @@ export class ImportComponent implements OnInit {
             text: 'شد الكرتون'
         },
     ];
-
+    promotionRows = [
+        {
+            field: 'code',
+            text: 'الرمز'
+        },
+        {
+            field: 'nameArFull',
+            text: 'الاسم العربي'
+        },
+        {
+            field: 'usage',
+            text: 'الاستخدام'
+        },
+        {
+            field: 'promotionType',
+            text: 'نوع العرض'
+        },
+        {
+            field: 'hasChildren',
+            text: 'له شرائح'
+        },
+        {
+            field: 'childrenType',
+            text: 'نوع الشريحة'
+        },
+        {
+            field: 'paymentMethods',
+            text: 'طرق الدفع'
+        },
+        {
+            field: 'resolver',
+            text: 'العامل'
+        },
+        {
+            field: 'applyOn',
+            text: 'تطبيق على'
+        },
+        {
+            field: 'priceFrom',
+            text: 'المبلغ : من'
+        }, {
+            field: 'priceTo',
+            text: 'الى'
+        }, {
+            field: 'isTotalDiscount',
+            text: 'خصم عام'
+        }, {
+            field: 'hasFreeItem',
+            text: 'المواد المجانية'
+        }, {
+            field: 'disCountType',
+            text: 'نوع الخصم'
+        }, {
+            field: 'disCountValue',
+            text: '%'
+        }, {
+            field: 'price',
+            text: 'المبلغ'
+        }, {
+            field: 'validFrom',
+            text: 'الصلاحية: من (م)'
+        }, {
+            field: 'validTo',
+            text: 'الى (م)'
+        },
+        {
+            field: 'counter',
+            text: '#'
+        },
+        // {
+        //     field: 'allBranches',
+        //     text: '# لكل فرع'
+        // },{
+        //     field: 'selectBranches',
+        //     text: 'تحديد عدد المرات لكل فرع'
+        // },{
+        //     field: 'allBranches',
+        //     text: 'تحديد عدد المرات لكل فرع'
+        // },
+        {
+            field: 'excludeFromTotalDiscount',
+            text: 'إستثناء العروض من الخصم العام'
+        }, {
+            field: 'notes',
+            text: 'الملاحظات'
+        }, {
+            field: 'status',
+            text: 'الحالة'
+        }, {
+            field: 'priceListNameAr',
+            text: 'قائمة الأسعار - الاسم العربي'
+        }, {
+            field: 'priceListCode',
+            text: 'قائمة الأسعار - الرمز'
+        },{
+            field: 'conditionBarCodeId',
+            text: 'الرمز الخطي'
+        },
+        {
+            field: 'materialDiscountBarCodeId',
+            text: 'الرمز الخطي'
+        },
+        {
+            field: 'freeItemBarCodeId',
+            text: 'الرمز الخطي'
+        },{
+            field: 'materialType',
+            text: 'نوع المادة'
+        },{
+            field: 'combinationCode',
+            text: 'التركيبة -الرمز'
+        },{
+            field: 'combinationNameAr',
+            text: 'التركيبة -الاسم'
+        },{
+            field: 'typeOfValue',
+            text: 'نوع القيمة'
+        },{
+            field: 'discountAmount',
+            text: 'المبلغ'
+        },{
+            field: 'discountPercentage',
+            text: '%'
+        },{
+            field: 'unitCode',
+            text: 'الوحدة -الرمز'
+        },{
+            field: 'unitName',
+            text: 'الوحدة -الاسم'
+        },{
+            field: 'Amount',
+            text: 'الكمية'
+        },
+    ];
     columnObjects: any[] = [];
     columnToShow: any[] = [];
     rowCounter: number = 0;
@@ -121,28 +254,100 @@ export class ImportComponent implements OnInit {
                 this.columnObjects.push({value: column, valueField: Object.keys(data[0])[i]});
                 i++;
             });
-            i = 0;
             this.combinationsData.forEach(column => {
-                if (Object.values(data[0]).find(row => row === column.text)) {
+                let field = this.columnObjects.find(row => row.value === column.text);
+                if (field) {
+
                     this.columnToShow.push({
                         text: column.text,
                         isFound: true,
-                        value: column.text,
-                        valueField: Object.keys(data[0])[i],
+                        value: field.value,
+                        valueField: field.valueField,
                         field: column.field
                     });
                 } else {
                     this.columnToShow.push({
                         text: column.text,
                         isFound: false,
-                        value: column.text,
-                        valueField: Object.keys(data[0])[i],
+                        value: field.value,
+                        valueField: field.valueField,
                         field: column.field
                     });
                 }
-                i++;
             });
             this.rowCounter = data.length - 1;
+        };
+        reader.readAsBinaryString(target.files[0]);
+    }
+
+    promotionImport(evt: any) {
+        this.popupVisible = true;
+        /* wire up file reader */
+        const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
+        }
+        // this.show = true;
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            /* read workbook */
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+            /* grab first sheet */
+            const wsname: string = wb.SheetNames[0];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            /* save data */
+            const data = XLSX.utils.sheet_to_json(ws, {header: 'A'});
+            this.dataFromFile = data.slice(2);
+            this.columnToShow = [];
+            this.columnObjects = [];
+            let i = 0;
+            Object.values(data[0]).forEach(column => {
+                let key = Object.keys(data[0])[i];
+                this.columnObjects.push({
+                    columnName: column + ' (' + key + ')',
+                    value: column,
+                    valueField: key,
+                    source: 0
+                });
+                i++;
+            });
+            i = 0;
+            Object.values(data[1]).forEach(column => {
+                let key = Object.keys(data[1])[i];
+                this.columnObjects.push({
+                    columnName: column + ' (' + key+'2' + ')',
+                    value: column,
+                    valueField: key+'2',
+                    source: 1
+                });
+                i++;
+            });
+            // ToDo fix the duplicated columns (edit not working)
+            this.promotionRows.forEach(column => {
+                let field = this.columnObjects.find(row => row.value === column.text);
+                if (field) {
+                    this.columnToShow.push({
+                        text: column.text,
+                        columnName: column.text + ' (' + field.valueField + ')',
+                        isFound: true,
+                        value: field.value,
+                        valueField: field.valueField,
+                        field: column.field
+                    });
+                } else {
+                    this.columnToShow.push({
+                        text: column.text,
+                        isFound: false,
+                        value: null,
+                        valueField: null,
+                        field: column.field
+                    });
+                }
+            });
+            this.rowCounter = data.length - 2;
+            console.log(this.columnToShow)
+            console.log(this.columnObjects)
         };
         reader.readAsBinaryString(target.files[0]);
     }
@@ -417,9 +622,8 @@ export class ImportComponent implements OnInit {
     }
 
     rowFound(row, value) {
-        if (value) {
             (<any>this).defaultSetCellValue(row, value);
-        }
+
     }
 
     cancelData() {
