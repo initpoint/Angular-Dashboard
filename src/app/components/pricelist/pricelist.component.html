@@ -2,72 +2,144 @@
 <!--    <div class="row">-->
 <!--        <div class="col-sm-12">-->
 <!--            <div class="card">-->
-                <dx-data-grid [dataSource]="pricelistSource" [showBorders]="true" [rtlEnabled]="lang" [hoverStateEnabled]="true"
-                              [focusedRowEnabled]="true"
-                              (onRowClick)="RowClicked($event)">
-                    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
-                    <dxo-header-filter [visible]="true"></dxo-header-filter>
-                    <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-editing
-                            mode="form"
-                            [allowAdding]="true"
-                            [allowUpdating]="true"
-                            [useIcons]="true"
-                            [allowDeleting]="true">
-                    </dxo-editing>
-                    <dxo-export [enabled]="true" fileName="PriceList" [allowExportSelectedData]="true"></dxo-export>
-                    <dxo-selection mode="single"></dxo-selection>
-                    <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
-                </dx-data-grid>
-                <div [hidden]="!showSaveButton" class="dx-field m-15">
-                    <div class="dx-field-value">
-                        <dx-button
-                                [(rtlEnabled)]="lang"
-                                class="btn-success send"
-                                icon="fa fa-save"
-                                (click)="savePrices()"
-                                text="{{'Save'|translate}}">
-                        </dx-button>
-                    </div>
-                </div>
-                <dx-data-grid *ngIf="currentRow" keyExpr="barCodeId" [dataSource]="itemService.itemArray"
+<button class="btn btn-success m-2" (click)="btnClicked()"><i class="icon-import"></i> {{'Import Pricelist'|translate}}
+</button>
+<dx-popup
+        [showTitle]="true"
+        [title]="'Data View'"
+        [dragEnabled]="false"
+        [closeOnOutsideClick]="false"
+        (onHiding)="cancelData()"
+        [(visible)]="popupVisible">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card-header">
+                <dx-file-uploader
+                        selectButtonText="Select XLSX File"
+                        [ngStyle]="lang && {'float':'right'}"
+                        [ngClass]="{'pull-right':!lang}"
+                        style="margin-top: -1rem"
+                        height="60px"
+                        width="20%"
+                        accept=".xlsx"
+                        [(rtlEnabled)]="lang"
+                        (change)="importPriceList($event)"
+                        [showFileList]="false"
+                        [maxFileSize]="3000000"
+                        [multiple]="false"
+                        uploadMode="instantly">
+                </dx-file-uploader>
+                <h5>{{'Comparison'|translate}}</h5></div>
+            <dx-data-grid #dataTable
+                          keyExpr="text"
+                          [dataSource]="columnToShow"
+                          columnAutoWidth="true"
+                          [paging]="{enabled:false}" height="550" showBorders="true"
+                          [rtlEnabled]="lang">
+                <dxo-editing
+                        mode="cell"
+                        [allowUpdating]="true">
+                </dxo-editing>
+                <dxo-scrolling mode="Infinite" showScrollbar="Always"></dxo-scrolling>
+                <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
+                <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
+                <dxi-column dataField="valueField" [setCellValue]="rowFound">
+                    <dxo-lookup
+                            [dataSource]="columnObjects"
+                            displayExpr="text"
+                            valueExpr="valueField">
+                    </dxo-lookup>
+                </dxi-column>
+            </dx-data-grid>
+            <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
+            <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
+            </button>
+            <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">Total
+                rows: {{rowCounter|number}}</h6>
+        </div>
+        <div class="col-md-4">
+            <div class="card-header">
+                <button class="btn btn-primary" [ngStyle]=" lang && {'float':'right'}" [ngClass]="{'pull-right':!lang}"
+                        (click)="downloadTemplate(importService.priceListData)"><i
+                        class="icon-download"></i> {{'Download Template'|translate}}</button>
+                <h5>{{'Columns required'|translate}}</h5></div>
+            <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="550" showBorders="true"
+                          [dataSource]="importService.priceListData"
+                          [rtlEnabled]="lang">
+                <dxo-scrolling mode="Infinite" useNative="false" showScrollbar="Always"></dxo-scrolling>
+                <dxi-column [allowEditing]="false" dataField="text" caption="Column Name"></dxi-column>
+            </dx-data-grid>
+        </div>
+    </div>
+</dx-popup>
+<dx-data-grid [dataSource]="pricelistSource" [showBorders]="true" [rtlEnabled]="lang" [hoverStateEnabled]="true"
+              [focusedRowEnabled]="true"
+              (onRowClick)="RowClicked($event)">
+    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-editing
+            mode="form"
+            [allowAdding]="true"
+            [allowUpdating]="true"
+            [useIcons]="true"
+            [allowDeleting]="true">
+    </dxo-editing>
+    <dxo-export [enabled]="true" fileName="PriceList" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-selection mode="single"></dxo-selection>
+    <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
+</dx-data-grid>
+<div [hidden]="!showSaveButton" class="dx-field m-15">
+    <div class="dx-field-value">
+        <dx-button
+                [(rtlEnabled)]="lang"
+                class="btn-success send"
+                icon="fa fa-save"
+                (click)="savePrices()"
+                text="{{'Save'|translate}}">
+        </dx-button>
+    </div>
+</div>
+<dx-data-grid *ngIf="currentRow" keyExpr="barCodeId" [dataSource]="itemsToShow"
 
-                              [showBorders]="false"
-                              [rtlEnabled]="lang"
-                              [showRowLines]="false"
-                              [columnAutoWidth]="true"
-                              [hoverStateEnabled]="true"
-                              [focusedRowEnabled]="true"
-                              [wordWrapEnabled]="true">
+              [showBorders]="false"
+              [rtlEnabled]="lang"
+              [showRowLines]="false"
+              [columnAutoWidth]="true"
+              [hoverStateEnabled]="true"
+              [focusedRowEnabled]="true"
+              [wordWrapEnabled]="true">
 
-                    <dxo-scrolling mode="infinite"></dxo-scrolling>
-                    <dxo-header-filter [visible]="true"></dxo-header-filter>
-                    <dxo-search-panel [visible]="true"></dxo-search-panel>
-                    <dxo-editing
-                            mode="cell"
-                            [allowUpdating]="true"
-                            [useIcons]="true"
-                            [allowDeleting]="true">
-                    </dxo-editing>
-                    <dxo-export [enabled]="true" fileName="Combinations" [allowExportSelectedData]="true"></dxo-export>
-                    <dxo-selection mode="multiple"></dxo-selection>
-                    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
-                                [formItem]="{visible: false}" [allowEditing]="false"></dxi-column>
-                    <dxi-column dataField="code" [allowEditing]='false' [caption]="'Code'|translate"></dxi-column>
-                    <dxi-column dataField="nameArFull" [allowEditing]='false' [caption]="'Name Ar'|translate"></dxi-column>
-                    <dxi-column dataField="isActive" [allowEditing]='false' dataType="boolean"
-                                [caption]="'Is Active'|translate"></dxi-column>
-                    <dxi-column dataField="prices" editCellTemplate="tagBoxEditor" [allowFiltering]="false" [allowSorting]="false" cellTemplate="priceTemplate"
-                                [caption]="'Price'|translate"></dxi-column>
-                    <div *dxTemplate="let data of 'priceTemplate'">
-                        <div *ngIf="data.data.prices && data.data.prices.hasOwnProperty(currentRow.id)">
-                            {{data.data.prices[currentRow.id]}}
-                        </div>
-                    </div>
-                    <div *dxTemplate="let cellInfo of 'tagBoxEditor'">
-                        <dx-number-box [value]="cellInfo.data.prices[currentRow.id]"  (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
-                    </div>
-                </dx-data-grid>
+    <dxo-scrolling mode="infinite"></dxo-scrolling>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-editing
+            mode="cell"
+            [allowUpdating]="true"
+            [useIcons]="true"
+            [allowDeleting]="true">
+    </dxo-editing>
+    <dxo-export [enabled]="true" fileName="Combinations" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-selection mode="multiple"></dxo-selection>
+    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
+                [formItem]="{visible: false}" [allowEditing]="false"></dxi-column>
+    <dxi-column dataField="code" [allowEditing]='false' [caption]="'Code'|translate"></dxi-column>
+    <dxi-column dataField="nameArFull" [allowEditing]='false' [caption]="'Name Ar'|translate"></dxi-column>
+    <dxi-column dataField="isActive" [allowEditing]='false' dataType="boolean"
+                [caption]="'Is Active'|translate"></dxi-column>
+    <dxi-column dataField="prices" editCellTemplate="tagBoxEditor" [allowFiltering]="false" [allowSorting]="true"
+                cellTemplate="priceTemplate"
+                [caption]="'Price'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'priceTemplate'">
+        <div *ngIf="data.data.prices && data.data.prices.hasOwnProperty(currentRow.id)">
+            {{data.data.prices[currentRow.id]}}
+        </div>
+    </div>
+    <div *dxTemplate="let cellInfo of 'tagBoxEditor'">
+        <dx-number-box [value]="cellInfo.data.prices[currentRow.id]"
+                       (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
+    </div>
+</dx-data-grid>
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->

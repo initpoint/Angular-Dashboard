@@ -8,27 +8,27 @@ import {map} from 'rxjs/operators';
     providedIn: 'root'
 })
 export class ItemsService implements OnInit {
-    itemArray;
-    lastDocIndex: number = 0;
+    //itemArray;
+    //lastDocIndex: number = 0;
 
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
 
-        this.db.collection('item').snapshotChanges().pipe(
-            map(x => {
-                let thev = {
-                    array: [],
-                    lastDocIndex: 0
-                };
-                x.forEach(doc => {
-                    thev.array = thev.array.concat(doc.payload.doc.data()['items']);
-                    thev.lastDocIndex = Math.max(parseInt(doc.payload.doc.id.split('-')[1]), thev.lastDocIndex);
-                });
-                return thev;
-            })
-        ).subscribe(data => {
-            this.lastDocIndex = data.lastDocIndex;
-            this.itemArray = data.array;
-        });
+        // this.db.collection('item').snapshotChanges().pipe(
+        //     map(x => {
+        //         let thev = {
+        //             array: [],
+        //             lastDocIndex: 0
+        //         };
+        //         x.forEach(doc => {
+        //             thev.array = thev.array.concat(doc.payload.doc.data()['items']);
+        //             thev.lastDocIndex = Math.max(parseInt(doc.payload.doc.id.split('-')[1]), thev.lastDocIndex);
+        //         });
+        //         return thev;
+        //     })
+        // ).subscribe(data => {
+        //     this.lastDocIndex = data.lastDocIndex;
+        //     this.itemArray = data.array;
+        // });
     }
 
     ngOnInit() {
@@ -44,14 +44,6 @@ export class ItemsService implements OnInit {
         });
     }
 
-    updateItems() {
-        for (let i = 0; i <= this.lastDocIndex; i++) {
-            let doc = this.itemArray.filter(item => item.docIndex === i);
-            if (doc.length) {
-                this.db.collection('item').doc(`array-${i}`).update({items: doc});
-            }
-        }
-    }
 
     toggleItem(id, data) {
         return this.db.collection('combinations').doc(id).set({isNew: data.value}, {merge: true}).then(res => {
@@ -101,9 +93,21 @@ export class ItemsService implements OnInit {
         );
     }
 
-    getItemPhotos(id) {
+    getItem(id) {
         return this.db.collection('combinations').doc(id).get();
     }
 
+
+    getItems() {
+        return this.db.collection('combinations').snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    id: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
+        ;
+    }
 
 }

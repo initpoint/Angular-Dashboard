@@ -17,9 +17,11 @@ export class ItemsComponent implements OnInit {
     popupVisible: boolean;
     value: any[] = [];
     private showSaveButton: boolean = false;
-
+    itemArray: any[] = [];
     constructor(public itemsService: ItemsService) {
-
+        this.itemsService.getItems().subscribe(items => {
+            this.itemArray = items;
+        });
     }
 
     ngOnInit() {
@@ -36,8 +38,9 @@ export class ItemsComponent implements OnInit {
         if ($event.rowType == 'data') {
             this.currentRow = $event.data;
             if ($event.event.target.className == 'btn btn-sm btn-pill btn-success') {
-                this.itemsService.getItemPhotos(this.currentRow.code).subscribe(res => {
+                this.itemsService.getItem(this.currentRow.code).subscribe(res => {
                     if (res.exists) {
+
                         this.currentRow.pics = res.data().pics;
                     }
                     this.popupVisible = true;
@@ -123,13 +126,13 @@ export class ItemsComponent implements OnInit {
     }
 
     saveItems() {
-        this.itemsService.updateItems();
+        // this.itemsService.updateItems();
         this.showSaveButton = false;
     }
 
     toggleNew(data) {
         this.showSaveButton = true;
-        this.itemsService.itemArray.find(x => x.code === data.data.code).isNew = data.value;
+        // this.itemsService.itemArray.find(x => x.code === data.data.code).isNew = data.value;
         this.itemsService.toggleItem(data.data.code, data);
     }
 

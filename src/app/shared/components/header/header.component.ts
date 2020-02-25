@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
     public lang: string;
     public direction: string;
     public isOpenMobile: boolean = false;
-
+    itemsArray: any[] = [];
     constructor(public navServices: NavService,
                 private itemsService: ItemsService,
                 private translate: TranslateService,
@@ -36,6 +36,9 @@ export class HeaderComponent implements OnInit {
         } else {
             this.direction = 'ltr';
         }
+        this.itemsService.getItems().subscribe(items => {
+                this.itemsArray = items;
+        });
         document.body.setAttribute('main-theme-layout', this.direction);
         document.getElementsByTagName('html')[0].setAttribute('dir', this.direction);
     }
@@ -72,8 +75,10 @@ export class HeaderComponent implements OnInit {
         if (!term) {
             return this.menuItems = [];
         }
-        let itemsArray = this.itemsService.itemArray;
+
+        let itemsArray = this.itemsArray;
         let searchItems = [];
+
         term = term.toLowerCase();
         itemsArray.filter(items => {
             items.type = 'product';
@@ -142,6 +147,6 @@ export class HeaderComponent implements OnInit {
     }
 
     setChatId(customerId) {
-        localStorage.setItem('chatId',customerId)
+        localStorage.setItem('chatId', customerId);
     }
 }
