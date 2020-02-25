@@ -13,6 +13,7 @@ const routes: Routes = [
     {
         path: '',
         redirectTo: 'customers/show',
+        canActivate: [AdminGuard],
         pathMatch: 'full'
     },
     {

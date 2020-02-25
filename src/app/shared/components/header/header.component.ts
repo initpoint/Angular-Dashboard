@@ -59,7 +59,6 @@ export class HeaderComponent implements OnInit {
 
     public changeLanguage(lang) {
         this.translate.use(lang);
-        this.authService.cookieService.set('lang', lang);
         localStorage.setItem('lang', lang);
         document.getElementById('lang').innerText = lang.toUpperCase();
         if (lang == 'ar') {

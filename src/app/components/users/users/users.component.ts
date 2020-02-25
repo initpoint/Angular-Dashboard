@@ -17,7 +17,6 @@ export class UsersComponent implements OnInit {
     fieldView: boolean = true;
 
     constructor(private userService: UserService) {
-
         this.customerData = new CustomeStore({
             key: 'uid',
             load: (opts) => {
@@ -37,13 +36,11 @@ export class UsersComponent implements OnInit {
             insert: (values) => {
                 return this.userService.createUser(values);
             },
-
         });
         this.customerSource = new DataSource({
             store: this.customerData,
         });
     }
-
 
     onEditorPreparing(e) {
         if (e.parentType === 'dataRow' && e.dataField === 'password' && e.row.data.uid) {
@@ -52,7 +49,6 @@ export class UsersComponent implements OnInit {
             e.cancel = true;
             this.fieldView = false;
         }
-
     }
 
     ngOnInit() {

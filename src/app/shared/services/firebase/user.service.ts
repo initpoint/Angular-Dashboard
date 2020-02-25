@@ -14,7 +14,7 @@ export class UserService {
 
     constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth,
-                private toastr: ToastrService,
+                private toastrService: ToastrService,
     ) {
     }
 
@@ -28,27 +28,26 @@ export class UserService {
                 ref.doc(userData.user.uid).set({
                     uid: userData.user.uid,
                     email: value.email,
-                    mobile: parseInt(value.mobile),
-                    name: value.name,
-                    code: value.code,
+                    mobile: value.mobile || null,
+                    name: value.name || null,
+                    code: value.code || null,
                 });
                 return true;
             }).catch(function (err) {
-                // Handle Errors here.
-                var errorCode = err.code;
-                var errorMessage = err.message;
-                if (errorCode == 'auth/weak-password') {
+                if (err.code == 'auth/weak-password') {
                     alert('The password is too weak.');
-                } else if (errorCode == 'auth/email-already-in-use') {
+                } else if (err.code == 'auth/email-already-in-use') {
                     alert('This email is already in use.');
-                } else if (errorCode == 'auth/invalid-email') {
+                } else if (err.code == 'auth/invalid-email') {
                     alert('email address is not valid.');
                 } else {
-                    alert(errorMessage);
+                    alert(err.message);
                 }
                 return false;
+            }).then(res => {
+                this.app.auth().signOut();
+                this.toastrService.success('User Created.');
             });
-        this.app.auth().signOut();
     }
 
     updateUser(userKey, value) {
