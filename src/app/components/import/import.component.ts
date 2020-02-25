@@ -16,182 +16,6 @@ export class ImportComponent implements OnInit {
     combinationsDetailsColumns = ['رمز التركيبة', 'الرمز الخطي', 'إسم الصنف', 'الطول', 'العرض', 'الارتفاع', 'الوزن', 'الحجم'];
     balanceColumns = ['رمز التركيبة', ' الرمز الخطي ', 'إسم الصنف', 'رصيد المخازن', 'رصيد الفروع'];
     popupVisible: boolean = false;
-    combinationsData = [
-        {
-            field: 'barCodeId',
-            text: 'الرمز الخطي'
-        },
-        {
-            field: 'code',
-            text: 'تركيبة المادة المستودعية - الرمز'
-        },
-        {
-            field: 'nameArFull',
-            text: 'تركيبة المادة المستودعية - الوصف العربي'
-        },
-        {
-            field: 'materialCode',
-            text: 'المادة المستودعية - الرمز'
-        },
-        {
-            field: 'materialNameAr',
-            text: 'المادة المستودعية - الوصف العربي'
-        },
-        {
-            field: 'rankingCode',
-            text: 'التصنيف- الرمز'
-        },
-        {
-            field: 'rankingNameAr',
-            text: 'التصنيف- الاسم العربي'
-        },
-        {
-            field: 'unitCode',
-            text: 'الوحدة - الرمز'
-        },
-        {
-            field: 'unitNameAr',
-            text: 'الوحدة - الاسم العربي'
-        },
-        {
-            field: 'size',
-            text: 'شد الكرتون'
-        },
-    ];
-    promotionRows = [
-        {
-            field: 'code',
-            text: 'الرمز'
-        },
-        {
-            field: 'nameArFull',
-            text: 'الاسم العربي'
-        },
-        {
-            field: 'usage',
-            text: 'الاستخدام'
-        },
-        {
-            field: 'promotionType',
-            text: 'نوع العرض'
-        },
-        {
-            field: 'hasChildren',
-            text: 'له شرائح'
-        },
-        {
-            field: 'childrenType',
-            text: 'نوع الشريحة'
-        },
-        {
-            field: 'paymentMethods',
-            text: 'طرق الدفع'
-        },
-        {
-            field: 'resolver',
-            text: 'العامل'
-        },
-        {
-            field: 'applyOn',
-            text: 'تطبيق على'
-        },
-        {
-            field: 'priceFrom',
-            text: 'المبلغ : من'
-        }, {
-            field: 'priceTo',
-            text: 'الى'
-        }, {
-            field: 'isTotalDiscount',
-            text: 'خصم عام'
-        }, {
-            field: 'hasFreeItem',
-            text: 'المواد المجانية'
-        }, {
-            field: 'disCountType',
-            text: 'نوع الخصم'
-        }, {
-            field: 'disCountValue',
-            text: '%'
-        }, {
-            field: 'price',
-            text: 'المبلغ'
-        }, {
-            field: 'validFrom',
-            text: 'الصلاحية: من (م)'
-        }, {
-            field: 'validTo',
-            text: 'الى (م)'
-        },
-        {
-            field: 'counter',
-            text: '#'
-        },
-        // {
-        //     field: 'allBranches',
-        //     text: '# لكل فرع'
-        // },{
-        //     field: 'selectBranches',
-        //     text: 'تحديد عدد المرات لكل فرع'
-        // },{
-        //     field: 'allBranches',
-        //     text: 'تحديد عدد المرات لكل فرع'
-        // },
-        {
-            field: 'excludeFromTotalDiscount',
-            text: 'إستثناء العروض من الخصم العام'
-        }, {
-            field: 'notes',
-            text: 'الملاحظات'
-        }, {
-            field: 'status',
-            text: 'الحالة'
-        }, {
-            field: 'priceListNameAr',
-            text: 'قائمة الأسعار - الاسم العربي'
-        }, {
-            field: 'priceListCode',
-            text: 'قائمة الأسعار - الرمز'
-        },{
-            field: 'conditionBarCodeId',
-            text: 'الرمز الخطي'
-        },
-        {
-            field: 'materialDiscountBarCodeId',
-            text: 'الرمز الخطي'
-        },
-        {
-            field: 'freeItemBarCodeId',
-            text: 'الرمز الخطي'
-        },{
-            field: 'materialType',
-            text: 'نوع المادة'
-        },{
-            field: 'combinationCode',
-            text: 'التركيبة -الرمز'
-        },{
-            field: 'combinationNameAr',
-            text: 'التركيبة -الاسم'
-        },{
-            field: 'typeOfValue',
-            text: 'نوع القيمة'
-        },{
-            field: 'discountAmount',
-            text: 'المبلغ'
-        },{
-            field: 'discountPercentage',
-            text: '%'
-        },{
-            field: 'unitCode',
-            text: 'الوحدة -الرمز'
-        },{
-            field: 'unitName',
-            text: 'الوحدة -الاسم'
-        },{
-            field: 'Amount',
-            text: 'الكمية'
-        },
-    ];
     columnObjects: any[] = [];
     columnToShow: any[] = [];
     rowCounter: number = 0;
@@ -254,7 +78,7 @@ export class ImportComponent implements OnInit {
                 this.columnObjects.push({value: column, valueField: Object.keys(data[0])[i]});
                 i++;
             });
-            this.combinationsData.forEach(column => {
+            this.importService.combinationsData.forEach(column => {
                 let field = this.columnObjects.find(row => row.value === column.text);
                 if (field) {
 
@@ -297,7 +121,7 @@ export class ImportComponent implements OnInit {
             const wsname: string = wb.SheetNames[0];
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
-            const data = XLSX.utils.sheet_to_json(ws, {header: 'A'});
+            const data = XLSX.utils.sheet_to_json(ws, {header: 'A'},);
             this.dataFromFile = data.slice(2);
             this.columnToShow = [];
             this.columnObjects = [];
@@ -324,13 +148,15 @@ export class ImportComponent implements OnInit {
                 i++;
             });
             // ToDo fix the duplicated columns (edit not working)
-            this.promotionRows.forEach(column => {
+            this.importService.promotionRows.forEach(column => {
                 let field = this.columnObjects.find(row => row.value === column.text);
+
                 if (field) {
                     this.columnToShow.push({
                         text: column.text,
                         columnName: column.text + ' (' + field.valueField + ')',
                         isFound: true,
+                        source: field.source,
                         value: field.value,
                         valueField: field.valueField,
                         field: column.field
@@ -339,15 +165,17 @@ export class ImportComponent implements OnInit {
                     this.columnToShow.push({
                         text: column.text,
                         isFound: false,
+                        source: field.source,
                         value: null,
                         valueField: null,
                         field: column.field
                     });
                 }
+
             });
             this.rowCounter = data.length - 2;
-            console.log(this.columnToShow)
-            console.log(this.columnObjects)
+            // console.log(this.columnToShow)
+            // console.log(this.columnObjects)
         };
         reader.readAsBinaryString(target.files[0]);
     }
@@ -380,16 +208,20 @@ export class ImportComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
             let data = XLSX.utils.sheet_to_json(ws, {header: ['no', 'column1', 'barCodeId', 'column3', 'column4', 'column5', 'code', 'column7', 'column8', 'column9', 'column10', 'column11', 'price', 'column13', 'column14', 'column15', 'column16', 'column17', 'pricelistCode', 'name', 'column20', 'column21', 'column22', 'column23', 'column24', 'column25', 'qty']}).slice(1);
+
             this.importService.db.collection('pricelist').doc(data[0]['pricelistCode']).set({
                 name: data[0]['name'],
                 code: data[0]['pricelistCode']
-            }).then(res => {
-                data.forEach(rows => {
-                    this.importService.importPriceList(rows, data[0]['pricelistCode']);
-                });
-                this.importService.itemsService.updateItems();
-                this.show = false;
+            },{merge:true}).then(res => {
+             data.forEach(item => {
+                 this.importService.importPriceList(item,data[0]['pricelistCode'])
+                 // console.log(item)
+             })
+
+                //this.importService.itemsService.updateItems();
+
             });
+            this.show = false;
         };
         reader.readAsBinaryString(target.files[0]);
     }
@@ -467,16 +299,9 @@ export class ImportComponent implements OnInit {
             const data = XLSX.utils.sheet_to_json(ws, {header: ['no', 'code', 'barCodeId', 'nameArFUll', 'storageBalance', 'branchBalance']}).slice(1);
 
             data.forEach(newItem => {
-                if (this.importService.itemsService.itemArray.find(item => item.code === newItem['code'])) {
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).storageBalance = newItem['storageBalance'];
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).branchBalance = newItem['branchBalance'];
-                    // this.importService.itemsService.updateItem(newItem['code'],{
-                    //     storageBalance:newItem['storageBalance'],
-                    //     branchBalance:newItem['branchBalance']
-                    // })
-                }
+                this.importService.itemsService.updateItem(newItem['code'],{storageBalance: newItem['storageBalance'],branchBalance:newItem['branchBalance']})
             });
-            this.importService.itemsService.updateItems();
+           // this.importService.itemsService.updateItems();
         };
         reader.readAsBinaryString(target.files[0]);
     }
@@ -542,83 +367,82 @@ export class ImportComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws, {header: ['no', 'code', 'barCodeId', 'nameArFUll', 'length', 'width', 'height', 'weight', 'volume']}).slice(1);
-            data.forEach(newItem => {
-                if (this.importService.itemsService.itemArray.find(item => item.code === newItem['code'])) {
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).length = newItem['length'];
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).width = newItem['width'];
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).height = newItem['height'];
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).weight = newItem['weight'];
-                    this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).volume = newItem['volume'];
-                    this.importService.itemsService.updateItem(newItem['code'], {
-                        length: newItem['length'],
-                        width: newItem['width'],
-                        height: newItem['height'],
-                        weight: newItem['weight'],
-                        volume: newItem['volume'],
-                    });
-                }
-            });
-            this.importService.itemsService.updateItems();
-            console.log(wsname, data);
+            // data.forEach(newItem => {
+            //     if (this.importService.itemsService.itemArray.find(item => item.code === newItem['code'])) {
+            //         this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).length = newItem['length'];
+            //         this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).width = newItem['width'];
+            //         this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).height = newItem['height'];
+            //         this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).weight = newItem['weight'];
+            //         this.importService.itemsService.itemArray.find(item => item.code === newItem['code']).volume = newItem['volume'];
+            //         this.importService.itemsService.updateItem(newItem['code'], {
+            //             length: newItem['length'],
+            //             width: newItem['width'],
+            //             height: newItem['height'],
+            //             weight: newItem['weight'],
+            //             volume: newItem['volume'],
+            //         });
+            //     }
+            // });
+            // this.importService.itemsService.updateItems();
+            // console.log(wsname, data);
         };
         reader.readAsBinaryString(target.files[0]);
     }
 
     saveData() {
         return;
-        this.dataFromFile.forEach(item => {
-            Object.keys(item).forEach(key => {
-                if (this.columnToShow.find(column => column.valueField == key)) {
-                    // replace old keys (A,B,C,....) with the fields names
-                    item[this.columnToShow.find(column => column.valueField == key).field] = item[key];
-                    // Delete old key
-                    delete item[key];
-                    // O/P exmp. => {
-                    // barCodeId: "0304042002201"
-                    // size: "شد 18"
-                    // pics: []
-                    // users: []
-                    // prices: {}
-                    // isNew: true
-                    // isActive: false
-                    // code: "933101001098"
-                    // nameArFull: "ابريق شاي غرش دائري سعة 2.5 لتر نقشة شعبية ابيض مقبض حديد السنيدي SNHW-0196W-2.5"
-                    // materialCode: "933101001"
-                    // materialNameAr: "ابريق شاي"
-                    // rankingCode: "933101"
-                    // rankingNameAr: "اواني منزلية - اباريق شاي"
-                    // unitCode: "01001"
-                    // unitNameAr: "حبة"
-                    // }
-                    item['size'] = item.size || null;
-                    item['pics'] = [];
-                    item['customerList'] = [];
-                    item['prices'] = {};
-                    item['isNew'] = true;
-                    item['isActive'] = false;
-                    if (this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code'])) {
-                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).length = item['length'];
-                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).width = item['width'];
-                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).height = item['height'];
-                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).weight = item['weight'];
-                        this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).volume = item['volume'];
-                        this.importService.itemsService.updateItem(item['code'], {
-                            length: item['length'],
-                            width: item['width'],
-                            height: item['height'],
-                            weight: item['weight'],
-                            volume: item['volume'],
-                        });
-                    } else {
-                        this.importService.itemsService.itemArray.push(item);
-                    }
-
-                }
-
-            });
-
-        });
-        console.log(this.importService.itemsService.itemArray);
+        // this.dataFromFile.forEach(item => {
+        //     Object.keys(item).forEach(key => {
+        //         if (this.columnToShow.find(column => column.valueField == key)) {
+        //             // replace old keys (A,B,C,....) with the fields names
+        //             item[this.columnToShow.find(column => column.valueField == key).field] = item[key];
+        //             // Delete old key
+        //             delete item[key];
+        //             // O/P exmp. => {
+        //             // barCodeId: "0304042002201"
+        //             // size: "شد 18"
+        //             // pics: []
+        //             // users: []
+        //             // prices: {}
+        //             // isNew: true
+        //             // isActive: false
+        //             // code: "933101001098"
+        //             // nameArFull: "ابريق شاي غرش دائري سعة 2.5 لتر نقشة شعبية ابيض مقبض حديد السنيدي SNHW-0196W-2.5"
+        //             // materialCode: "933101001"
+        //             // materialNameAr: "ابريق شاي"
+        //             // rankingCode: "933101"
+        //             // rankingNameAr: "اواني منزلية - اباريق شاي"
+        //             // unitCode: "01001"
+        //             // unitNameAr: "حبة"
+        //             // }
+        //             item['size'] = item.size || null;
+        //             item['pics'] = [];
+        //             item['customerList'] = [];
+        //             item['prices'] = {};
+        //             item['isNew'] = true;
+        //             item['isActive'] = false;
+        //             // if (this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code'])) {
+        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).length = item['length'];
+        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).width = item['width'];
+        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).height = item['height'];
+        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).weight = item['weight'];
+        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).volume = item['volume'];
+        //                 this.importService.itemsService.updateItem(item['code'], {
+        //                     length: item['length'],
+        //                     width: item['width'],
+        //                     height: item['height'],
+        //                     weight: item['weight'],
+        //                     volume: item['volume'],
+        //                 });
+        //             } else {
+        //                // this.importService.itemsService.itemArray.push(item);
+        //             }
+        //
+        //         }
+        //
+        //     });
+        //
+        // });
     }
 
     rowFound(row, value) {

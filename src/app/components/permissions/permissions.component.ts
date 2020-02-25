@@ -24,11 +24,15 @@ export class PermissionComponent implements OnInit {
     currentUserPermissions: [];
     popupVisible: boolean;
     selectedForCopy;
+    items: any[] = [];
 
     constructor(public itemsService: ItemsService,
                 private permissionService: PermissionService) {
         this.permissionService.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
+        });
+        this.itemsService.getItems().subscribe(items => {
+            this.items = items;
         });
     }
 
