@@ -22,6 +22,7 @@ export class PermissionComponent implements OnInit {
     selectedItems: any;
     showCurrentPermissions = true;
     currentUserPermissions: [];
+    isLoading = false;
     popupVisible: boolean;
     selectedForCopy;
     items: any[] = [];
@@ -94,26 +95,28 @@ export class PermissionComponent implements OnInit {
         ${removedPerms.length} Removed Premissions\n
         ${unchangedPerms.length} Unchanged Premissions\n`);
         if (proceed) {
+            this.currentUserPermissions = this.selectedItems;
             this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms, unchangedPerms);
         }
     }
 
     onFocusedRowChanged(e: any) {
         this.currentUser = e.row.data;
+        this.currentFilter = ['code', '=', '0'];
         this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
             if (doc.exists) { // Check if Permission doc exists
                 this.currentUserPermissions = doc.data().items;
-                this.currentFilter = [];
-                for (let i = 0; i < doc.data().items.length; i++) {
-                    this.currentFilter.push(['code', '=', doc.data().items[i]]);
-                    if (doc.data().items.length - i > 1) {
+                this.currentFilter = this.currentUserPermissions.length ? [] : ['code', '=', '0'];
+                for (let i = 0; i < this.currentUserPermissions.length; i++) {
+                    this.currentFilter.push(['code', '=', this.currentUserPermissions[i]]);
+                    if (this.currentUserPermissions.length - i > 1) {
                         this.currentFilter.push('or');
                     }
                 }
                 this.filterValue = this.currentFilter;
-
                 this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
             } else {
+                this.currentFilter = ['code', '=', '0'];
                 console.log('Permission Doc does not exist, creating empty one.');
                 this.permissionService.createDoc(e.row.data.uid);
             }
