@@ -74,7 +74,7 @@
 </dx-popup>
 <dx-data-grid [dataSource]="pricelistSource" [showBorders]="true" [rtlEnabled]="lang" [hoverStateEnabled]="true"
               [focusedRowEnabled]="true"
-              (onRowClick)="RowClicked($event)">
+              (onFocusedRowChanged)="onFocusedRowChanged($event)">
     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
@@ -89,6 +89,9 @@
     <dxo-selection mode="single"></dxo-selection>
     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
 </dx-data-grid>
+    <div class="btn-group m-3 p-3">{{'Only Show filtered Items'|translate}}
+            <dx-switch  [rtlEnabled]="lang" (onValueChanged)="filterItems($event)" [(value)]="showCurrentPrices"></dx-switch>
+    </div>
 <div [hidden]="!showSaveButton" class="dx-field m-15">
     <div class="dx-field-value">
         <dx-button
@@ -101,7 +104,7 @@
     </div>
 </div>
 <dx-data-grid *ngIf="currentRow" keyExpr="barCodeId" [dataSource]="itemsToShow"
-
+              [filterValue]="filterValue"
               [showBorders]="false"
               [rtlEnabled]="lang"
               [showRowLines]="false"

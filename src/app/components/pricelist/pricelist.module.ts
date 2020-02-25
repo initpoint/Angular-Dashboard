@@ -8,12 +8,13 @@ import {ImportModule} from '../import/import.module';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import {DxButtonModule,DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxNumberBoxModule} from 'devextreme-angular';
+import {DxButtonModule,DxSwitchModule,DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxNumberBoxModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 @NgModule({
     declarations: [PriceListComponent],
 
     imports: [
+        DxSwitchModule,
         DxPopupModule,
         ImportModule,
         DxFileUploaderModule,

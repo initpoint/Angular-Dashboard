@@ -28,6 +28,8 @@ export class PriceListComponent implements OnInit {
     columnToShow: any[] = [];
     rowCounter: number = 0;
     dataFromFile: any[] = [];
+    showCurrentPrices = true;
+    filterValue = [];
 
     constructor(
         private PriceListservice: PriceListService,
@@ -77,11 +79,24 @@ export class PriceListComponent implements OnInit {
         this.lang = localStorage.getItem('lang') == 'ar';
     }
 
-    RowClicked($event: any) {
+    filterItems(e: any) {
+        if (e.value == false) {
+            this.itemService.getItems().subscribe(items => {
+                this.itemsToShow = items;
+            });
+        } else {
+            this.itemService.getItemsWithPrices(this.currentRow.id).subscribe(items => {
+                this.itemsToShow = items.docs.map(item => item.data());
+            });
+        }
+    }
+
+    onFocusedRowChanged($event: any) {
         this.itemsToShow = [];
-        this.currentRow = $event.data;
-        this.itemService.getItems().subscribe(items => {
-            this.itemsToShow = items;
+        this.currentRow = $event.row.data;
+        this.itemService.getItemsWithPrices(this.currentRow.id).subscribe(items => {
+            this.itemsToShow = items.docs.map(item => item.data());
+
         });
     }
 

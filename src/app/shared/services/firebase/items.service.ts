@@ -97,6 +97,9 @@ export class ItemsService implements OnInit {
         return this.db.collection('combinations').doc(id).get();
     }
 
+    getItemsWithPrices(pricelistId) {
+        return this.db.collection('combinations',ref => ref.where(new firebase.firestore.FieldPath('prices', pricelistId), '>', 0)).get();
+    }
 
     getItems() {
         return this.db.collection('combinations').snapshotChanges().pipe(
