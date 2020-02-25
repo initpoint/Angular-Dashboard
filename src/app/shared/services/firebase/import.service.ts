@@ -84,10 +84,10 @@ export class ImportService {
         }, {
             field: 'price',
             text: 'السعر'
-        },{
+        }, {
             field: 'pricelistCode',
             text: 'قوائم الاسعار  -الرمز'
-        },{
+        }, {
             field: 'pricelistName',
             text: 'قوائم الاسعار  -الاسم'
         },
@@ -224,6 +224,35 @@ export class ImportService {
         }, {
             field: 'Amount',
             text: 'الكمية'
+        },
+    ];
+    billsData = [
+        {
+            field: 'barCodeId',
+            text: 'الرمز الخطي'
+        },
+        {
+            field: 'code',
+            text: 'التركيبة  -الرمز'
+        },
+        {
+            field: 'nameArFull',
+            text: 'الوصف الطويل'
+        },{
+            field: 'qty',
+            text: 'الكمية'
+        },{
+            field: 'FreeQty',
+            text: 'الكمية المجانية  -العرض'
+        },{
+            field: 'unitNameAr',
+            text: 'الوحدة  -الاسم'
+        },{
+            field: 'pricePerUnit',
+            text: 'سعر الوحدة  -(ع.م)'
+        },{
+            field: 'totalPrice',
+            text: 'إجمالي السعر  -(ع.م)'
         },
     ];
 

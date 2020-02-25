@@ -114,7 +114,6 @@ export class PriceListComponent implements OnInit {
     }
 
     importPriceList(evt: any) {
-
         /* wire up file reader */
         const target: DataTransfer = <DataTransfer>(evt.target);
         if (target.files.length !== 1) {

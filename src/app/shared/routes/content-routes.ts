@@ -10,6 +10,13 @@ export const content: Routes = [
     }
   },
   {
+    path: 'bills',
+    loadChildren: './components/bills/bills.module#BillsModule',
+    data: {
+      breadcrumb: "Bills"
+    }
+  },
+  {
     path: 'items',
     loadChildren: './components/items/items.module#ItemsModule',
     data: {

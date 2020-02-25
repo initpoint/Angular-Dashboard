@@ -66,10 +66,10 @@ export class CartsComponent implements OnInit {
     }
 
     rowClick(e) {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet([...e.data.itemsArray, ...e.data.bills]);
-        XLSX.utils.book_append_sheet(wb, ws, 'bill');
-        XLSX.writeFile(wb, 'xlsxout.xlsx');
+        // const wb = XLSX.utils.book_new();
+        // const ws = XLSX.utils.json_to_sheet([...e.data.itemsArray, ...e.data.bills]);
+        // XLSX.utils.book_append_sheet(wb, ws, 'bill');
+        // XLSX.writeFile(wb, 'xlsxout.xlsx');
 
         // e.component.isRowExpanded(e.key) ? e.component.collapseRow(e.key) : e.component.expandRow(e.key);
     }
