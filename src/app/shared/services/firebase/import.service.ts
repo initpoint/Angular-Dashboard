@@ -228,31 +228,54 @@ export class ImportService {
     ];
     billsData = [
         {
-            field: 'barCodeId',
-            text: 'الرمز الخطي'
-        },
-        {
             field: 'code',
             text: 'التركيبة  -الرمز'
+        }, {
+            field: 'materialCode',
+            text: 'المادة  -الرمز'
+        }, {
+            field: 'materialNameAr',
+            text: 'المادة  -الرمز'
         },
         {
             field: 'nameArFull',
-            text: 'الوصف الطويل'
-        },{
+            text: 'التركيبة  -الاسم'
+        }, {
             field: 'qty',
             text: 'الكمية'
-        },{
+        }, {
             field: 'FreeQty',
             text: 'الكمية المجانية  -العرض'
-        },{
+        }, {
             field: 'unitNameAr',
             text: 'الوحدة  -الاسم'
-        },{
+        }, {
             field: 'pricePerUnit',
             text: 'سعر الوحدة  -(ع.م)'
-        },{
+        }, {
             field: 'totalPrice',
             text: 'إجمالي السعر  -(ع.م)'
+        }, {
+            field: 'tax',
+            text: 'الضريبة المضافة  -(ع.م)'
+        }, {
+            field: 'tax',
+            text: 'الضريبة المضافة  -(ع.م)'
+        }, {
+            field: 'basicPrice',
+            text: 'السعر الصافي  -(ع.م)'
+        }, {
+            field: 'dealerCode',
+            text: 'مندوب المبيعات  -الرمز'
+        }, {
+            field: 'dealerName',
+            text: 'مندوب المبيعات  -الاسم'
+        }, {
+            field: 'siteCode',
+            text: 'الموقع  -الرمز'
+        }, {
+            field: 'siteName',
+            text: 'الموقع  -الاسم'
         },
     ];
 

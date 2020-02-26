@@ -50,7 +50,7 @@
             <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
             <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
             </button>
-            <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">Total
+            <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 pull-right">Total
                 rows: {{rowCounter|number}}</h6>
         </div>
         <div class="col-md-4">
@@ -90,17 +90,16 @@
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
 
     <dxi-column dataField="id" [caption]="'id'|translate"></dxi-column>
-    <dxi-column dataField="uploadedDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'Creat On'|translate"></dxi-column>
+    <dxi-column dataField="createdAt" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'Creat On'|translate"></dxi-column>
     <div *dxTemplate="let bill of 'detail'">
 
         <div class="master-detail-caption">{{'Cart Items'|translate}}</div>
 
         <dx-data-grid [dataSource]="bill.data.items">
-            <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"></dxi-column>
-            <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+            <dxi-column dataField="code" width="auto" [caption]="'Code'|translate"></dxi-column>
             <dxi-column dataField="qty" [caption]="'Quantity'|translate"></dxi-column>
-            <dxi-column dataField="nameArFull" [caption]="'Name'|translate"></dxi-column>
-            <dxi-column dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
+            <dxi-column dataField="nameArFull" width="auto" [caption]="'Name'|translate"></dxi-column>
+            <dxi-column dataField="unitNameAr" width="auto" [caption]="'Unit'|translate"></dxi-column>
             <dxi-column dataField="freeQty" [caption]="'Free Qty'|translate"></dxi-column>
             <dxi-column dataField="pricePerUnit" [caption]="'Price per unit'|translate"></dxi-column>
             <dxi-column dataField="totalPrice" [caption]="'Total Price'|translate"></dxi-column>

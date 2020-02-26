@@ -4,6 +4,7 @@ import {ImportService} from '../../shared/services/firebase/import.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import * as XLSX from 'xlsx';
+import array from 'devextreme/ui/file_manager/file_provider/array';
 
 @Component({
     selector: 'app-bills',
@@ -35,7 +36,6 @@ export class BillsComponent implements OnInit {
         if (target.files.length !== 1) {
             throw new Error('Cannot use multiple files');
         }
-        this.popupVisible = true;
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
             /* read workbook */
@@ -56,6 +56,7 @@ export class BillsComponent implements OnInit {
             });
             this.importService.billsData.forEach(column => {
                 let field = this.columnObjects.find(row => row.text === column.text);
+
                 if (field) {
                     this.columnToShow.push({
                         text: column.text,
@@ -68,7 +69,7 @@ export class BillsComponent implements OnInit {
                     this.columnToShow.push({
                         text: column.text,
                         isFound: false,
-                        value: field.text,
+                        value: column.text,
                         valueField: field.valueField,
                         field: column.field
                     });
@@ -95,15 +96,12 @@ export class BillsComponent implements OnInit {
     downloadTemplate(data) {
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
-        XLSX.utils.book_append_sheet(wb, ws, 'priceList');
-        XLSX.writeFile(wb, 'priceListTemplate.xlsx');
+        XLSX.utils.book_append_sheet(wb, ws, 'Bills');
+        XLSX.writeFile(wb, 'BillTemplate.xlsx');
     }
 
     saveData() {
-        let documents = {
-            pricelistCode: '',
-            pricelistName: '',
-        };
+        let billInfo = [];
         this.dataFromFile.forEach(item => {
             Object.keys(item).forEach(key => {
                 if (this.columnToShow.find(column => column.valueField == key)) {
@@ -113,7 +111,11 @@ export class BillsComponent implements OnInit {
                 // Delete old keys
                 delete item[key];
             });
-            console.log(item);
+            billInfo.push(item);
+
+        });
+        Promise.all([this.billsService.addBill({items: billInfo, createdAt: Date.now()})]).then(res => {
+            this.toastr.success('Bills Imported');
         });
     }
 

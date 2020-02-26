@@ -51,7 +51,7 @@ export class NavService {
         {
             title: 'Carts', path: '/carts', icon: 'shopping-cart', type: 'link', active: false,
         },{
-            title: 'Bills', path: '/bills', icon: 'shopping-cart', type: 'link', active: false,
+            title: 'Bills', path: '/bills', icon: 'dollar-sign', type: 'link', active: false,
         },
         {
             title: 'Permissions', path: '/permissions/show', icon: 'git-pull-request', type: 'link', active: false,

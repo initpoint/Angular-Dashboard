@@ -39,26 +39,27 @@
                 [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
     <div *dxTemplate="let data of 'ActiveButton'">
         <button (click)="data.value = !data.value;updateCustomerActivation(data)"
-                title="Click to {{data.value ? 'Disable' : 'Active'}}"
+                title="Click to {{(data.value ? 'Disable' : 'Active') |translate}}"
                 class="btn btn-xs btn-pill"
-                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Active' : "Pending" }}</button>
+                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Active' : "Pending" )|translate}}</button>
     </div>
-    <dxi-column [formItem]="{visible: false}" dataField="hasTax" datatype="boolean" [allowSearch]="false" [cellTemplate]="'TaxButton'"
+    <dxi-column [formItem]="{visible: false}" dataField="hasTax" datatype="boolean" [allowSearch]="false"
+                [cellTemplate]="'TaxButton'"
                 [caption]="'Has Tax'|translate"></dxi-column>
     <div *dxTemplate="let data of 'TaxButton'">
         <button (click)="data.value = !data.value;updateCustomerTax(data)"
-                title="Click to {{data.value ? 'Remove Tax' : 'Add Tax'}}"
+                title="Click to {{(data.value ? 'Remove Tax' : 'Add Tax' ) |translate}}"
                 class="btn btn-xs btn-pill"
-                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Has Taxes' : "No Taxes"}}</button>
+                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Has Taxes' : "No Taxes") |translate}}</button>
     </div>
     <dxi-column [formItem]="{visible: false}" dataField="canSeeSoldStock" datatype="boolean" [allowSearch]="false"
                 [cellTemplate]="'SeeSoldStockButton'"
                 [caption]="'Can See Sold Stock'|translate"></dxi-column>
     <div *dxTemplate="let data of 'SeeSoldStockButton'">
         <button (click)="data.value = !data.value;updateCustomerCanSeeSoldStock(data)"
-                title="Click to {{data.value ? 'Disable' : 'Enable'}}"
+                title="Click to {{data.value ? 'Disable' : 'Enable'  |translate}}"
                 class="btn btn-xs btn-pill"
-                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{data.value ? 'Enabled' : "Disabled"}}</button>
+                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Enabled' : "Disabled") |translate}}</button>
     </div>
     <dxi-column [formItem]="{visible: false}" [allowGrouping]="false" dataField="lastLoginAt"
                 [caption]="'Last Login'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>

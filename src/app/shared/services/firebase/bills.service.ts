@@ -33,5 +33,8 @@ export class BillsService {
             this.toastr.success('Bill Updated.');
         });
     }
+    addBill(data){
+        return this.db.collection('bills').add(data);
+    }
 
 }
