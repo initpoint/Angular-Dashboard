@@ -3,37 +3,34 @@ import {PermissionService} from 'src/app/shared/services/firebase/permission.ser
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {DxDataGridComponent} from 'devextreme-angular';
 import * as XLSX from 'xlsx';
+import {CustomerService} from '../../shared/services/firebase/customer.service';
 
 @Component({
-    selector: 'app-Permission',
+    selector: 'app-permission',
     templateUrl: './permissions.component.html',
     styleUrls: ['./permissions.component.scss'],
 })
 export class PermissionComponent implements OnInit {
-    @ViewChild('items', {static: false}) dataGrids: DxDataGridComponent;
+    @ViewChild('allItemsDataGrid', {static: false}) allItemsDataGrid: DxDataGridComponent;
     customersSource: any;
-    source: any;
     lang;
     materialSelectedRows = {};
     rankingSelectedRows = {};
-    filterValue = [];
-    currentFilter: Array<any>;
     currentUser;
     selectedItems: any;
     showCurrentPermissions = true;
-    currentUserPermissions: [];
-    isLoading = false;
-    popupVisible: boolean;
-    selectedForCopy;
-    items: any[] = [];
+    customerItemsCodes = [];
+    customerItemsList = [];
+    allItems = [];
 
     constructor(public itemsService: ItemsService,
-                private permissionService: PermissionService) {
-        this.permissionService.customerService.getCustomers().subscribe(res => {
+                private permissionService: PermissionService,
+                public customerService: CustomerService) {
+        this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
         this.itemsService.getItems().subscribe(items => {
-            this.items = items;
+            this.allItems = items;
         });
     }
 
@@ -88,44 +85,26 @@ export class PermissionComponent implements OnInit {
     }
 
     saveCustomerPermissions() {
-        const addedPerms = this.selectedItems.filter(newItem => !this.currentUserPermissions.find(item => item === newItem));
-        const removedPerms = this.currentUserPermissions.filter(oldItem => !this.selectedItems.find(item => item === oldItem));
-        const unchangedPerms = this.currentUserPermissions.filter(oldItem => this.selectedItems.find(item => item === oldItem));
+        const addedPerms = this.selectedItems.filter(newItem => !this.customerItemsCodes.find(item => item === newItem));
+        const removedPerms = this.customerItemsCodes.filter(oldItem => !this.selectedItems.find(item => item === oldItem));
+        const unchangedPerms = this.customerItemsCodes.filter(oldItem => this.selectedItems.find(item => item === oldItem));
         const proceed = confirm(`${addedPerms.length} New Premissions\n
         ${removedPerms.length} Removed Premissions\n
         ${unchangedPerms.length} Unchanged Premissions\n`);
         if (proceed) {
-            this.currentUserPermissions = this.selectedItems;
             this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms, unchangedPerms);
         }
     }
 
     onFocusedRowChanged(e: any) {
         this.currentUser = e.row.data;
-        this.currentFilter = ['code', '=', '0'];
-        this.permissionService.getUserPermissions(e.row.data.uid).subscribe(doc => {
-            if (doc.exists) { // Check if Permission doc exists
-                this.currentUserPermissions = doc.data().items;
-                this.currentFilter = this.currentUserPermissions.length ? [] : ['code', '=', '0'];
-                for (let i = 0; i < this.currentUserPermissions.length; i++) {
-                    this.currentFilter.push(['code', '=', this.currentUserPermissions[i]]);
-                    if (this.currentUserPermissions.length - i > 1) {
-                        this.currentFilter.push('or');
-                    }
-                }
-                this.filterValue = this.currentFilter;
-                this.dataGrids.instance.selectRows(this.currentUserPermissions, false);
-            } else {
-                this.currentFilter = ['code', '=', '0'];
-                console.log('Permission Doc does not exist, creating empty one.');
-                this.permissionService.createDoc(e.row.data.uid);
-            }
+        this.customerItemsList = [];
+        this.customerItemsCodes = [];
+        this.itemsService.getItemsForUser(this.currentUser.uid).subscribe(items => {
+            this.customerItemsList = items;
+            this.customerItemsCodes = this.customerItemsList.map(item => item.code);
+            this.allItemsDataGrid.instance.selectRows(this.customerItemsCodes, false);
         });
-        this.showCurrentPermissions = true;
-    }
-
-    filterItems(e: any) {
-        this.filterValue = e.value ? this.currentFilter : [];
     }
 
     importPermissions(evt) {

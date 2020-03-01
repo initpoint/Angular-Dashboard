@@ -98,7 +98,7 @@ export class ItemsService implements OnInit {
     }
 
     getItemsWithPrices(pricelistId) {
-        return this.db.collection('combinations',ref => ref.where(new firebase.firestore.FieldPath('prices', pricelistId), '>', 0)).get();
+        return this.db.collection('combinations', ref => ref.where(new firebase.firestore.FieldPath('prices', pricelistId), '>', 0)).get();
     }
 
     getItems() {
@@ -110,7 +110,16 @@ export class ItemsService implements OnInit {
                 };
             }))
         );
-        ;
     }
 
+    getItemsForUser(uid) {
+        return this.db.collection('combinations', ref => ref.where('users', 'array-contains', uid)).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    id: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
+    }
 }

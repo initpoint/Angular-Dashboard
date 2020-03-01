@@ -50,21 +50,19 @@
             <div class="dx-field">
                 <div class="dx-field-label ">{{'Only Show filtered Items'|translate}}</div>
                 <div class="dx-field-value">
-                    <dx-switch [rtlEnabled]="lang" [(value)]="showCurrentPermissions"
-                               (onValueChanged)="filterItems($event)"></dx-switch>
+                    <dx-switch [rtlEnabled]="lang" [(value)]="showCurrentPermissions"></dx-switch>
                 </div>
             </div>
         </dxi-item>
     </dx-box>
 </div>
 
-<!--Items datagrid-->
+<!--Selected Customer Items datagrid-->
 <dx-data-grid
-    #items
-    [(selectedRowKeys)]="selectedItems"
+    #selectedCustoemrItemsDataGrid
+    [hidden]="!showCurrentPermissions"
     keyExpr="code"
-    [filterValue]="filterValue"
-    [dataSource]="items"
+    [dataSource]="customerItemsList"
     [showBorders]="false"
     [rtlEnabled]="lang"
     [showRowLines]="false"
@@ -78,7 +76,7 @@
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
-    <dxo-selection mode="multiple" [showCheckBoxesMode]="showCurrentPermissions?'none':'always'"></dxo-selection>
+    <dxo-selection mode="multiple" [showCheckBoxesMode]="'none'"></dxo-selection>
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId" [caption]="'Bar Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
@@ -95,9 +93,63 @@
                 [ngClass]="isNew(data) ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
     </div>
 
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupIndex="0" groupCellTemplate="rankingTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupCellTemplate="rankingTemplate"
                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupCellTemplate="materialTemplate"
+                [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
+
+    <div *dxTemplate="let ranking of 'rankingTemplate'">
+        <dx-check-box (onValueChanged)="rankingRowSelected($event,ranking)"
+                      [value]="getRankingSelectValue(ranking)  || false"></dx-check-box>
+        {{'Ranking'|translate}}: {{ranking.value}}
+    </div>
+    <div *dxTemplate="let material of 'materialTemplate'">
+        <dx-check-box [value]="getMaterialSelectValue(material) || false"
+                      (onValueChanged)="materialRowSelected($event,material.key,material.data.items,material.data.collapsedItems,material.component)"></dx-check-box>
+        {{'Material'|translate}}: {{material.value}}
+    </div>
+</dx-data-grid>
+
+<!--All Items datagrid-->
+<dx-data-grid
+    #allItemsDataGrid
+    [hidden]="showCurrentPermissions"
+    [(selectedRowKeys)]="selectedItems"
+    keyExpr="code"
+    [dataSource]="allItems"
+    [showBorders]="false"
+    [rtlEnabled]="lang"
+    [showRowLines]="false"
+    [columnAutoWidth]="true"
+    [hoverStateEnabled]="true"
+    [focusedRowEnabled]="true"
+    [wordWrapEnabled]="true">
+
+    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-group-panel [visible]="true"></dxo-group-panel>
+    <dxo-selection mode="multiple" [showCheckBoxesMode]="'always'"></dxo-selection>
+    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId" [caption]="'Bar Code'|translate"
+                [formItem]="{visible: false}"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="code" [caption]="'Code'|translate"
+                [formItem]="{visible: false}"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
+    <dxi-column [visible]="false" dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
+    <dxi-column [visible]="false" dataField="size" [caption]="'Size'|translate"></dxi-column>
+
+    <dxi-column dataField="isNewList" datatype="boolean" [cellTemplate]="'ActiveButton'" [caption]="'Is New'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'ActiveButton'">
+        <button (click)="data.value = !data.value;"
+                class="btn btn-xs btn-pill"
+                [ngClass]="isNew(data) ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
+    </div>
+
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupCellTemplate="rankingTemplate"
+                [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupCellTemplate="materialTemplate"
                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
 
     <div *dxTemplate="let ranking of 'rankingTemplate'">

@@ -4,6 +4,7 @@ import {User, auth, initializeApp} from 'firebase/app';
 import {environment} from '../../../../environments/environment';
 import {map} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
+import {PermissionService} from './permission.service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,8 @@ export class CustomerService {
     app;
 
     constructor(public db: AngularFirestore,
-                private toastr: ToastrService,
+                private toastrService: ToastrService,
+                public permissionService: PermissionService
     ) {
     }
 
@@ -21,6 +23,7 @@ export class CustomerService {
             this.app = initializeApp(environment.firebase, 'secondary');
         }
         const ref = this.db.collection('customers');
+        const permServ = this.permissionService;
         return this.app.auth().createUserWithEmailAndPassword(value.email, value.password)
             .then(function (userData) {
                 ref.doc(userData.user.uid).set({
@@ -35,28 +38,28 @@ export class CustomerService {
                     lastLoginAt: Date.now(),
                     online: false
                 });
+                permServ.createDoc(userData.user.uid);
                 return true;
-            }).catch(function (error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                if (errorCode == 'auth/weak-password') {
+            }).catch(function (err) {
+                if (err.code === 'auth/weak-password') {
                     alert('The password is too weak.');
-                } else if (errorCode == 'auth/email-already-in-use') {
+                } else if (err.code === 'auth/email-already-in-use') {
                     alert('This email is already in use.');
-                } else if (errorCode == 'auth/invalid-email') {
+                } else if (err.code === 'auth/invalid-email') {
                     alert('email address is not valid.');
                 } else {
-                    alert(errorMessage);
+                    alert(err.message);
                 }
                 return false;
+            }).then(res => {
+                this.app.auth().signOut();
+                this.toastrService.success('Customer Created.');
             });
-        this.app.auth().signOut();
     }
 
     updateCustomer(userKey, value) {
         return this.db.collection('customers').doc(userKey).set(value, {merge: true}).then(res => {
-            this.toastr.success('Customer Updated.');
+            this.toastrService.success('Customer Updated.');
         });
     }
 
@@ -89,7 +92,7 @@ export class CustomerService {
 
     deleteCustomer(contactKey) {
         return this.db.collection('customers').doc(contactKey).delete().then(res => {
-            this.toastr.error('Customer Deleted.');
+            this.toastrService.error('Customer Deleted.');
         });
     }
 }

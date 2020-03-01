@@ -34,11 +34,11 @@ export class UserService {
                 });
                 return true;
             }).catch(function (err) {
-                if (err.code == 'auth/weak-password') {
+                if (err.code === 'auth/weak-password') {
                     alert('The password is too weak.');
-                } else if (err.code == 'auth/email-already-in-use') {
+                } else if (err.code === 'auth/email-already-in-use') {
                     alert('This email is already in use.');
-                } else if (err.code == 'auth/invalid-email') {
+                } else if (err.code === 'auth/invalid-email') {
                     alert('email address is not valid.');
                 } else {
                     alert(err.message);
@@ -62,7 +62,6 @@ export class UserService {
             .where('userType', '==', 'user'))
             .snapshotChanges();
     }
-
 
     getUser(userKey) {
         return this.db.collection('users').doc(userKey).snapshotChanges();

@@ -6,6 +6,7 @@ import {CustomerService} from './customer.service';
 import * as firebase from 'firebase';
 
 import {ItemsService} from './items.service';
+import {formatDate} from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -13,9 +14,8 @@ import {ItemsService} from './items.service';
 export class PermissionService {
 
     constructor(public db: AngularFirestore,
-                private toastr: ToastrService,
-                public itemsService: ItemsService,
-                public customerService: CustomerService
+                private toastrService: ToastrService,
+                public itemsService: ItemsService
     ) {
     }
 
@@ -24,6 +24,15 @@ export class PermissionService {
     }
 
     updateUserPermission(uid, newPermissions, addedPerms, removedPerms, unchangedPerms) {
+        const customerPermissionsDoc = {
+            permissions: newPermissions,
+            lastTransactionDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
+            transactions: firebase.firestore.FieldValue.arrayUnion({
+                date: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
+                addedPerms: addedPerms,
+                removedPerms: removedPerms
+            })
+        };
         return Promise.all(removedPerms.map(docId => {
             this.itemsService.getItem(docId).subscribe(doc => {
                 const item = doc.data();
@@ -35,9 +44,9 @@ export class PermissionService {
                 return this.removeCustomerFromCombination(uid, docId);
             });
         })).then(res1 => {
-            this.toastr.success(`Removed ${removedPerms.length} Permissions`);
+            this.toastrService.success(`Removed ${removedPerms.length} Permissions`);
 
-            this.db.doc('permission/' + uid).set({items: newPermissions}).then(res => {
+            this.db.doc('permission/' + uid).update(customerPermissionsDoc).then(res => {
                 Promise.all(addedPerms.map(docId => {
                     this.itemsService.getItem(docId).subscribe(doc => {
                         const item = doc.data();
@@ -49,7 +58,7 @@ export class PermissionService {
                         return this.addCustomerToCombination(uid, docId);
                     });
                 })).then(res2 => {
-                    this.toastr.success(`Added ${addedPerms.length} Permissions`);
+                    this.toastrService.success(`Added ${addedPerms.length} Permissions`);
 
                     if (addedPerms.length > 0) {
                         Promise.all(unchangedPerms.map(docId => {
@@ -64,11 +73,11 @@ export class PermissionService {
                             });
                         })).then(res3 => {
                             // this.itemsService.updateItems();
-                            this.toastr.success(`Made ${unchangedPerms.length} Permissions Not New`);
+                            this.toastrService.success(`Made ${unchangedPerms.length} Permissions Not New`);
                         });
                     } else {
                         // this.itemsService.updateItems();
-                        this.toastr.success(`No Changes To New Status`);
+                        this.toastrService.success(`No Changes To New Status`);
                     }
                 });
             });
@@ -76,7 +85,12 @@ export class PermissionService {
     }
 
     createDoc(uid) {
-        return this.db.doc('permission/' + uid).set({items: []});
+        const customerPermissionsDoc = {
+            permissions: [],
+            lastTransactionDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
+            transactions: []
+        };
+        return this.db.doc('permission/' + uid).set(customerPermissionsDoc);
     }
 
     addCustomerToCombination(uid, docId) {
