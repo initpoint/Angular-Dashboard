@@ -71,13 +71,13 @@
                     <li *ngFor="let chat of chats" [ngClass]="{'clearfix': chat.sender == profile.uid }">
                       <div class="message my-message " *ngIf="chat.sender != profile.uid; else myChat">
                          <div class="message-data text-right">
-                          <span class="message-data-time">{{chat?.createdAt | date:'d/M/y H:mm'}}</span>
+                          <span class="message-data-time">{{chat?.createDate | date:'d/M/y H:mm'}}</span>
                         </div>{{chat.customerName}}: {{chat?.text}}
                       </div>
                       <ng-template #myChat>
                         <div class="message other-message pull-right">
                            <div class="message-data">
-                            <span class="message-data-time">{{chat?.createdAt | date:'d/M/y H:mm'}}</span>
+                            <span class="message-data-time">{{chat?.createDate | date:'d/M/y H:mm'}}</span>
                           </div>{{chat?.text}}
                         </div>
                       </ng-template>

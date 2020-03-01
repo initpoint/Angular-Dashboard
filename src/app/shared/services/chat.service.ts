@@ -4,6 +4,7 @@ import {Observable, Subscriber} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {CustomerService} from './firebase/customer.service';
+import {formatDate} from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -13,26 +14,24 @@ export class ChatService {
     public observer: Subscriber<{}>;
     public chat: any[] = [];
 
-    constructor(public db: AngularFirestore,public customerServices:CustomerService) {
-        this.getChats();
+    constructor(public db: AngularFirestore, public customerServices: CustomerService) {
+        // this.getChats();
     }
 
     getChats() {
-
         this.db.collection('messages').get().subscribe(collection => {
             collection.docs.forEach(doc => {
-                    if (this.chat.find(customer => customer.id ===doc.data().customerId)) {
-                        this.chat.find(customer => customer.id === doc.data().customerId)['name'] = doc.data().customerName;
-                    } else {
-                        this.chat.push({
-                            name: doc.data().customerName,
-                            id: doc.data().customerId,
-                            text: doc.data().text,
-                        });
-                    }
-                });
+                if (this.chat.find(customer => customer.id === doc.data().customerId)) {
+                    this.chat.find(customer => customer.id === doc.data().customerId)['name'] = doc.data().customerName;
+                } else {
+                    this.chat.push({
+                        name: doc.data().customerName,
+                        id: doc.data().customerId,
+                        text: doc.data().text,
+                    });
+                }
+            });
         });
-
     }
 
     // Get User Data
@@ -51,27 +50,25 @@ export class ChatService {
     }
 
     // Get chat History
-    public getChatHistory(id: number) {
-        return this.db.collection('messages', ref => ref.where('customerId', '==', id).orderBy('createdAt')).snapshotChanges().pipe(
-            map(x => x.map(y => {
-                return {
-                    id: y.payload.doc.id,
-                    ...y.payload.doc.data()
-                };
-            }))
-        );
-
+    public getChatHistory(uid) {
+        return this.db.collection('messages', ref => ref.where('customerId', '==', uid).orderBy('createDate'))
+            .snapshotChanges().pipe(map(x => x.map(y => {
+                    return {
+                        id: y.payload.doc.id,
+                        ...y.payload.doc.data()
+                    };
+                }))
+            );
     }
 
     // Send Message to user
     public sendMessage(chat) {
         this.db.collection('messages').add(
             {
-                userId: chat.sender,
                 customerId: chat.receiver,
                 customerName: chat.receiver_name,
                 text: chat.message,
-                createdAt: Date.now(),
+                createDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
                 sender: chat.sender
             }).then(res => {
             setTimeout(function () {
@@ -79,6 +76,7 @@ export class ChatService {
             }, 310);
         });
     }
+
     //
     // public responseMessage(chat) {
     //

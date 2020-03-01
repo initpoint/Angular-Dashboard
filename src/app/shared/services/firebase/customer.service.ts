@@ -79,6 +79,17 @@ export class CustomerService {
         );
     }
 
+    getActiveCustomers() {
+        return this.db.collection('customers', ref => ref.where('isActive', '==', true)).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    uid: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
+    }
+
     getPendingCustomers() {
         return this.db.collection('customers', ref => ref.where('isActive', '==', false)).snapshotChanges().pipe(
             map(x => x.map(y => {

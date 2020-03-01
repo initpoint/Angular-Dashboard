@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ChatUsers} from '../../../shared/model/chat.model';
 import {ChatService} from '../../../shared/services/chat.service';
+import {CustomerService} from '../../../shared/services/firebase/customer.service';
 
 @Component({
     selector: 'app-chat',
@@ -10,8 +11,8 @@ import {ChatService} from '../../../shared/services/chat.service';
 export class ChatComponent implements OnInit {
 
     public openTab: string = 'profile';
-    public users: ChatUsers[] = [];
-    public searchUsers: ChatUsers[] = [];
+    public users = [];
+    public searchUsers = [];
     public chatUser: any;
     public profile: any;
     public chats: any;
@@ -21,14 +22,13 @@ export class ChatComponent implements OnInit {
     public id: any;
     public searchText: string;
 
-    constructor(private chatService: ChatService) {
-        this.chatService.getUsers().subscribe(users => {
+    constructor(private chatService: ChatService, public customerService: CustomerService) {
+        this.customerService.getActiveCustomers().subscribe(users => {
             this.searchUsers = users;
             this.users = users;
         });
-
+        this.id = '0';
         if (localStorage.getItem('chatId') != null) {
-            console.log(localStorage.getItem('chatId'))
             this.id = localStorage.getItem('chatId');
         }
     }
@@ -48,9 +48,10 @@ export class ChatComponent implements OnInit {
     }
 
     // User Chat
-    public userChat(id: number = 1) {
-        this.chatService.chatToUser(id).subscribe(chatUser => this.chatUser = chatUser);
-        this.chatService.getChatHistory(id).subscribe(chats => {
+    public userChat(uid) {
+        localStorage.setItem('chatId', uid);
+        this.chatUser = this.users.filter(user => user.uid === uid)[0];
+        this.chatService.getChatHistory(uid).subscribe(chats => {
             this.chats = chats;
             setTimeout(function () {
                 document.querySelector('.chat-history').scrollBy({
@@ -59,8 +60,6 @@ export class ChatComponent implements OnInit {
                 });
             }, 310);
         });
-        localStorage.removeItem('chatId');
-        this.id = 1;
     }
 
     // Send Message to User
@@ -70,7 +69,7 @@ export class ChatComponent implements OnInit {
             return false;
         }
         this.error = false;
-        let chat = {
+        const chat = {
             sender: this.profile.uid,
             receiver: this.chatUser.uid,
             receiver_name: this.chatUser.name,
