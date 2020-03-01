@@ -41,7 +41,7 @@
         <button (click)="data.value = !data.value;updateCustomerActivation(data)"
                 title="Click to {{(data.value ? 'Disable' : 'Active') |translate}}"
                 class="btn btn-xs btn-pill"
-                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Active' : "Pending" )|translate}}</button>
+                [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Is Active' : "Pending" )|translate}}</button>
     </div>
     <dxi-column [formItem]="{visible: false}" dataField="hasTax" datatype="boolean" [allowSearch]="false"
                 [cellTemplate]="'TaxButton'"

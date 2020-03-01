@@ -1,4 +1,9 @@
 {
+  "Disabled": "Disabled",
+  "Enabled": "Enabled",
+  "No Taxes": "No Taxes",
+  "Has Taxes": "Has Taxes",
+  "Pending": "Pending",
   "New Message from": "New Message from",
   "Online":"Online",
   "Offline":"Offline",

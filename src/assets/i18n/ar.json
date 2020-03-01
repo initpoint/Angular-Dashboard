@@ -1,4 +1,9 @@
 {
+  "Disabled": "لا يستطيع",
+  "Enabled": "يستطيع",
+  "No Taxes": "ليس لديه ضرائب",
+  "Has Taxes": "لديه ضرائب",
+  "Pending": "غير مفعل",
   "New Message from": "رسالة جديدة من",
   "Type a message": "أدخل الرسالة",
   "Online": "متصل الأن",
