@@ -1,22 +1,7 @@
-<div [hidden]="!showSaveButton" class="dx-field m-15">
-    <div class="dx-field-value">
-        <dx-button
-                [(rtlEnabled)]="lang"
-                class="btn-success send"
-                icon="fa fa-save"
-                (click)="saveItems()"
-                text="{{'Save'|translate}}">
-        </dx-button>
-    </div>
-</div>
 <dx-data-grid
     #items
-    keyExpr="barCodeId"
-    (onRowClick)="RowClicked($event)"
-    (onRowExpanded)="rowExpanded($event)"
-    (onRowExpanding)="rowExpanded($event)"
-    [dataSource]="itemArray"
-    [remoteOperations]="{filtering: true,sorting:true}"
+    [dataSource]="source"
+    [remoteOperations]="{paging:true,sorting: true}"
     [allowColumnReordering]="true"
     [showBorders]="false"
     [rtlEnabled]="lang"
@@ -24,21 +9,26 @@
     [columnAutoWidth]="true"
     [hoverStateEnabled]="true"
     [focusedRowEnabled]="true"
-    [wordWrapEnabled]="true">
+    [wordWrapEnabled]="true"
+    height="85vh">
 
-    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-scrolling mode="virtual" rowRenderingMode="virtual" useNative="false" showScrollbar="Always"></dxo-scrolling>
+    <dxo-paging [pageSize]="20"></dxo-paging>
+
     <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
     <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
-    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick" [contextMenuEnabled]="true"></dxo-grouping>
+    <dxo-grouping  [autoExpandAll]="false" expandMode="rowClick" [contextMenuEnabled]="true"></dxo-grouping>
 
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowGrouping]="false"  dataField="barCodeId" [caption]="'Bar Code'|translate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowGrouping]="false" dataField="barCodeId"
+                [caption]="'Bar Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" dataField="code" [caption]="'Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowFiltering]="false" [allowGrouping]="false" dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowFiltering]="false" [allowGrouping]="false"
+                dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
     <dxi-column dataField="unitNameAr" [allowGrouping]="false" [caption]="'Unit'|translate"></dxi-column>
     <dxi-column dataField="size" [visible]="false" [caption]="'Size'|translate"></dxi-column>
     <dxi-column dataField="branchBalance" [allowGrouping]="false" [visible]="false" [caption]="'Branch balance'|translate"></dxi-column>
@@ -48,14 +38,12 @@
     <dxi-column dataField="height" [allowGrouping]="false" [visible]="false" [caption]="'Height'|translate"></dxi-column>
     <dxi-column dataField="weight" [allowGrouping]="false" [visible]="false" [caption]="'Weight'|translate"></dxi-column>
     <dxi-column dataField="volume" [allowGrouping]="false" [visible]="false" [caption]="'Volume'|translate"></dxi-column>
-    <dxi-column [allowHiding]="false"  [showInColumnChooser]="false" [allowReordering]="false" [formItem]="{visible: false}" dataField="isNew" datatype="boolean" [allowSearch]="false"
-                [allowSorting]="false" [cellTemplate]="'ActiveButton'"
-                [caption]="'Is New'|translate"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowGrouping]="false" [allowReordering]="false" [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
-                [cellTemplate]="'Upload'"  [caption]="' '"></dxi-column>
-    <dxi-column [allowHiding]="false"  [showInColumnChooser]="false" dataField="rankingCode" groupIndex="0"  groupCellTemplate="rankingTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowGrouping]="false" [allowReordering]="false" [formItem]="{visible: false}"
+                [allowSearch]="false" [allowSorting]="false"
+                [cellTemplate]="'Upload'" [caption]="' '"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupCellTemplate="rankingTemplate"
                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
-    <dxi-column [allowHiding]="false"  [showInColumnChooser]="false" dataField="materialCode" groupIndex="1" groupCellTemplate="materialTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupCellTemplate="materialTemplate"
                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
 
     <div *dxTemplate="let ranking of 'rankingTemplate'">
@@ -68,13 +56,8 @@
                       (onValueChanged)="materialRowSelected($event,material.key,material.data.items,material.data.collapsedItems,material.component)"></dx-check-box>
         {{'Material'|translate}}: {{material.value}}
     </div>
-    <div *dxTemplate="let data of 'ActiveButton'">
-        <button (click)="data.value = !data.value;toggleNew(data)"
-                class="btn btn-xs btn-pill"
-                [ngClass]="data.value ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
-    </div>
     <div *dxTemplate="let data of 'Upload'">
-        <button class="btn btn-xs btn-pill btn-success">{{'Upload'|translate}} {{'Photos'|translate}}</button>
+        <button class="btn btn-xs btn-pill btn-success" (click)="pics(data)">{{'Upload'|translate}} {{'Photos'|translate}}</button>
     </div>
 
 </dx-data-grid>

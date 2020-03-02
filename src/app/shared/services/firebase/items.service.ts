@@ -8,27 +8,9 @@ import {map} from 'rxjs/operators';
     providedIn: 'root'
 })
 export class ItemsService implements OnInit {
-    //itemArray;
-    //lastDocIndex: number = 0;
+    lastItem = null;
 
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
-
-        // this.db.collection('item').snapshotChanges().pipe(
-        //     map(x => {
-        //         let thev = {
-        //             array: [],
-        //             lastDocIndex: 0
-        //         };
-        //         x.forEach(doc => {
-        //             thev.array = thev.array.concat(doc.payload.doc.data()['items']);
-        //             thev.lastDocIndex = Math.max(parseInt(doc.payload.doc.id.split('-')[1]), thev.lastDocIndex);
-        //         });
-        //         return thev;
-        //     })
-        // ).subscribe(data => {
-        //     this.lastDocIndex = data.lastDocIndex;
-        //     this.itemArray = data.array;
-        // });
     }
 
     ngOnInit() {
@@ -44,14 +26,6 @@ export class ItemsService implements OnInit {
         });
     }
 
-
-    toggleItem(id, data) {
-        return this.db.collection('combinations').doc(id).set({isNew: data.value}, {merge: true}).then(res => {
-            this.toastr.success('Combination updated.');
-        });
-    }
-
-
     removeImage(row, path, pic) {
         return this.db.collection('combinations').doc(row.code).update({
             pics: firebase.firestore.FieldValue.arrayRemove(pic)
@@ -66,31 +40,29 @@ export class ItemsService implements OnInit {
     }
 
     uploadImage(file, data) {
-        let storageRef = firebase.storage().ref();
-        let uploadTask = storageRef.child(`${data.code}/${file.newName}`).put(file);
-        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-            (snapshot) => {
-                // upload in progress
-                console.log(snapshot.bytesTransferred / snapshot.totalBytes * 100);
-            },
-            (error) => {
-                // upload failed
-                console.log(error);
-            },
-            () => {
-                storageRef.child(`${data.code}/${file.newName}`).getDownloadURL().then(downloadURL => {
-                    this.db.collection('combinations').doc(data.code).update({
-                        pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
+        return new Promise((resolve => {
+            const storageRef = firebase.storage().ref();
+            const uploadTask = storageRef.child(`${data.code}/${file.newName}`).put(file);
+            uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+                (snapshot) => {
+                    // upload in progress
+                    console.log(snapshot.bytesTransferred / snapshot.totalBytes * 100);
+                },
+                (error) => {
+                    // upload failed
+                    console.log(error);
+                },
+                () => {
+                    storageRef.child(`${data.code}/${file.newName}`).getDownloadURL().then(downloadURL => {
+                        this.db.collection('combinations').doc(data.code).update({
+                            pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
+                        }).then(() => {
+                            resolve(downloadURL);
+                        });
                     });
-                    if (data.code) {
-                        document.getElementsByClassName('list-group-item')[0]
-                            .insertAdjacentHTML('afterbegin',
-                                '<div class="avatar newPhotos" style="margin-left: 0;"><img class="b-r-8" style="height: 128px;width: 128px;padding-top: 3px" alt="" src="' + downloadURL + '"> <button title="Success" style="right: -1px;bottom: -1px;" class="status status-100 bg-success"><i style="margin-left: -1px;" class="fa fa-check"></i></button>\n' +
-                                '</div>');
-                    }
-                });
-            }
-        );
+                }
+            );
+        }));
     }
 
     getItem(id) {
@@ -110,6 +82,38 @@ export class ItemsService implements OnInit {
                 };
             }))
         );
+    }
+
+    getItemsForPagination() {
+        if (!this.lastItem) {
+            return this.db.collection('combinations', ref => ref.orderBy('code').limit(20)).get().pipe(
+                map(x => {
+                    this.lastItem = x.docs[x.docs.length - 1];
+                    return x.docs.map(y => {
+                        return {
+                            id: y.id,
+                            ...y.data()
+                        };
+                    });
+                })
+            );
+        } else {
+            return this.db.collection('combinations', ref => ref.orderBy('code').startAfter(this.lastItem).limit(20)).get().pipe(
+                map(x => {
+                    this.lastItem = x.docs[x.docs.length - 1];
+                    return x.docs.map(y => {
+                        return {
+                            id: y.id,
+                            ...y.data()
+                        };
+                    });
+                })
+            );
+        }
+    }
+
+    getItemsTotalCount() {
+        return this.db.doc('meta/items').get();
     }
 
     getItemsForUser(uid) {

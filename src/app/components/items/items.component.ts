@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ItemsService} from 'src/app/shared/services/firebase/items.service';
 import {DxDataGridComponent} from 'devextreme-angular';
+import CustomStore from 'devextreme/data/custom_store';
 
 @Component({
     selector: 'app-items',
@@ -16,11 +17,23 @@ export class ItemsComponent implements OnInit {
     currentRow: any;
     popupVisible: boolean;
     value: any[] = [];
-    private showSaveButton: boolean = false;
-    itemArray: any[] = [];
+
     constructor(public itemsService: ItemsService) {
-        this.itemsService.getItems().subscribe(items => {
-            this.itemArray = items;
+        this.itemsService.lastItem = null;
+        this.source = new CustomStore({
+            key: 'code',
+            totalCount: () => new Promise(resolve => {
+                this.itemsService.getItemsTotalCount().subscribe(metaDoc => {
+                    resolve(metaDoc.data()['count']);
+                });
+            }),
+            load: (opts) => {
+                return new Promise((resolve) => {
+                    this.itemsService.getItemsForPagination().subscribe(items => {
+                        resolve(items);
+                    });
+                });
+            }
         });
     }
 
@@ -32,27 +45,6 @@ export class ItemsComponent implements OnInit {
                 localStorage.removeItem('barCodeId');
             }
         }, 200);
-    }
-
-    RowClicked($event: any) {
-        if ($event.rowType == 'data') {
-            this.currentRow = $event.data;
-            if ($event.event.target.className == 'btn btn-sm btn-pill btn-success') {
-                this.itemsService.getItem(this.currentRow.code).subscribe(res => {
-                    if (res.exists) {
-
-                        this.currentRow.pics = res.data().pics;
-                    }
-                    this.popupVisible = true;
-                    if (document.getElementsByClassName('newPhotos').length != 0) {
-                        for (let i = 0; i < document.getElementsByClassName('newPhotos').length; i++) {
-                            document.getElementsByClassName('newPhotos')[i].remove();
-                        }
-                        document.getElementsByClassName('dx-fileuploader-files-container')[0].remove();
-                    }
-                });
-            }
-        }
     }
 
     deleteImage(pic) {
@@ -72,16 +64,16 @@ export class ItemsComponent implements OnInit {
         }
         this.value.forEach(file => {
             file.newName = Math.floor(Math.random() * 10000000) + '-' + i + '.' + file.name.split('.').reverse()[0];
-            this.itemsService.uploadImage(file, this.currentRow);
+            this.itemsService.uploadImage(file, this.currentRow).then(downloadURL => {
+                this.currentRow.pics.push(downloadURL);
+            });
             i++;
         });
-        //this.popupVisible = false;
     }
 
     materialRowSelected(event, key, items, collapsedItems, component) {
         this.materialSelectedRows[key[1]] = event.value;
         component.expandRow(key);
-
         if (items) {
             items.forEach(item => {
                 if (event.value) {
@@ -125,18 +117,15 @@ export class ItemsComponent implements OnInit {
         return this.rankingSelectedRows[ranking.key[0]];
     }
 
-    saveItems() {
-        // this.itemsService.updateItems();
-        this.showSaveButton = false;
-    }
-
-    toggleNew(data) {
-        this.showSaveButton = true;
-        // this.itemsService.itemArray.find(x => x.code === data.data.code).isNew = data.value;
-        this.itemsService.toggleItem(data.data.code, data);
-    }
-
-    rowExpanded(e: any) {
-
+    pics(data) {
+        this.currentRow = data.data;
+        this.currentRow.pics = this.currentRow.pics || [];
+        this.popupVisible = true;
+        if (document.getElementsByClassName('newPhotos').length != 0) {
+            for (let i = 0; i < document.getElementsByClassName('newPhotos').length; i++) {
+                document.getElementsByClassName('newPhotos')[i].remove();
+            }
+            document.getElementsByClassName('dx-fileuploader-files-container')[0].remove();
+        }
     }
 }
