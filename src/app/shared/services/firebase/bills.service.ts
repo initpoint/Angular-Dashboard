@@ -22,6 +22,17 @@ export class BillsService {
         );
     }
 
+    getCustomerBills(uid) {
+        return this.db.collection('bills', ref => ref.where('customerId', '==', uid)).snapshotChanges().pipe(
+            map(x => x.map(y => {
+                return {
+                    id: y.payload.doc.id,
+                    ...y.payload.doc.data()
+                };
+            }))
+        );
+    }
+
     deleteBill(key) {
         return this.db.collection('bills').doc(key).delete().then(res => {
             this.toastr.error('Bill Deleted.');
@@ -33,7 +44,8 @@ export class BillsService {
             this.toastr.success('Bill Updated.');
         });
     }
-    addBill(data){
+
+    addBill(data) {
         return this.db.collection('bills').add(data);
     }
 
