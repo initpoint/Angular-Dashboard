@@ -1,4 +1,6 @@
 {
+  "Only Show PriceList Items": "Only Show PriceList Items",
+  "add to pricelist": "Add To List",
   "siteName": "Site Name",
   "siteCode": "Site Code",
   "typeName": "Type Name",
@@ -19,8 +21,8 @@
   "Has Taxes": "Has Taxes",
   "Pending": "Pending",
   "New Message from": "New Message from",
-  "Online":"Online",
-  "Offline":"Offline",
+  "Online": "Online",
+  "Offline": "Offline",
   "Type a message": "Type a message",
   "Chat": "Chat",
   "Send": "Send",

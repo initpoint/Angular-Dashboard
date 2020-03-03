@@ -4,6 +4,7 @@ import {ItemsService} from '../../shared/services/firebase/items.service';
 import {DxDataGridComponent} from 'devextreme-angular';
 import * as XLSX from 'xlsx';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
+import CustomStore from 'devextreme/data/custom_store';
 
 @Component({
     selector: 'app-permission',
@@ -21,7 +22,7 @@ export class PermissionComponent implements OnInit {
     showCurrentPermissions = true;
     customerItemsCodes = [];
     customerItemsList = [];
-    allItems = [];
+    allItemsSource: any;
 
     constructor(public itemsService: ItemsService,
                 private permissionService: PermissionService,
@@ -29,8 +30,21 @@ export class PermissionComponent implements OnInit {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
-        this.itemsService.getItems().subscribe(items => {
-            this.allItems = items;
+        this.itemsService.lastItem = null;
+        this.allItemsSource = new CustomStore({
+            key: 'code',
+            totalCount: () => new Promise(resolve => {
+                this.itemsService.getItemsTotalCount().subscribe(metaDoc => {
+                    resolve(metaDoc.data()['count']);
+                });
+            }),
+            load: (opts) => {
+                return new Promise((resolve) => {
+                    this.itemsService.getItemsForPagination().subscribe(items => {
+                        resolve(items);
+                    });
+                });
+            }
         });
     }
 

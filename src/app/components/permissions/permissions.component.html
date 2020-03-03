@@ -1,10 +1,8 @@
 <!--Customers datagrid-->
 <dx-data-grid
         [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
-        [hoverStateEnabled]="true"
-        [focusedRowEnabled]="true"
-        keyExpr="uid"
-        (onFocusedRowChanged)="onFocusedRowChanged($event)">
+        [hoverStateEnabled]="true" [focusedRowEnabled]="true" focusedRowIndex="0"
+        keyExpr="uid" (onFocusedRowChanged)="onFocusedRowChanged($event)">
     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
@@ -116,7 +114,8 @@
     [hidden]="showCurrentPermissions"
     [(selectedRowKeys)]="selectedItems"
     keyExpr="code"
-    [dataSource]="allItems"
+    [dataSource]="allItemsSource"
+    [remoteOperations]="{paging:true,sorting: true}"
     [showBorders]="false"
     [rtlEnabled]="lang"
     [showRowLines]="false"
@@ -125,7 +124,9 @@
     [focusedRowEnabled]="true"
     [wordWrapEnabled]="true">
 
-    <dxo-scrolling mode="virtual"></dxo-scrolling>
+    <dxo-scrolling mode="virtual" rowRenderingMode="virtual" useNative="false" showScrollbar="Always"></dxo-scrolling>
+    <dxo-paging [pageSize]="20"></dxo-paging>
+
     <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>

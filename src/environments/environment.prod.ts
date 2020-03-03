@@ -11,6 +11,7 @@ export const environment = {
     measurementId: "G-1CXQL5FQMH"
   }
 };
+
 // export const environment = {
 //   production: true,
 //   firebase: {

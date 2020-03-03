@@ -9,6 +9,7 @@ import {map} from 'rxjs/operators';
 })
 export class ItemsService implements OnInit {
     lastItem = null;
+    lastItemInPriceList = null;
 
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
     }
@@ -69,19 +70,35 @@ export class ItemsService implements OnInit {
         return this.db.collection('combinations').doc(id).get();
     }
 
-    getItemsWithPrices(pricelistId) {
-        return this.db.collection('combinations', ref => ref.where(new firebase.firestore.FieldPath('prices', pricelistId), '>', 0)).get();
-    }
 
-    getItems() {
-        return this.db.collection('combinations').snapshotChanges().pipe(
-            map(x => x.map(y => {
-                return {
-                    id: y.payload.doc.id,
-                    ...y.payload.doc.data()
-                };
-            }))
-        );
+    getItemsWithPriceForPagination(id: any) {
+        const fieldPath = new firebase.firestore.FieldPath('prices', id)
+        if (!this.lastItemInPriceList) {
+            return this.db.collection('combinations',
+                ref => ref.where(fieldPath, '>=', 0)
+                    .orderBy(fieldPath).limit(20)).get().pipe(
+                map(x => x.docs.map(y => {
+                    this.lastItemInPriceList = x.docs[x.docs.length - 1];
+                    return {
+                        id: y.id,
+                        ...y.data()
+                    };
+                }))
+            );
+        } else {
+            return this.db.collection('combinations',
+                ref => ref.where(fieldPath, '>=', 0)
+                    .startAfter(this.lastItemInPriceList).orderBy(fieldPath).limit(20)).get().pipe(
+                map(x => x.docs.map(y => {
+                    this.lastItemInPriceList = x.docs[x.docs.length - 1];
+                    return {
+                        id: y.id,
+                        ...y.data()
+                    };
+                }))
+            );
+
+        }
     }
 
     getItemsForPagination() {

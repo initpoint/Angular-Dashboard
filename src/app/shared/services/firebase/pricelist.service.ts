@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
 import {map} from 'rxjs/operators';
+import {ItemsService} from './items.service';
 
 @Injectable({
     providedIn: 'root'
@@ -10,19 +11,10 @@ export class PriceListService {
 
     constructor(public db: AngularFirestore,
                 private toastr: ToastrService,
+                public itemsService: ItemsService
     ) {
     }
 
-    getCombinations() {
-        return this.db.collection('combinations').snapshotChanges().pipe(
-            map(x => x.map(y => {
-                return {
-                    id: y.payload.doc.id,
-                    ...y.payload.doc.data()
-                };
-            }))
-        );
-    }
     getPriceLists() {
         return this.db.collection<any>('pricelist').snapshotChanges().pipe(
             map(x => x.map(y => {
@@ -34,27 +26,15 @@ export class PriceListService {
         );
     }
 
-    getPriceList(key) {
-        return this.db.collection('pricelist').doc(key).get().toPromise();
-    }
-    updateItem(key, values) {
-        this.toastr.success('Item updated.');
-        return this.db.collection('combinations').doc(key).set(values, {merge: true});
-    }
     updatePriceList(key, values) {
-        this.toastr.success('Item updated.');
-        return this.db.collection('pricelist').doc(key).set(values, {merge: true});
-    }
-    createPriceList(values) {
-        this.toastr.success('Item added.');
-        return this.db.collection('pricelist').add(values);
+        return this.db.collection('pricelist').doc(key).set(values, {merge: true}).then(() => {
+            this.toastr.success('PriceList updated.');
+        });
     }
 
-    removeItem(itemKey: any, priceListKey: any) {
-        let newItem = {
-            prices: {}
-        };
-        newItem.prices[priceListKey] = null;
-        return this.updateItem(itemKey,newItem);
+    createPriceList(values) {
+        return this.db.collection('pricelist').add(values).then(() => {
+            this.toastr.success('PriceList Added.');
+        });
     }
 }

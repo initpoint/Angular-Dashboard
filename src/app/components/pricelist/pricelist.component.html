@@ -1,7 +1,3 @@
-<!--<div class="container-fluid">-->
-<!--    <div class="row">-->
-<!--        <div class="col-sm-12">-->
-<!--            <div class="card">-->
 <button class="btn btn-success m-2" (click)="btnClicked()"><i class="icon-import"></i> {{'Import Pricelist'|translate}}
 </button>
 <dx-popup
@@ -72,9 +68,10 @@
         </div>
     </div>
 </dx-popup>
-<dx-data-grid [dataSource]="pricelistSource" [showBorders]="true" [rtlEnabled]="lang" [hoverStateEnabled]="true"
-              [focusedRowEnabled]="true"
-              (onFocusedRowChanged)="onFocusedRowChanged($event)">
+
+<!--PriceLists datagrid-->
+<dx-data-grid [dataSource]="priceListSource" [showBorders]="true" [rtlEnabled]="lang" [hoverStateEnabled]="true"
+              [focusedRowEnabled]="true" focusedRowIndex="0" (onFocusedRowChanged)="onFocusedRowChanged($event)">
     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
@@ -89,61 +86,63 @@
     <dxo-selection mode="single"></dxo-selection>
     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
 </dx-data-grid>
-    <div class="btn-group m-3 p-3">{{'Only Show filtered Items'|translate}}
-            <dx-switch  [rtlEnabled]="lang" (onValueChanged)="filterItems($event)" [(value)]="showCurrentPrices"></dx-switch>
-    </div>
-<div [hidden]="!showSaveButton" class="dx-field m-15">
-    <div class="dx-field-value">
-        <dx-button
-                [(rtlEnabled)]="lang"
-                class="btn-success send"
-                icon="fa fa-save"
-                (click)="savePrices()"
-                text="{{'Save'|translate}}">
-        </dx-button>
-    </div>
+<div class="btn-group m-3 p-3">{{'Only Show PriceList Items'|translate}}
+    <dx-switch [rtlEnabled]="lang" [(value)]="showCurrentPrices"></dx-switch>
 </div>
-<dx-data-grid *ngIf="currentRow" keyExpr="barCodeId" [dataSource]="itemsToShow"
-              [filterValue]="filterValue"
-              [showBorders]="false"
-              [rtlEnabled]="lang"
-              [showRowLines]="false"
-              [columnAutoWidth]="true"
-              [hoverStateEnabled]="true"
-              [focusedRowEnabled]="true"
-              [wordWrapEnabled]="true">
 
-    <dxo-scrolling mode="infinite"></dxo-scrolling>
+<!--Selected PriceList Items datagrid-->
+<dx-data-grid *ngIf="currentRow" [hidden]="!showCurrentPrices" [dataSource]="priceListItemsSource"
+              [remoteOperations]="{paging:true,sorting: true}"
+              [showBorders]="false" [rtlEnabled]="lang" [showRowLines]="false"
+              [columnAutoWidth]="true" [hoverStateEnabled]="true"
+              [focusedRowEnabled]="true" [wordWrapEnabled]="true">
+
+    <dxo-scrolling mode="virtual" rowRenderingMode="virtual" useNative="false" showScrollbar="Always"></dxo-scrolling>
+    <dxo-paging [pageSize]="20"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
-    <dxo-editing
-            mode="cell"
-            [allowUpdating]="true"
-            [useIcons]="true"
-            [allowDeleting]="true">
-    </dxo-editing>
+    <dxo-editing mode="cell" [allowUpdating]="true" [useIcons]="true" allowDeleting="true"></dxo-editing>
     <dxo-export [enabled]="true" fileName="Combinations" [allowExportSelectedData]="true"></dxo-export>
     <dxo-selection mode="multiple"></dxo-selection>
     <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
                 [formItem]="{visible: false}" [allowEditing]="false"></dxi-column>
     <dxi-column dataField="code" [allowEditing]='false' [caption]="'Code'|translate"></dxi-column>
     <dxi-column dataField="nameArFull" [allowEditing]='false' [caption]="'Name Ar'|translate"></dxi-column>
-    <dxi-column dataField="isActive" [allowEditing]='false' dataType="boolean"
-                [caption]="'Is Active'|translate"></dxi-column>
     <dxi-column dataField="prices" editCellTemplate="tagBoxEditor" [allowFiltering]="false" [allowSorting]="true"
-                cellTemplate="priceTemplate"
-                [caption]="'Price'|translate"></dxi-column>
+                cellTemplate="priceTemplate" [caption]="'Price'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'priceTemplate'">{{data.data.prices[currentRow.id]}}</div>
+    <div *dxTemplate="let cellInfo of 'tagBoxEditor'">
+        <dx-number-box [value]="cellInfo.data.prices[currentRow.id]" (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
+    </div>
+</dx-data-grid>
+
+<!--All Items datagrid-->
+<dx-data-grid [hidden]="showCurrentPrices" [dataSource]="allItemsSource"
+              [remoteOperations]="{paging:true,sorting: true}"
+              [showBorders]="false" [rtlEnabled]="lang" [showRowLines]="false"
+              [columnAutoWidth]="true" [hoverStateEnabled]="true"
+              [focusedRowEnabled]="true" [wordWrapEnabled]="true">
+
+    <dxo-scrolling mode="virtual" rowRenderingMode="virtual" useNative="false" showScrollbar="Always"></dxo-scrolling>
+    <dxo-paging [pageSize]="20"></dxo-paging>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-editing mode="cell" [allowUpdating]="true" [useIcons]="true"></dxo-editing>
+    <dxo-export [enabled]="true" fileName="Combinations" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-selection mode="multiple"></dxo-selection>
+    <dxi-column dataField="barCodeId" [caption]="'Bar Code'|translate"
+                [formItem]="{visible: false}" [allowEditing]="false"></dxi-column>
+    <dxi-column dataField="code" [allowEditing]='false' [caption]="'Code'|translate"></dxi-column>
+    <dxi-column dataField="nameArFull" [allowEditing]='false' [caption]="'Name Ar'|translate"></dxi-column>
+    <dxi-column dataField="prices" editCellTemplate="tagBoxEditor" [allowFiltering]="false" [allowSorting]="true"
+                cellTemplate="priceTemplate" [caption]="'Price'|translate"></dxi-column>
     <div *dxTemplate="let data of 'priceTemplate'">
-        <div *ngIf="data.data.prices && data.data.prices.hasOwnProperty(currentRow.id)">
-            {{data.data.prices[currentRow.id]}}
+        <div *ngIf="data.data.prices && data.data.prices.hasOwnProperty(currentRow.id)">{{data.data.prices[currentRow.id]}}</div>
+        <div *ngIf="!data.data.prices || !data.data.prices.hasOwnProperty(currentRow.id)">
+            <button class="btn btn-success m-2" (click)="addItemToList(data.data)"><i class="icon-plus"></i> {{'add to pricelist'|translate}}</button>
         </div>
     </div>
     <div *dxTemplate="let cellInfo of 'tagBoxEditor'">
-        <dx-number-box [value]="cellInfo.data.prices[currentRow.id]"
-                       (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
+        <dx-number-box [value]="cellInfo.data.prices[currentRow.id]" (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
     </div>
 </dx-data-grid>
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->

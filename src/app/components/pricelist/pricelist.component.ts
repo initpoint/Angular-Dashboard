@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {PriceListService} from 'src/app/shared/services/firebase/pricelist.service';
 import DataSource from 'devextreme/data/data_source';
-import CustomeStore from 'devextreme/data/custom_store';
+import CustomStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
@@ -16,100 +16,90 @@ export class PriceListComponent implements OnInit {
     @ViewChild('form', {static: false}) form: NgForm;
     popupVisible = false;
     value: any[] = [];
-    pricelistStore: CustomeStore;
-    showSaveButton: boolean = false;
     lang;
     currentRow;
-    itemStore: CustomeStore;
-    itemSource: DataSource;
-    pricelistSource: DataSource;
-    itemsToShow: any[] = [];
+    priceListSource: CustomStore;
+    priceListItemsSource: CustomStore;
+    allItemsSource: CustomStore;
+
     columnObjects: any[] = [];
     columnToShow: any[] = [];
     rowCounter: number = 0;
     dataFromFile: any[] = [];
     showCurrentPrices = true;
-    filterValue = [];
 
     constructor(
-        private PriceListservice: PriceListService,
-        private itemService: ItemsService,
+        private priceListService: PriceListService,
+        public itemsService: ItemsService,
         public importService: ImportService,
     ) {
-        this.pricelistStore = new CustomeStore({
+        this.priceListSource = new CustomStore({
             key: 'id',
             load: (opts) => {
                 return new Promise((resolve, reject) => {
                     this.lang = localStorage.getItem('lang') == 'ar';
-                    this.PriceListservice.getPriceLists().subscribe(res => {
+                    this.priceListService.getPriceLists().subscribe(res => {
                         resolve({data: res});
                     });
                 });
             },
             update: (key, values) => {
-                return this.PriceListservice.updatePriceList(key, values);
+                return this.priceListService.updatePriceList(key, values);
             },
             remove: (key) => {
-                let item = this.pricelistSource.items().find(item => item.id == key);
-                item.isActive = !item.isActive;
-                return this.PriceListservice.updatePriceList(key, item);
+                return this.priceListService.updatePriceList(key, {isActive: false});
             },
             insert: (values) => {
-                return this.PriceListservice.createPriceList(values);
+                return this.priceListService.createPriceList(values);
             },
 
         });
-        this.pricelistSource = new DataSource({
-            store: this.pricelistStore,
-        });
-        this.itemStore = new CustomeStore({
-            remove: (itemKey) => {
-                let priceListKey = this.currentRow.id;
-                return this.PriceListservice.removeItem(itemKey, priceListKey);
-            }
 
-        });
-        this.itemSource = new DataSource({
-            store: this.itemStore,
+        this.itemsService.lastItem = null;
+        this.allItemsSource = new CustomStore({
+            key: 'code',
+            totalCount: () => new Promise(resolve => {
+                this.itemsService.getItemsTotalCount().subscribe(metaDoc => {
+                    resolve(metaDoc.data()['count']);
+                });
+            }),
+            load: (opts) => {
+                return new Promise((resolve) => {
+                    this.itemsService.getItemsForPagination().subscribe(items => {
+                        resolve(items);
+                    });
+                });
+            }
         });
     }
-
 
     ngOnInit() {
         this.lang = localStorage.getItem('lang') == 'ar';
     }
 
-    filterItems(e: any) {
-        if (e.value == false) {
-            this.itemService.getItems().subscribe(items => {
-                this.itemsToShow = items;
-            });
-        } else {
-            this.itemService.getItemsWithPrices(this.currentRow.id).subscribe(items => {
-                this.itemsToShow = items.docs.map(item => item.data());
-            });
-        }
-    }
-
     onFocusedRowChanged($event: any) {
-        this.itemsToShow = [];
         this.currentRow = $event.row.data;
-        this.itemService.getItemsWithPrices(this.currentRow.id).subscribe(items => {
-            this.itemsToShow = items.docs.map(item => item.data());
-
-        });
-    }
-
-    savePrices() {
-        //this.itemService.updateItems();
-        this.showSaveButton = false;
-    }
-
-    setPrice(value: any, cellInfo: any) {
-        this.showSaveButton = true;
-        // this.itemService.itemArray.find(x => x.code === cellInfo.data.code).prices[this.currentRow.id] = value;
-        this.itemService.getItem(cellInfo.data.code).subscribe(item => {
-            item.data().prices[this.currentRow.id] = value;
+        this.itemsService.lastItemInPriceList = null;
+        this.priceListItemsSource = new CustomStore({
+            key: 'code',
+            totalCount: () => new Promise(resolve => {
+                resolve(this.currentRow.count);
+            }),
+            load: (opts) => {
+                return new Promise((resolve) => {
+                    this.itemsService.getItemsWithPriceForPagination(this.currentRow.id).subscribe(items => {
+                        resolve(items);
+                    });
+                });
+            },
+            remove: (itemKey) => {
+                const newItem = {prices: {}};
+                newItem.prices[this.currentRow.id] = null;
+                return this.itemsService.updateItem(itemKey, newItem).then(() => {
+                    this.currentRow.count -= 1;
+                    this.priceListService.updatePriceList(this.currentRow.id, this.currentRow);
+                });
+            }
         });
     }
 
@@ -182,14 +172,14 @@ export class PriceListComponent implements OnInit {
             documents.pricelistCode = item.pricelistCode;
             documents.pricelistName = item.pricelistName;
             if (item.code != '' && item.code != undefined) {
-                this.itemService.getItem(item.code).subscribe(doc => {
+                this.itemsService.getItem(item.code).subscribe(doc => {
                     if (doc.exists) {
-                        this.itemService.updateItem(doc.data().code, {prices: item.prices}).then();
+                        this.itemsService.updateItem(doc.data().code, {prices: item.prices}).then();
                     }
                 });
             }
         });
-        this.itemService.db.collection('pricelist').doc(documents.pricelistCode).set({
+        this.itemsService.db.collection('pricelist').doc(documents.pricelistCode).set({
             name: documents.pricelistName,
             code: documents.pricelistCode
         }, {merge: true});
@@ -218,5 +208,22 @@ export class PriceListComponent implements OnInit {
         this.columnObjects = [];
         this.rowCounter = 0;
         this.popupVisible = false;
+    }
+
+
+    setPrice(value: any, cellInfo: any) {
+        console.log(value, cellInfo);
+        // this.itemService.itemArray.find(x => x.code === cellInfo.data.code).prices[this.currentRow.id] = value;
+        // this.itemService.getItem(cellInfo.data.code).subscribe(item => {
+        //     item.data().prices[this.currentRow.id] = value;
+        // });
+    }
+
+    addItemToList(data: any) {
+        data['prices'] = {};
+        data['prices'][this.currentRow.id] = 0;
+        this.currentRow.count += 1;
+        this.itemsService.updateItem(data.code, data);
+        this.priceListService.updatePriceList(this.currentRow.id, this.currentRow);
     }
 }

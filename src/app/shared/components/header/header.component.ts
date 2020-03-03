@@ -23,7 +23,6 @@ export class HeaderComponent implements OnInit {
     public lang: string;
     public direction: string;
     public isOpenMobile: boolean = false;
-    itemsArray: any[] = [];
     constructor(public navServices: NavService,
                 private itemsService: ItemsService,
                 private translate: TranslateService,
@@ -36,9 +35,6 @@ export class HeaderComponent implements OnInit {
         } else {
             this.direction = 'ltr';
         }
-        this.itemsService.getItems().subscribe(items => {
-                this.itemsArray = items;
-        });
         document.body.setAttribute('main-theme-layout', this.direction);
         document.getElementsByTagName('html')[0].setAttribute('dir', this.direction);
     }
@@ -76,18 +72,17 @@ export class HeaderComponent implements OnInit {
             return this.menuItems = [];
         }
 
-        let itemsArray = this.itemsArray;
         let searchItems = [];
 
         term = term.toLowerCase();
-        itemsArray.filter(items => {
-            items.type = 'product';
-            if (items.nameArFull.includes(term) || items.barCodeId.includes(term) || items.code.includes(term) || items.materialCode.includes(term) || items.rankingCode.includes(term)) {
-                searchItems.push(items);
-            }
-
-            // this.checkSearchResultEmpty(items);
-        });
+        // itemsArray.filter(items => {
+        //     items.type = 'product';
+        //     if (items.nameArFull.includes(term) || items.barCodeId.includes(term) || items.code.includes(term) || items.materialCode.includes(term) || items.rankingCode.includes(term)) {
+        //         searchItems.push(items);
+        //     }
+        //
+        //     // this.checkSearchResultEmpty(items);
+        // });
         this.items.filter(menuItems => {
 
             if (menuItems.title.toLowerCase().includes(term) && menuItems.type === 'link') {

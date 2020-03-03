@@ -1,8 +1,9 @@
 {
+  "Only Show PriceList Items": "إظهار محتويات القائمة فقط",
+  "add to pricelist": "اضف التركيبة إلى القائمة",
   "siteName": "الموقع  -الاسم",
   "siteCode": "الموقع  -الرمز",
   "typeName": "نوع السند  -الاسم",
-
   "typeCode": "نوع السند  -الرمز",
   "refNumber": "رقم المرجع",
   "account": "الرصيد",
