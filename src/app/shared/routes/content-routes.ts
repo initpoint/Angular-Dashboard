@@ -17,6 +17,13 @@ export const content: Routes = [
     }
   },
   {
+    path: 'invoices',
+    loadChildren: './components/invoices/invoices.module#InvoicesModule',
+    data: {
+      breadcrumb: "Invoices"
+    }
+  },
+  {
     path: 'items',
     loadChildren: './components/items/items.module#ItemsModule',
     data: {

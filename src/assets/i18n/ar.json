@@ -1,4 +1,17 @@
 {
+  "siteName": "الموقع  -الاسم",
+  "siteCode": "الموقع  -الرمز",
+  "typeName": "نوع السند  -الاسم",
+
+  "typeCode": "نوع السند  -الرمز",
+  "refNumber": "رقم المرجع",
+  "account": "الرصيد",
+  "credit": "دائن",
+  "debt": "مدين",
+  "description": "الوصف",
+  "Import Invoice": "استيراد كشف الحساب",
+  "Select File": "اختار ملف",
+  "Invoices": "كشف الحساب",
   "Bill Items": "محتويات الفاتورة",
   "Import Bill": "استيراد فاتورة",
   "Disabled": "لا يستطيع",

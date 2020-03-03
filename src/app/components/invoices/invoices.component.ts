@@ -1,32 +1,27 @@
 import {Component, OnInit, Output} from '@angular/core';
-import {BillsService} from '../../shared/services/firebase/bills.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
-import {Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
 import * as XLSX from 'xlsx';
-import array from 'devextreme/ui/file_manager/file_provider/array';
-import {PermissionService} from '../../shared/services/firebase/permission.service';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
-import {ItemsService} from '../../shared/services/firebase/items.service';
 import {formatDate} from '@angular/common';
+import {InvoicesService} from '../../shared/services/firebase/invoices.service';
 
 @Component({
-    selector: 'app-bills',
-    templateUrl: './bills.component.html',
-    styleUrls: ['./bills.component.scss']
+    selector: 'app-invoices',
+    templateUrl: './invoices.component.html',
+    styleUrls: ['./invoices.component.scss']
 })
-export class BillsComponent implements OnInit {
+export class InvoicesComponent implements OnInit {
     customersSource: any;
     lang = localStorage.getItem('lang') === 'ar';
     fileColumns: any[] = [];
     columnToShow: any[] = [];
-    rowCounter = 0;
+    rowCounter: number = 0;
     dataFromFile: any[] = [];
     popupVisible = false;
     currentUser;
-    customerBills = [];
+    customerInvoices = [];
 
-    constructor(private billsService: BillsService, private importService: ImportService, public customerService: CustomerService) {
+    constructor(private invoicesService: InvoicesService, private importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
@@ -35,15 +30,16 @@ export class BillsComponent implements OnInit {
     ngOnInit() {
     }
 
+
     onFocusedRowChanged(e: any) {
         this.currentUser = e.row.data;
-        this.customerBills = [];
-        this.billsService.getCustomerBills(this.currentUser.uid).subscribe(items => {
-            this.customerBills = items;
+        this.customerInvoices = [];
+        this.invoicesService.getCustomerInvoices(this.currentUser.uid).subscribe(items => {
+            this.customerInvoices = items;
         });
     }
 
-    addBill(event) {
+    addInvoice(event) {
         /* wire up file reader */
         const target: DataTransfer = <DataTransfer>(event.target);
         if (target.files.length !== 1) {
@@ -67,23 +63,23 @@ export class BillsComponent implements OnInit {
             this.fileColumns = Object.values(fileHeaderRow).map((columnValue, index) => {
                 return {text: columnValue, valueField: Object.keys(fileHeaderRow)[index]};
             });
-            this.importService.billStructure.forEach(billStructureField => {
-                const field = this.fileColumns.find(column => column.text === billStructureField.text);
+            this.importService.invoiceStructure.forEach(invoiceStructureField => {
+                const field = this.fileColumns.find(column => column.text === invoiceStructureField.text);
                 if (field) {
                     this.columnToShow.push({
-                        text: billStructureField.text,
+                        text: invoiceStructureField.text,
                         isFound: true,
                         value: field.text,
                         valueField: field.valueField,
-                        field: billStructureField.field
+                        field: invoiceStructureField.field
                     });
                 } else {
                     this.columnToShow.push({
-                        text: billStructureField.text,
+                        text: invoiceStructureField.text,
                         isFound: false,
                         value: null,
                         valueField: null,
-                        field: billStructureField.field
+                        field: invoiceStructureField.field
                     });
                 }
             });
@@ -91,33 +87,30 @@ export class BillsComponent implements OnInit {
         reader.readAsBinaryString(target.files[0]);
     }
 
-    downloadTemplate(data) {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
-        XLSX.utils.book_append_sheet(wb, ws, 'Bills');
-        XLSX.writeFile(wb, 'BillTemplate.xlsx');
-    }
-
     saveData() {
-        let billInfo = [];
+        const invoices = [];
         this.dataFromFile.forEach(fileRow => {
             Object.keys(fileRow).forEach(key => {
                 if (this.columnToShow.find(column => column.valueField == key)) {
                     // replace old keys (A,B,C,....) with the fields names
                     fileRow[this.columnToShow.find(column => column.valueField == key).field] = fileRow[key];
+                    fileRow['createDate'] = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US');
+                    fileRow['customerId'] = this.currentUser.uid;
                 }
                 // Delete old keys
                 delete fileRow[key];
             });
-            billInfo.push(fileRow);
-
+            invoices.push(fileRow);
         });
-        this.billsService.addBill({
-            items: billInfo,
-            createDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
-            customerId: this.currentUser.uid
-        });
+        this.invoicesService.addInvoices(invoices);
         this.cancelData();
+    }
+
+    downloadTemplate(data) {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
+        XLSX.utils.book_append_sheet(wb, ws, 'Invoices');
+        XLSX.writeFile(wb, 'InvoicesTemplate.xlsx');
     }
 
     rowFound(row, value) {
