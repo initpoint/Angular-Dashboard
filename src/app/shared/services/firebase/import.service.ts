@@ -226,7 +226,7 @@ export class ImportService {
             text: 'الكمية'
         },
     ];
-    billsData = [
+    billStructure = [
         {
             field: 'code',
             text: 'التركيبة  -الرمز'
@@ -236,8 +236,7 @@ export class ImportService {
         }, {
             field: 'materialNameAr',
             text: 'المادة  -الرمز'
-        },
-        {
+        }, {
             field: 'nameArFull',
             text: 'التركيبة  -الاسم'
         }, {

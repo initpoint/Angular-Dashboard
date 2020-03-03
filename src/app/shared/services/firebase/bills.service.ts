@@ -46,7 +46,9 @@ export class BillsService {
     }
 
     addBill(data) {
-        return this.db.collection('bills').add(data);
+        return this.db.collection('bills').add(data).then(() => {
+            this.toastr.success('Bill Added');
+        });
     }
 
 }

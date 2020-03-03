@@ -1,8 +1,27 @@
-<button class="btn btn-success m-2" (click)="btnClicked()"><i class="icon-import"></i> {{'Import Pricelist'|translate}}
-</button>
+<!--Customers datagrid-->
+<dx-data-grid
+        [dataSource]="customersSource" [showBorders]="true" [rtlEnabled]="lang"
+        [hoverStateEnabled]="true"
+        [focusedRowEnabled]="true"
+        keyExpr="uid"
+        (onFocusedRowChanged)="onFocusedRowChanged($event)">
+    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
+    <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
+    <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
+
+    <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
+                [cellTemplate]="'importPermissionBtn'" [caption]="'Import Permissions'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'importPermissionBtn'">
+        <button class="btn btn-success m-2" (click)="this.popupVisible = true;"><i class="icon-import"></i> {{'Import Bill'|translate}}</button>
+    </div>
+</dx-data-grid>
+
 <dx-popup
         [showTitle]="true"
-        [title]="'Data View'"
+        [title]="'Import Bill'|translate"
         [dragEnabled]="false"
         [closeOnOutsideClick]="false"
         (onHiding)="cancelData()"
@@ -41,26 +60,26 @@
                 <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
                 <dxi-column dataField="valueField" [setCellValue]="rowFound">
                     <dxo-lookup
-                            [dataSource]="columnObjects"
+                            [dataSource]="fileColumns"
                             displayExpr="text"
                             valueExpr="valueField">
                     </dxo-lookup>
                 </dxi-column>
             </dx-data-grid>
-            <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
-            <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
+            <button *ngIf="fileColumns.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
+            <button *ngIf="fileColumns.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
             </button>
-            <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 pull-right">Total
+            <h6 *ngIf="fileColumns.length != 0" class="card-title mt-2 pull-right">Total
                 rows: {{rowCounter|number}}</h6>
         </div>
         <div class="col-md-4">
             <div class="card-header">
                 <button class="btn btn-primary" [ngStyle]=" lang && {'float':'right'}" [ngClass]="{'pull-right':!lang}"
-                        (click)="downloadTemplate(importService.billsData)"><i
+                        (click)="downloadTemplate(importService.billStructure)"><i
                         class="icon-download"></i> {{'Download Template'|translate}}</button>
                 <h5>{{'Columns required'|translate}}</h5></div>
             <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="550" showBorders="true"
-                          [dataSource]="importService.billsData"
+                          [dataSource]="importService.billStructure"
                           [rtlEnabled]="lang">
                 <dxo-scrolling mode="Infinite" useNative="false" showScrollbar="Always"></dxo-scrolling>
                 <dxi-column [allowEditing]="false" dataField="text" caption="Column Name"></dxi-column>
@@ -68,7 +87,9 @@
         </div>
     </div>
 </dx-popup>
-<dx-data-grid [dataSource]="billSource"
+
+
+<dx-data-grid [dataSource]="customerBills"
               [masterDetail]="{ enabled: true, template: 'detail' }"
               [showBorders]="false"
               [rtlEnabled]="lang"
@@ -77,8 +98,7 @@
               [hoverStateEnabled]="true"
               [focusedRowEnabled]="true"
               [wordWrapEnabled]="true"
-              keyExpr="id"
-              (onRowClick)="rowClick($event)">
+              keyExpr="id">
 
     <dxo-export [enabled]="true"></dxo-export>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
@@ -90,10 +110,10 @@
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
 
     <dxi-column dataField="id" [caption]="'id'|translate"></dxi-column>
-    <dxi-column dataField="createdAt" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'Creat On'|translate"></dxi-column>
+    <dxi-column dataField="createDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'Creat On'|translate"></dxi-column>
     <div *dxTemplate="let bill of 'detail'">
 
-        <div class="master-detail-caption">{{'Cart Items'|translate}}</div>
+        <div class="master-detail-caption">{{'Bill Items'|translate}}</div>
 
         <dx-data-grid [dataSource]="bill.data.items">
             <dxi-column dataField="code" width="auto" [caption]="'Code'|translate"></dxi-column>

@@ -5,6 +5,10 @@ import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import array from 'devextreme/ui/file_manager/file_provider/array';
+import {PermissionService} from '../../shared/services/firebase/permission.service';
+import {CustomerService} from '../../shared/services/firebase/customer.service';
+import {ItemsService} from '../../shared/services/firebase/items.service';
+import {formatDate} from '@angular/common';
 
 @Component({
     selector: 'app-bills',
@@ -12,22 +16,40 @@ import array from 'devextreme/ui/file_manager/file_provider/array';
     styleUrls: ['./bills.component.scss']
 })
 export class BillsComponent implements OnInit {
+    customersSource: any;
     billSource;
     lang = localStorage.getItem('lang') === 'ar';
     itemsToShow: any[] = [];
-    columnObjects: any[] = [];
+    fileColumns: any[] = [];
     columnToShow: any[] = [];
     rowCounter: number = 0;
     dataFromFile: any[] = [];
     popupVisible = false;
 
-    constructor(private billsService: BillsService, private importService: ImportService, private toastr: ToastrService) {
+
+    currentUser;
+    customerBills = [];
+
+    constructor(public itemsService: ItemsService, private billsService: BillsService, private importService: ImportService, private toastr: ToastrService,
+                public customerService: CustomerService) {
+        this.customerService.getCustomers().subscribe(res => {
+            this.customersSource = res;
+        });
         this.billsService.getBills().subscribe(res => {
             this.billSource = res;
         });
     }
 
     ngOnInit() {
+    }
+
+
+    onFocusedRowChanged(e: any) {
+        this.currentUser = e.row.data;
+        this.customerBills = [];
+        this.billsService.getCustomerBills(this.currentUser.uid).subscribe(items => {
+            this.customerBills = items;
+        });
     }
 
     addBill(event) {
@@ -45,52 +67,37 @@ export class BillsComponent implements OnInit {
             const wsname: string = wb.SheetNames[0];
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
-            let data = XLSX.utils.sheet_to_json(ws, {header: 'A'});
-            this.dataFromFile = data.slice(1);
+            const file = XLSX.utils.sheet_to_json(ws, {header: 'A', defval: ''});
+            console.log(file);
+            const fileHeaderRow = file[0];
+            this.dataFromFile = file.slice(1);
+            this.rowCounter = this.dataFromFile.length;
             this.columnToShow = [];
-            this.columnObjects = [];
-            let i = 0;
-            Object.values(data[0]).forEach(column => {
-                this.columnObjects.push({text: column, valueField: Object.keys(data[0])[i]});
-                i++;
+            this.fileColumns = Object.values(fileHeaderRow).map((columnValue, index) => {
+                return {text: columnValue, valueField: Object.keys(fileHeaderRow)[index]};
             });
-            this.importService.billsData.forEach(column => {
-                let field = this.columnObjects.find(row => row.text === column.text);
-
+            this.importService.billStructure.forEach(billStructureField => {
+                const field = this.fileColumns.find(column => column.text === billStructureField.text);
                 if (field) {
                     this.columnToShow.push({
-                        text: column.text,
+                        text: billStructureField.text,
                         isFound: true,
                         value: field.text,
                         valueField: field.valueField,
-                        field: column.field
+                        field: billStructureField.field
                     });
                 } else {
                     this.columnToShow.push({
-                        text: column.text,
+                        text: billStructureField.text,
                         isFound: false,
-                        value: column.text,
-                        valueField: field.valueField,
-                        field: column.field
+                        value: null,
+                        valueField: null,
+                        field: billStructureField.field
                     });
                 }
             });
-            this.rowCounter = data.length - 1;
         };
         reader.readAsBinaryString(target.files[0]);
-    }
-
-    rowClick(e) {
-        // const wb = XLSX.utils.book_new();
-        // const ws = XLSX.utils.json_to_sheet([...e.data.itemsArray, ...e.data.bills]);
-        // XLSX.utils.book_append_sheet(wb, ws, 'bill');
-        // XLSX.writeFile(wb, 'xlsxout.xlsx');
-
-        // e.component.isRowExpanded(e.key) ? e.component.collapseRow(e.key) : e.component.expandRow(e.key);
-    }
-
-    btnClicked() {
-        this.popupVisible = true;
     }
 
     downloadTemplate(data) {
@@ -102,21 +109,24 @@ export class BillsComponent implements OnInit {
 
     saveData() {
         let billInfo = [];
-        this.dataFromFile.forEach(item => {
-            Object.keys(item).forEach(key => {
+        this.dataFromFile.forEach(fileRow => {
+            Object.keys(fileRow).forEach(key => {
                 if (this.columnToShow.find(column => column.valueField == key)) {
                     // replace old keys (A,B,C,....) with the fields names
-                    item[this.columnToShow.find(column => column.valueField == key).field] = item[key];
+                    fileRow[this.columnToShow.find(column => column.valueField == key).field] = fileRow[key];
                 }
                 // Delete old keys
-                delete item[key];
+                delete fileRow[key];
             });
-            billInfo.push(item);
+            billInfo.push(fileRow);
 
         });
-        Promise.all([this.billsService.addBill({items: billInfo, createdAt: Date.now()})]).then(res => {
-            this.toastr.success('Bills Imported');
+        this.billsService.addBill({
+            items: billInfo,
+            createDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
+            customerId: this.currentUser.uid
         });
+        this.cancelData();
     }
 
     rowFound(row, value) {
@@ -126,7 +136,7 @@ export class BillsComponent implements OnInit {
 
     cancelData() {
         this.columnToShow = [];
-        this.columnObjects = [];
+        this.fileColumns = [];
         this.rowCounter = 0;
         this.popupVisible = false;
     }
