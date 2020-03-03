@@ -10,6 +10,8 @@ import {CustomerService} from '../../shared/services/firebase/customer.service';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {formatDate} from '@angular/common';
 
+import * as firebase from 'firebase';
+
 @Component({
     selector: 'app-bills',
     templateUrl: './bills.component.html',
@@ -26,7 +28,7 @@ export class BillsComponent implements OnInit {
     currentUser;
     customerBills = [];
 
-    constructor(private billsService: BillsService, private importService: ImportService, public customerService: CustomerService) {
+    constructor(public itemsService: ItemsService, private billsService: BillsService, private importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
@@ -111,6 +113,9 @@ export class BillsComponent implements OnInit {
             });
             billInfo.push(fileRow);
 
+        });
+        billInfo.map(billItem => {
+            this.itemsService.updateItem(billItem.code.toString(), {soldQty: firebase.firestore.FieldValue.increment(billItem.qty)});
         });
         this.billsService.addBill({
             items: billInfo,

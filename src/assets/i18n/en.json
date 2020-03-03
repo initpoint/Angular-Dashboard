@@ -1,4 +1,6 @@
 {
+  "requestedQty": "Requested Qty",
+  "soldQty": "Sold Qty",
   "Only Show PriceList Items": "Only Show PriceList Items",
   "add to pricelist": "Add To List",
   "siteName": "Site Name",

@@ -9,7 +9,7 @@ exports.incrementItemRequestedQty = functions.firestore.document('/carts/{docume
         if (!original.isActive) {
             Object.keys(original.items).map(itemCode => {
                 return admin.firestore().doc('combinations/' + itemCode)
-                    .set({requestedQty: admin.firestore.FieldValue.increment(original.items[itemCode])})
+                    .set({requestedQty: admin.firestore.FieldValue.increment(original.items[itemCode])}, {merge: true})
             })
         }
     });
