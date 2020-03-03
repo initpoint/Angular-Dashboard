@@ -89,15 +89,10 @@
 </dx-popup>
 
 
-<dx-data-grid [dataSource]="customerInvoices"
-              [showBorders]="false"
-              [rtlEnabled]="lang"
-              [showRowLines]="false"
-              [columnAutoWidth]="true"
-              [hoverStateEnabled]="true"
-              [focusedRowEnabled]="true"
-              [wordWrapEnabled]="true"
-              keyExpr="id">
+<dx-data-grid [dataSource]="customerInvoices" [showBorders]="false"
+              [rtlEnabled]="lang" [showRowLines]="false"
+              [columnAutoWidth]="true" [hoverStateEnabled]="true"
+              [focusedRowEnabled]="true" [wordWrapEnabled]="true" keyExpr="id">
 
     <dxo-export [enabled]="true"></dxo-export>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
@@ -108,18 +103,18 @@
     <dxo-selection mode="multiple" [showCheckBoxesMode]="'always'"></dxo-selection>
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
 
-    <dxi-column dataField="id" [caption]="'id'|translate"></dxi-column>
+    <dxi-column dataField="id" [visible]="false" [caption]="'id'|translate"></dxi-column>
     <dxi-column dataField="description" [caption]="'description'|translate"></dxi-column>
-    <dxi-column dataField="createDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'Creat On'|translate"></dxi-column>
+    <dxi-column dataField="createDate" [visible]="false" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"
+                [caption]="'Creat On'|translate"></dxi-column>
     <dxi-column dataField="date" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'التاريخ  -(م)'|translate"></dxi-column>
     <dxi-column dataField="dateH" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'التاريخ  -(هـ)'|translate"></dxi-column>
     <dxi-column dataField="debt" [caption]="'debt'|translate"></dxi-column>
     <dxi-column dataField="credit" [caption]="'credit'|translate"></dxi-column>
     <dxi-column dataField="account" [caption]="'account'|translate"></dxi-column>
-    <dxi-column dataField="refNumber" [caption]="'refNumber'|translate"></dxi-column>
-    <dxi-column dataField="typeCode" [caption]="'typeCode'|translate"></dxi-column>
-    <dxi-column dataField="typeName" [caption]="'typeName'|translate"></dxi-column>
-    <dxi-column dataField="siteCode" [caption]="'siteCode'|translate"></dxi-column>
-    <dxi-column dataField="siteName" [caption]="'siteName'|translate"></dxi-column>
-
+    <dxi-column dataField="refNumber" [visible]="false" [caption]="'refNumber'|translate"></dxi-column>
+    <dxi-column dataField="typeCode" [visible]="false" [caption]="'typeCode'|translate"></dxi-column>
+    <dxi-column dataField="typeName" [visible]="false" [caption]="'typeName'|translate"></dxi-column>
+    <dxi-column dataField="siteCode" [visible]="false" [caption]="'siteCode'|translate"></dxi-column>
+    <dxi-column dataField="siteName" [visible]="false" [caption]="'siteName'|translate"></dxi-column>
 </dx-data-grid>

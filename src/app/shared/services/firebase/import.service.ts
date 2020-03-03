@@ -76,7 +76,7 @@ export class ImportService {
         {field: 'materialCode', text: 'المادة  -الرمز'},
         {field: 'materialNameAr', text: 'المادة  -الاسم'},
         {field: 'qty', text: 'الكمية'},
-        {field: 'FreeQty', text: 'الكمية المجانية  -العرض'},
+        {field: 'freeQty', text: 'الكمية المجانية  -العرض'},
         {field: 'unitNameAr', text: 'الوحدة  -الاسم'},
         {field: 'pricePerUnit', text: 'سعر الوحدة  -(ع.م)'},
         {field: 'totalPrice', text: 'إجمالي السعر  -(ع.م)'},
@@ -143,11 +143,9 @@ export class ImportService {
     importPriceList(rows, listID) {
         this.itemsService.getItem(rows.code).subscribe(res => {
             let item = res.data();
-
             if (res.exists) {
                 item.prices[listID] = rows.price;
                 this.itemsService.updateItem(item.code, item);
-
             }
             console.log(item);
         });

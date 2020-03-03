@@ -1,14 +1,8 @@
-<dx-data-grid [dataSource]="cartSource"
-              [masterDetail]="{ enabled: true, template: 'detail' }"
-              [showBorders]="false"
-              [rtlEnabled]="lang"
-              [showRowLines]="false"
-              [columnAutoWidth]="true"
-              [hoverStateEnabled]="true"
-              [focusedRowEnabled]="true"
-              [wordWrapEnabled]="true"
-              keyExpr="id"
-              (onRowClick)="rowClick($event)">
+<dx-data-grid [dataSource]="cartSource" [masterDetail]="{ enabled: true, template: 'detail' }"
+              [showBorders]="false" [rtlEnabled]="lang"
+              [showRowLines]="false" [columnAutoWidth]="true"
+              [hoverStateEnabled]="true" [focusedRowEnabled]="true"
+              [wordWrapEnabled]="true" keyExpr="id" height="85vh">
 
     <dxo-export [enabled]="true"></dxo-export>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
@@ -22,32 +16,16 @@
     <dxi-column dataField="id" [caption]="'id'|translate"></dxi-column>
     <dxi-column dataField="customerId" [caption]="'Customer ID'|translate"></dxi-column>
     <dxi-column dataField="customerName" [caption]="'Customer Name'|translate"></dxi-column>
-    <dxi-column dataField="isActive" [caption]="'Is Active'|translate"></dxi-column>
+    <dxi-column dataField="isActive" [caption]="'Is Active'|translate" [calculateCellValue]="calculateActiveDisplay"></dxi-column>
     <dxi-column dataField="totalPrice" [caption]="'Total Price'|translate"></dxi-column>
     <dxi-column dataField="itemsArray.length" [caption]="'#items'|translate"></dxi-column>
-
-    <dxi-column dataField="creatonDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"
-                [caption]="'Creat On'|translate"></dxi-column>
+    <dxi-column dataField="createDate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime" [caption]="'Creat On'|translate"></dxi-column>
 
     <div *dxTemplate="let cart of 'detail'">
-
         <div class="master-detail-caption">{{'Cart Items'|translate}}</div>
-
         <dx-data-grid [dataSource]="cart.data.itemsArray">
             <dxi-column dataField="code" [caption]="'Code'|translate"></dxi-column>
             <dxi-column dataField="qty" [caption]="'Quantity'|translate"></dxi-column>
         </dx-data-grid>
-
-        <dx-file-uploader
-                [selectButtonText]="'Add Bill'|translate"
-                labelText=""
-                accept=".xlsx"
-                [(rtlEnabled)]="lang"
-                (change)="addBill($event,cart.data)"
-                [showFileList]="false"
-                [maxFileSize]="3000000"
-                [multiple]="false"
-                uploadMode="instantly">
-        </dx-file-uploader>
     </div>
 </dx-data-grid>

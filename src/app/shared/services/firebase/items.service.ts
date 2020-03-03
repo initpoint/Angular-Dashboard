@@ -72,7 +72,7 @@ export class ItemsService implements OnInit {
 
 
     getItemsWithPriceForPagination(id: any) {
-        const fieldPath = new firebase.firestore.FieldPath('prices', id)
+        const fieldPath = new firebase.firestore.FieldPath('prices', id);
         if (!this.lastItemInPriceList) {
             return this.db.collection('combinations',
                 ref => ref.where(fieldPath, '>=', 0)
@@ -142,5 +142,27 @@ export class ItemsService implements OnInit {
                 };
             }))
         );
+    }
+
+    addItem(data) {
+        let item = {
+            code: data.code || null,
+            prices: {},
+            pics: [],
+            barCodeId: [data.barCodeId],
+            isNew: false,
+            isActive: true,
+            size: data.size || null,
+            unitCode: data.unitCode || null,
+            unitNameAr: data.unitNameAr || null
+        };
+        Object.keys(data).forEach(row => {
+            if (row != 'barCodeId') {
+                item[row] = data[row];
+            }
+        });
+        return this.db.collection('combinations').doc(item.code).set(item).then(() => {
+            this.toastr.success('Item Added.');
+        });
     }
 }

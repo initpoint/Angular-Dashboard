@@ -12,6 +12,11 @@
     [wordWrapEnabled]="true"
     height="85vh">
 
+    <dxo-editing
+            mode="form"
+            [allowAdding]="true"
+            [allowUpdating]="true">
+    </dxo-editing>
     <dxo-scrolling mode="virtual" rowRenderingMode="virtual" useNative="false" showScrollbar="Always"></dxo-scrolling>
     <dxo-paging [pageSize]="20"></dxo-paging>
 
@@ -20,13 +25,13 @@
     <dxo-search-panel [visible]="true"></dxo-search-panel>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
     <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
-    <dxo-grouping  [autoExpandAll]="false" expandMode="rowClick" [contextMenuEnabled]="true"></dxo-grouping>
+    <dxo-grouping [autoExpandAll]="false" expandMode="rowClick" [contextMenuEnabled]="true"></dxo-grouping>
 
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowGrouping]="false" dataField="barCodeId"
-                [caption]="'Bar Code'|translate"
-                [formItem]="{visible: false}"></dxi-column>
+                [caption]="'Bar Code'|translate"></dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" dataField="code" [caption]="'Code'|translate"
-                [formItem]="{visible: false}"></dxi-column>
+                allowEditing="false">
+    </dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowFiltering]="false" [allowGrouping]="false"
                 dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
     <dxi-column dataField="unitNameAr" [allowGrouping]="false" [caption]="'Unit'|translate"></dxi-column>
@@ -42,9 +47,9 @@
                 [allowSearch]="false" [allowSorting]="false"
                 [cellTemplate]="'Upload'" [caption]="' '"></dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupCellTemplate="rankingTemplate"
-                [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
+                [caption]="'Ranking'|translate"></dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupCellTemplate="materialTemplate"
-                [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
+                [caption]="'Material'|translate"></dxi-column>
 
     <div *dxTemplate="let ranking of 'rankingTemplate'">
         <dx-check-box (onValueChanged)="rankingRowSelected($event,ranking)"

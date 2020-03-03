@@ -33,6 +33,13 @@ export class ItemsComponent implements OnInit {
                         resolve(items);
                     });
                 });
+            },
+            insert: (data) => {
+                return this.itemsService.addItem(data);
+            },
+            update: (key, values) => {
+                console.log(key, values);
+                return this.itemsService.updateItem(key, values);
             }
         });
     }
