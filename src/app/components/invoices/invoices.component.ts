@@ -21,7 +21,7 @@ export class InvoicesComponent implements OnInit {
     currentUser;
     customerInvoices = [];
 
-    constructor(private invoicesService: InvoicesService, private importService: ImportService, public customerService: CustomerService) {
+    constructor(public invoicesService: InvoicesService, public importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });

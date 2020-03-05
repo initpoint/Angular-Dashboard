@@ -28,7 +28,7 @@ export class BillsComponent implements OnInit {
     currentUser;
     customerBills = [];
 
-    constructor(public itemsService: ItemsService, private billsService: BillsService, private importService: ImportService, public customerService: CustomerService) {
+    constructor(public itemsService: ItemsService, public billsService: BillsService, public importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
