@@ -60,7 +60,7 @@ export class InvoicesComponent implements OnInit {
             this.dataFromFile = file.slice(1);
             this.rowCounter = this.dataFromFile.length;
             this.columnToShow = [];
-            this.fileColumns = Object.values(fileHeaderRow).map((columnValue, index) => {
+            this. fileColumns= Object.values(fileHeaderRow).map((columnValue, index) => {
                 return {text: columnValue, valueField: Object.keys(fileHeaderRow)[index]};
             });
             this.importService.invoiceStructure.forEach(invoiceStructureField => {

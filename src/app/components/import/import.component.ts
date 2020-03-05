@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import * as XLSX from 'xlsx';
 import {ImportService} from '../../shared/services/firebase/import.service';
 import {DxDataGridComponent} from 'devextreme-angular';
+import * as firebase from '../../shared/services/firebase/items.service';
 
 @Component({
     selector: 'app-import',
@@ -103,92 +104,12 @@ export class ImportComponent implements OnInit {
         };
         reader.readAsBinaryString(target.files[0]);
     }
-
-    promotionImport(evt: any) {
-        this.popupVisible = true;
-        /* wire up file reader */
-        const target: DataTransfer = <DataTransfer>(evt.target);
-        if (target.files.length !== 1) {
-            throw new Error('Cannot use multiple files');
-        }
-        // this.show = true;
-        const reader: FileReader = new FileReader();
-        reader.onload = (e: any) => {
-            /* read workbook */
-            const bstr: string = e.target.result;
-            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
-            /* grab first sheet */
-            const wsname: string = wb.SheetNames[0];
-            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-            /* save data */
-            const data = XLSX.utils.sheet_to_json(ws, {header: 'A'},);
-            this.dataFromFile = data.slice(2);
-            this.columnToShow = [];
-            this.columnObjects = [];
-            let i = 0;
-            Object.values(data[0]).forEach(column => {
-                let key = Object.keys(data[0])[i];
-                this.columnObjects.push({
-                    columnName: column + ' (' + key + ')',
-                    value: column,
-                    valueField: key,
-                    source: 0
-                });
-                i++;
-            });
-            i = 0;
-            Object.values(data[1]).forEach(column => {
-                let key = Object.keys(data[1])[i];
-                this.columnObjects.push({
-                    columnName: column + ' (' + key+'2' + ')',
-                    value: column,
-                    valueField: key+'2',
-                    source: 1
-                });
-                i++;
-            });
-            // ToDo fix the duplicated columns (edit not working)
-            this.importService.promotionRows.forEach(column => {
-                let field = this.columnObjects.find(row => row.value === column.text);
-
-                if (field) {
-                    this.columnToShow.push({
-                        text: column.text,
-                        columnName: column.text + ' (' + field.valueField + ')',
-                        isFound: true,
-                        source: field.source,
-                        value: field.value,
-                        valueField: field.valueField,
-                        field: column.field
-                    });
-                } else {
-                    this.columnToShow.push({
-                        text: column.text,
-                        isFound: false,
-                        source: field.source,
-                        value: null,
-                        valueField: null,
-                        field: column.field
-                    });
-                }
-
-            });
-            this.rowCounter = data.length - 2;
-            // console.log(this.columnToShow)
-            // console.log(this.columnObjects)
-        };
-        reader.readAsBinaryString(target.files[0]);
-    }
+    
 
     ngOnInit() {
         this.lang = localStorage.getItem('lang') === 'ar';
     }
 
-    rowPrepared(row) {
-        if (row.data.isFound === false) {
-            row.rowElement.classList.add('bg-danger');
-        }
-    }
 
     uploadPriceList(evt: any) {
 
@@ -212,11 +133,11 @@ export class ImportComponent implements OnInit {
             this.importService.db.collection('pricelist').doc(data[0]['pricelistCode']).set({
                 name: data[0]['name'],
                 code: data[0]['pricelistCode']
-            },{merge:true}).then(res => {
-             data.forEach(item => {
-                 this.importService.importPriceList(item,data[0]['pricelistCode'])
-                 // console.log(item)
-             })
+            }, {merge: true}).then(res => {
+                data.forEach(item => {
+                    this.importService.importPriceList(item, data[0]['pricelistCode']);
+                    // console.log(item)
+                });
 
                 //this.importService.itemsService.updateItems();
 
@@ -299,9 +220,12 @@ export class ImportComponent implements OnInit {
             const data = XLSX.utils.sheet_to_json(ws, {header: ['no', 'code', 'barCodeId', 'nameArFUll', 'storageBalance', 'branchBalance']}).slice(1);
 
             data.forEach(newItem => {
-                this.importService.itemsService.updateItem(newItem['code'],{storageBalance: newItem['storageBalance'],branchBalance:newItem['branchBalance']})
+                this.importService.itemsService.updateItem(newItem['code'], {
+                    storageBalance: newItem['storageBalance'],
+                    branchBalance: newItem['branchBalance']
+                });
             });
-           // this.importService.itemsService.updateItems();
+            // this.importService.itemsService.updateItems();
         };
         reader.readAsBinaryString(target.files[0]);
     }
@@ -390,64 +314,11 @@ export class ImportComponent implements OnInit {
     }
 
     saveData() {
-        return;
-        // this.dataFromFile.forEach(item => {
-        //     Object.keys(item).forEach(key => {
-        //         if (this.columnToShow.find(column => column.valueField == key)) {
-        //             // replace old keys (A,B,C,....) with the fields names
-        //             item[this.columnToShow.find(column => column.valueField == key).field] = item[key];
-        //             // Delete old key
-        //             delete item[key];
-        //             // O/P exmp. => {
-        //             // barCodeId: "0304042002201"
-        //             // size: "شد 18"
-        //             // pics: []
-        //             // users: []
-        //             // prices: {}
-        //             // isNew: true
-        //             // isActive: false
-        //             // code: "933101001098"
-        //             // nameArFull: "ابريق شاي غرش دائري سعة 2.5 لتر نقشة شعبية ابيض مقبض حديد السنيدي SNHW-0196W-2.5"
-        //             // materialCode: "933101001"
-        //             // materialNameAr: "ابريق شاي"
-        //             // rankingCode: "933101"
-        //             // rankingNameAr: "اواني منزلية - اباريق شاي"
-        //             // unitCode: "01001"
-        //             // unitNameAr: "حبة"
-        //             // }
-        //             item['size'] = item.size || null;
-        //             item['pics'] = [];
-        //             item['customerList'] = [];
-        //             item['prices'] = {};
-        //             item['isNew'] = true;
-        //             item['isActive'] = false;
-        //             // if (this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code'])) {
-        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).length = item['length'];
-        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).width = item['width'];
-        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).height = item['height'];
-        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).weight = item['weight'];
-        //             //     this.importService.itemsService.itemArray.find(oldItem => oldItem.code === item['code']).volume = item['volume'];
-        //                 this.importService.itemsService.updateItem(item['code'], {
-        //                     length: item['length'],
-        //                     width: item['width'],
-        //                     height: item['height'],
-        //                     weight: item['weight'],
-        //                     volume: item['volume'],
-        //                 });
-        //             } else {
-        //                // this.importService.itemsService.itemArray.push(item);
-        //             }
-        //
-        //         }
-        //
-        //     });
-        //
-        // });
+
     }
 
     rowFound(row, value) {
-            (<any>this).defaultSetCellValue(row, value);
-
+        (<any>this).defaultSetCellValue(row, value);
     }
 
     cancelData() {

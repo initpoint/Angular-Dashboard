@@ -1,23 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-header"><h5>{{'Import' | translate}} {{'Promotions' | translate}}</h5></div>
-                <div class="card-body">
-                    <dx-file-uploader
-                            selectButtonText="Select XLSX File"
-                            labelText=""
-                            accept=".xlsx"
-                            [(rtlEnabled)]="lang"
-                            (change)="promotionImport($event)"
-                            [showFileList]="false"
-                            [maxFileSize]="3000000"
-                            [multiple]="false"
-                            uploadMode="instantly">
-                    </dx-file-uploader>
-                </div>
-            </div>
-        </div>
+
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header"><h5>{{'Import' | translate}} {{'Combinations' | translate}}</h5></div>
@@ -174,7 +157,7 @@
             <div class="col-md-8">
                 <div class="card-header"><h5>Comparison</h5></div>
                 <dx-data-grid #dataTable
-                              keyExpr="text"
+                              keyExpr="field"
                               [dataSource]="columnToShow"
                               columnAutoWidth="true"
                               [paging]="{enabled:false}" height="550" showBorders="true"

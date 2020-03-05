@@ -15,6 +15,12 @@ export const content: Routes = [
     data: {
       breadcrumb: "Bills"
     }
+  },{
+    path: 'promotions',
+    loadChildren: './components/promotions/promotions.module#PromotionsModule',
+    data: {
+      breadcrumb: "Promotions"
+    }
   },
   {
     path: 'invoices',

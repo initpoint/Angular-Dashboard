@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
 import {ItemsService} from './items.service';
+import * as firebase from 'firebase';
 
 @Injectable({
     providedIn: 'root'
@@ -32,7 +33,7 @@ export class ImportService {
         {field: 'pricelistCode', text: 'قوائم الاسعار  -الرمز'},
         {field: 'pricelistName', text: 'قوائم الاسعار  -الاسم'},
     ];
-    promotionRows = [
+    promotionStructure = [
         {field: 'code', text: 'الرمز'},
         {field: 'nameArFull', text: 'الاسم العربي'},
         {field: 'usage', text: 'الاستخدام'},
@@ -52,23 +53,34 @@ export class ImportService {
         {field: 'validFrom', text: 'الصلاحية: من (م)'},
         {field: 'validTo', text: 'الى (م)'},
         {field: 'counter', text: '#'},
+        {field: 'sites', text: 'الموقع'},
+        {field: 'sitesGroups', text: 'مجموعة المواقع'},
+        {field: 'partsCategories', text: 'فئة الأطراف'},
         {field: 'excludeFromTotalDiscount', text: 'إستثناء العروض من الخصم العام'},
         {field: 'notes', text: 'الملاحظات'},
         {field: 'status', text: 'الحالة'},
         {field: 'priceListNameAr', text: 'قائمة الأسعار - الاسم العربي'},
         {field: 'priceListCode', text: 'قائمة الأسعار - الرمز'},
-        {field: 'conditionBarCodeId', text: 'الرمز الخطي'},
-        {field: 'materialDiscountBarCodeId', text: 'الرمز الخطي'},
-        {field: 'freeItemBarCodeId', text: 'الرمز الخطي'},
+        {field: 'conditionCombinationBarCodeId', text: 'الرمز الخطي', defaultValueField: 'AH'},
+        {field: 'conditionCombinationCode', text: 'التركيبة -الرمز', defaultValueField: 'AJ'},
+        {field: 'conditionCombinationNameAr', text: 'التركيبة -الاسم', defaultValueField: 'AK'},
+        {field: 'conditionRangeFrom', text: 'المدى  -من', defaultValueField: 'AN'},
+        {field: 'conditionRangeTo', text: 'المدى  -الى', defaultValueField: 'AO'},
+        {field: 'materialDiscountCombinationBarCodeId', text: 'الرمز الخطي', defaultValueField: 'AP'},
+        {field: 'materialDiscountCombinationCode', text: 'التركيبة -الرمز', defaultValueField: 'AQ'},
+        {field: 'materialDiscountCombinationNameAr', text: 'التركيبة -الاسم', defaultValueField: 'AR'},
+        {field: 'freeItemCombinationBarCodeId', text: 'الرمز الخطي', defaultValueField: 'AV'},
+        {field: 'freeItemCombinationCode', text: 'التركيبة -الرمز', defaultValueField: 'AW'},
+        {field: 'freeItemCombinationNameAr', text: 'التركيبة -الاسم', defaultValueField: 'AX'},
         {field: 'materialType', text: 'نوع المادة'},
-        {field: 'combinationCode', text: 'التركيبة -الرمز'},
-        {field: 'combinationNameAr', text: 'التركيبة -الاسم'},
         {field: 'typeOfValue', text: 'نوع القيمة'},
-        {field: 'discountAmount', text: 'المبلغ'},
-        {field: 'discountPercentage', text: '%'},
+        {field: 'discountAmount', text: 'المبلغ', defaultValueField: 'AT'},
+        {field: 'discountPercentage', text: '%', defaultValueField: 'AU'},
         {field: 'unitCode', text: 'الوحدة -الرمز'},
         {field: 'unitName', text: 'الوحدة -الاسم'},
-        {field: 'Amount', text: 'الكمية'},
+        {field: 'amount', text: 'الكمية'},
+        {field: 'clientCode', text: 'رمز العميل'},
+        {field: 'clientName', text: 'اسم العميل / مجموعه'},
     ];
     billStructure = [
         {field: 'code', text: 'التركيبة  -الرمز'},
@@ -151,4 +163,33 @@ export class ImportService {
         });
     }
 
+    importPromotions(data) {
+        data.forEach(item => {
+            this.db.collection('promotions').doc(item.code).set(item, {merge: true}).then(res => {
+
+                if (item.materialDiscountCombinationCode) {
+                    this.itemsService.getItem(item.materialDiscountCombinationCode).subscribe(combination => {
+                        if (combination.exists) {
+                            this.itemsService.updateItem(combination.id, {
+                                hasPromotion: true,
+                                promotionCode: firebase.firestore.FieldValue.arrayUnion(item.code)
+                            });
+                        }
+                    });
+
+                }
+                if (item.freeItemCombinationCode) {
+                    this.itemsService.getItem(item.freeItemCombinationCode).subscribe(combination => {
+                        if (combination.exists) {
+                            this.itemsService.updateItem(combination.id, {
+                                hasPromotion: true,
+                                promotionCode: firebase.firestore.FieldValue.arrayUnion(item.code)
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        this.db.collection('meta').doc('promotions').update({count: firebase.firestore.FieldValue.increment(data.length)});
+    }
 }

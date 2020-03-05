@@ -44,6 +44,8 @@ export class NavService {
         },
         {
             title: 'Items', path: '/items', icon: 'shopping-bag', type: 'link', active: false,
+        },{
+            title: 'Promotions', path: '/promotions', icon: 'archive', type: 'link', active: false,
         },
         {
             title: 'Price List', path: '/pricelist/show', icon: 'list', type: 'link', active: false,
