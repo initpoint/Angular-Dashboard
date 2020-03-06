@@ -10,12 +10,22 @@ import {map} from 'rxjs/operators';
 export class ItemsService implements OnInit {
     lastItem = null;
     lastItemInPriceList = null;
+    uploadProgress: number = 0;
 
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
     }
 
     ngOnInit() {
 
+    }
+
+    searchByCode(code) {
+        return this.db.collection(`combinations`, ref => ref
+            .orderBy('code')
+            .startAt(code)
+            .endAt(code + '\uf8ff')
+            .limit(10))
+            .valueChanges();
     }
 
     updateItem(key, newValues) {
@@ -47,7 +57,7 @@ export class ItemsService implements OnInit {
             uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
                 (snapshot) => {
                     // upload in progress
-                    console.log(snapshot.bytesTransferred / snapshot.totalBytes * 100);
+                    this.uploadProgress = Math.round(snapshot.bytesTransferred / snapshot.totalBytes * 100);
                 },
                 (error) => {
                     // upload failed
@@ -59,6 +69,7 @@ export class ItemsService implements OnInit {
                             pics: firebase.firestore.FieldValue.arrayUnion(downloadURL)
                         }).then(() => {
                             resolve(downloadURL);
+                            this.uploadProgress = 0;
                         });
                     });
                 }
@@ -150,8 +161,6 @@ export class ItemsService implements OnInit {
             prices: {},
             pics: [],
             barCodeId: [data.barCodeId],
-            isNew: false,
-            isActive: true,
             size: data.size || null,
             unitCode: data.unitCode || null,
             unitNameAr: data.unitNameAr || null

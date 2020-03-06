@@ -28,7 +28,7 @@
               </span>
                             <div class="Typeahead-menu" [class.is-open]="searchResult" *ngIf="menuItems?.length"
                                  id="search-outer">
-                                <div class="ProfileCard u-cf" *ngFor="let menuItem of menuItems | slice:0:8">
+                                <div class="ProfileCard u-cf" *ngFor="let menuItem of menuItems |slice:0:8 ">
                                     <div *ngIf="menuItem.type != 'product'" class="ProfileCard-avatar">
                                         <app-feather-icons [icon]="menuItem.icon"
                                                            class="header-search"></app-feather-icons>
@@ -46,7 +46,7 @@
                                     <div *ngIf="menuItem.type == 'product'" class="ProfileCard-details">
                                         <div class="ProfileCard-realName">
                                             <a href="/items" class="realname"
-                                               (click)="setBarCodeId(menuItem.barCodeId);removeFix();">{{menuItem?.nameArFull}}</a>
+                                               (click)="setBarCodeId(menuItem.code);removeFix();">{{menuItem?.nameArFull}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -106,7 +106,8 @@
                                 <div class="media">
                                     <div class="media-body">
                                         <h6 class="mt-0 txt-success"><span>
-                      <app-feather-icons class="shopping-color txt-success" [icon]="notification.icon"></app-feather-icons>
+                      <app-feather-icons class="shopping-color txt-success"
+                                         [icon]="notification.icon"></app-feather-icons>
                     </span>{{'New cart from'|translate}} {{notification.customerName}}
                                             <small class="pull-right">{{notification.createdAt | date:'H:mm a'}}</small>
                                         </h6>

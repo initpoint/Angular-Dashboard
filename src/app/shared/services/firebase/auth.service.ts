@@ -35,7 +35,7 @@ export class AuthService implements OnInit {
                     this.currentUser = userDoc.data();
                     localStorage.setItem('user', JSON.stringify(this.currentUser));
                     this.showLoader = false;
-                    this.router.navigate(['/customers/show']);
+                    //this.router.navigate(['/customers/show']);
                     this.toastrService.success('Authentication successful.');
                 });
             } else {

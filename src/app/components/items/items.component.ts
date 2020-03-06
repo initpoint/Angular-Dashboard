@@ -2,6 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ItemsService} from 'src/app/shared/services/firebase/items.service';
 import {DxDataGridComponent} from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
+import * as XLSX from 'xlsx';
+import {ImportService} from 'src/app/shared/services/firebase/import.service';
 
 @Component({
     selector: 'app-items',
@@ -16,9 +18,14 @@ export class ItemsComponent implements OnInit {
     rankingSelectedRows = {};
     currentRow: any;
     popupVisible: boolean;
+    imageUploaderpopup: boolean;
     value: any[] = [];
+    columnObjects: any[] = [];
+    columnToShow: any[] = [];
+    rowCounter: number = 0;
+    dataFromFile: any[] = [];
 
-    constructor(public itemsService: ItemsService) {
+    constructor(public itemsService: ItemsService, public importService: ImportService) {
         this.itemsService.lastItem = null;
         this.source = new CustomStore({
             key: 'code',
@@ -28,11 +35,19 @@ export class ItemsComponent implements OnInit {
                 });
             }),
             load: (opts) => {
-                return new Promise((resolve) => {
-                    this.itemsService.getItemsForPagination().subscribe(items => {
-                        resolve(items);
+                if (opts.filter) {
+                    return new Promise((resolve) => {
+                        this.itemsService.searchByCode(opts.filter[2].filterValue).subscribe(item => {
+                            resolve(item);
+                        });
                     });
-                });
+                } else {
+                    return new Promise((resolve) => {
+                        this.itemsService.getItemsForPagination().subscribe(items => {
+                            resolve(items);
+                        });
+                    });
+                }
             },
             insert: (data) => {
                 return this.itemsService.addItem(data);
@@ -76,6 +91,7 @@ export class ItemsComponent implements OnInit {
             });
             i++;
         });
+        this.value = [];
     }
 
     materialRowSelected(event, key, items, collapsedItems, component) {
@@ -127,12 +143,116 @@ export class ItemsComponent implements OnInit {
     pics(data) {
         this.currentRow = data.data;
         this.currentRow.pics = this.currentRow.pics || [];
-        this.popupVisible = true;
+        this.imageUploaderpopup = true;
         if (document.getElementsByClassName('newPhotos').length != 0) {
             for (let i = 0; i < document.getElementsByClassName('newPhotos').length; i++) {
                 document.getElementsByClassName('newPhotos')[i].remove();
             }
             document.getElementsByClassName('dx-fileuploader-files-container')[0].remove();
         }
+    }
+
+    importCombination(evt: any) {
+        this.popupVisible = true;
+        /* wire up file reader */
+        const target: DataTransfer = <DataTransfer>(evt.target);
+        if (target.files.length !== 1) {
+            throw new Error('Cannot use multiple files');
+        }
+        // this.show = true;
+        const reader: FileReader = new FileReader();
+        reader.onload = (e: any) => {
+            /* read workbook */
+            const bstr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+            /* grab first sheet */
+            const wsname: string = wb.SheetNames[0];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            /* save data */
+            const data = XLSX.utils.sheet_to_json(ws, {header: 'A', defval: ''});
+            this.dataFromFile = data.slice(1);
+            this.columnToShow = [];
+            this.columnObjects = [];
+            let i = 0;
+            Object.values(data[0]).forEach(column => {
+                let key = Object.keys(data[0])[i];
+                if (column != '') {
+                    this.columnObjects.push({
+                        columnName: column + ' (' + key + ')',
+                        value: column,
+                        valueField: key,
+                    });
+                }
+                i++;
+            });
+            this.importService.combinationsStructure.forEach(column => {
+                let field = this.columnObjects.find(row => row.value === column.text);
+
+                if (field) {
+                    this.columnToShow.push({
+                        text: column.text,
+                        columnName: column.text + ' (' + field.valueField + ')',
+                        isFound: true,
+                        value: field.value,
+                        valueField: field.valueField,
+                        field: column.field
+                    });
+                } else {
+                    this.columnToShow.push({
+                        text: column.text,
+                        isFound: false,
+                        value: null,
+                        valueField: null,
+                        field: column.field
+                    });
+                }
+
+            });
+            this.rowCounter = data.length - 1;
+        };
+        reader.readAsBinaryString(target.files[0]);
+    }
+
+    saveData() {
+        const formatedData = [];
+        this.dataFromFile.forEach(item => {
+            Object.keys(item).forEach(key => {
+                const oldColumn = this.columnToShow.find(column => column.valueField == key);
+                if (oldColumn) {
+                    // replace old keys (A,B,C,....) with the fields names
+                    item[oldColumn.field] = item[key];
+                }
+                // Delete old key
+                delete item[key];
+            });
+            formatedData.push(item);
+        });
+        this.importService.importCombinations(formatedData);
+        this.cancelData();
+
+    }
+
+
+    rowFound(row, value) {
+        (<any>this).defaultSetCellValue(row, value);
+
+    }
+
+    btnClicked() {
+        this.popupVisible = true;
+    }
+
+    downloadTemplate(data) {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
+        XLSX.utils.book_append_sheet(wb, ws, 'combination');
+        XLSX.writeFile(wb, 'Combinations.xlsx');
+    }
+
+    cancelData() {
+        this.columnToShow = [];
+        this.columnObjects = [];
+        this.rowCounter = 0;
+        this.popupVisible = false;
     }
 }

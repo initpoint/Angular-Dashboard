@@ -1,7 +1,78 @@
+<button class="btn btn-success m-2" (click)="btnClicked()"><i
+        class="icon-import"></i> {{'Import'|translate}} {{'Combinations'|translate}}
+</button>
+<dx-popup
+        [showTitle]="true"
+        [title]="'Data View'"
+        [dragEnabled]="false"
+        [closeOnOutsideClick]="false"
+        (onHiding)="cancelData()"
+        [(visible)]="popupVisible">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card-header">
+                <dx-file-uploader
+                        selectButtonText="Select XLSX File"
+                        [ngStyle]="lang && {'float':'right'}"
+                        [ngClass]="{'pull-right':!lang}"
+                        style="margin-top: -1rem"
+                        height="60px"
+                        width="20%"
+                        accept=".xlsx"
+                        [(rtlEnabled)]="lang"
+                        (change)="importCombination($event)"
+                        [showFileList]="false"
+                        [maxFileSize]="3000000"
+                        [multiple]="false"
+                        uploadMode="instantly">
+                </dx-file-uploader>
+                <h5>{{'Comparison'|translate}}</h5></div>
+            <dx-data-grid #dataTable
+                          keyExpr="text"
+                          [dataSource]="columnToShow"
+                          columnAutoWidth="true"
+                          [paging]="{enabled:false}" height="550" showBorders="true"
+                          [rtlEnabled]="lang">
+                <dxo-editing
+                        mode="cell"
+                        [allowUpdating]="true">
+                </dxo-editing>
+                <dxo-scrolling mode="Infinite" showScrollbar="Always"></dxo-scrolling>
+                <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
+                <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
+                <dxi-column dataField="valueField" [setCellValue]="rowFound">
+                    <dxo-lookup
+                            [dataSource]="columnObjects"
+                            displayExpr="columnName"
+                            valueExpr="valueField">
+                    </dxo-lookup>
+                </dxi-column>
+            </dx-data-grid>
+            <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
+            <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
+            </button>
+            <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">Total
+                rows: {{rowCounter|number}}</h6>
+        </div>
+        <div class="col-md-4">
+            <div class="card-header">
+                <button class="btn btn-primary" [ngStyle]=" lang && {'float':'right'}" [ngClass]="{'pull-right':!lang}"
+                        (click)="downloadTemplate(importService.combinationsStructure)"><i
+                        class="icon-download"></i> {{'Download Template'|translate}}</button>
+                <h5>{{'Columns required'|translate}}</h5></div>
+            <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="550" showBorders="true"
+                          [dataSource]="importService.combinationsStructure"
+                          [rtlEnabled]="lang">
+                <dxo-scrolling mode="Infinite" useNative="false" showScrollbar="Always"></dxo-scrolling>
+                <dxi-column [allowEditing]="false" dataField="text" caption="Column Name"></dxi-column>
+            </dx-data-grid>
+        </div>
+    </div>
+</dx-popup>
 <dx-data-grid
     #items
     [dataSource]="source"
-    [remoteOperations]="{paging:true,sorting: true}"
+    [remoteOperations]="{filtering:true,paging:true,sorting: true}"
     [allowColumnReordering]="true"
     [showBorders]="false"
     [rtlEnabled]="lang"
@@ -27,30 +98,44 @@
     <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick" [contextMenuEnabled]="true"></dxo-grouping>
 
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowGrouping]="false" dataField="barCodeId"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowGrouping]="false"
+                dataField="barCodeId"
                 [caption]="'Bar Code'|translate"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" dataField="code" [caption]="'Code'|translate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" dataField="code"
+                [caption]="'Code'|translate"
                 allowEditing="false">
     </dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowFiltering]="false" [allowGrouping]="false"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowReordering]="false" [allowFiltering]="false"
+                [allowGrouping]="false"
                 dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
     <dxi-column dataField="unitNameAr" [allowGrouping]="false" [caption]="'Unit'|translate"></dxi-column>
     <dxi-column dataField="size" [visible]="false" [caption]="'Size'|translate"></dxi-column>
-    <dxi-column dataField="branchBalance" [allowGrouping]="false" [visible]="false" [caption]="'Branch balance'|translate"></dxi-column>
-    <dxi-column dataField="storageBalance" [allowGrouping]="false" [visible]="false" [caption]="'Storage balance'|translate"></dxi-column>
-    <dxi-column dataField="length" [allowGrouping]="false" [visible]="false" [caption]="'Length'|translate"></dxi-column>
+    <dxi-column dataField="branchBalance" [allowGrouping]="false" [visible]="false"
+                [caption]="'Branch balance'|translate"></dxi-column>
+    <dxi-column dataField="storageBalance" [allowGrouping]="false" [visible]="false"
+                [caption]="'Storage balance'|translate"></dxi-column>
+    <dxi-column dataField="length" [allowGrouping]="false" [visible]="false"
+                [caption]="'Length'|translate"></dxi-column>
     <dxi-column dataField="width" [allowGrouping]="false" [visible]="false" [caption]="'Width'|translate"></dxi-column>
-    <dxi-column dataField="height" [allowGrouping]="false" [visible]="false" [caption]="'Height'|translate"></dxi-column>
-    <dxi-column dataField="weight" [allowGrouping]="false" [visible]="false" [caption]="'Weight'|translate"></dxi-column>
-    <dxi-column dataField="volume" [allowGrouping]="false" [visible]="false" [caption]="'Volume'|translate"></dxi-column>
-    <dxi-column dataField="soldQty" [allowGrouping]="false" [visible]="true" [caption]="'soldQty'|translate"></dxi-column>
-    <dxi-column dataField="requestedQty" [allowGrouping]="false" [visible]="true" [caption]="'requestedQty'|translate"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowGrouping]="false" [allowReordering]="false" [formItem]="{visible: false}"
+    <dxi-column dataField="height" [allowGrouping]="false" [visible]="false"
+                [caption]="'Height'|translate"></dxi-column>
+    <dxi-column dataField="weight" [allowGrouping]="false" [visible]="false"
+                [caption]="'Weight'|translate"></dxi-column>
+    <dxi-column dataField="volume" [allowGrouping]="false" [visible]="false"
+                [caption]="'Volume'|translate"></dxi-column>
+    <dxi-column dataField="soldQty" [allowGrouping]="false" [visible]="true"
+                [caption]="'soldQty'|translate"></dxi-column>
+    <dxi-column dataField="requestedQty" [allowGrouping]="false" [visible]="true"
+                [caption]="'requestedQty'|translate"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" [allowGrouping]="false" [allowReordering]="false"
+                [formItem]="{visible: false}"
                 [allowSearch]="false" [allowSorting]="false"
                 [cellTemplate]="'Upload'" [caption]="' '"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupCellTemplate="rankingTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode"
+                groupCellTemplate="rankingTemplate"
                 [caption]="'Ranking'|translate"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupCellTemplate="materialTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode"
+                groupCellTemplate="materialTemplate"
                 [caption]="'Material'|translate"></dxi-column>
 
     <div *dxTemplate="let ranking of 'rankingTemplate'">
@@ -64,7 +149,10 @@
         {{'Material'|translate}}: {{material.value}}
     </div>
     <div *dxTemplate="let data of 'Upload'">
-        <button class="btn btn-xs btn-pill btn-success" (click)="pics(data)">{{'Upload'|translate}} {{'Photos'|translate}}</button>
+        <button class="btn btn-xs btn-light"
+                (click)="pics(data)">{{'Upload'|translate}} {{'Photos'|translate}}  <span
+                [ngClass]="{'text-danger' : !data.data.pics?.length}">( {{data.data.pics?.length || 0}} )</span>
+        </button>
     </div>
 
 </dx-data-grid>
@@ -75,7 +163,7 @@
         [title]="'Photos'|translate"
         [dragEnabled]="false"
         [closeOnOutsideClick]="true"
-        [(visible)]="popupVisible">
+        [(visible)]="imageUploaderpopup">
     <div *dxTemplate="let data of 'content'">
         <ul *ngIf="currentRow.pics.length >0" class="list-group ">
             <li class="list-group-item list-group-item-action avatars">
@@ -104,8 +192,9 @@
                             multiple="true"
                             uploadMode="useForm">
                     </dx-file-uploader>
-
-                    <button class="mr-2 btn btn-primary" type="submit" (click)="uploadImages()">
+                    <ngb-progressbar *ngIf="itemsService.uploadProgress" showValue="true" type="info"
+                                     [value]="itemsService.uploadProgress|| 0" [max]="100"></ngb-progressbar>
+                    <button class="mr-2 mt-1 btn btn-primary" type="submit" (click)="uploadImages()">
                         {{'Submit' |translate}}
                     </button>
                 </div>

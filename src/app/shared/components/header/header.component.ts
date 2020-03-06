@@ -23,6 +23,7 @@ export class HeaderComponent implements OnInit {
     public lang: string;
     public direction: string;
     public isOpenMobile: boolean = false;
+
     constructor(public navServices: NavService,
                 private itemsService: ItemsService,
                 private translate: TranslateService,
@@ -43,7 +44,6 @@ export class HeaderComponent implements OnInit {
     ngOnDestroy() {
         this.removeFix();
     }
-
 
     collapseSidebar() {
         this.navServices.collapseSidebar = !this.navServices.collapseSidebar;
@@ -75,14 +75,13 @@ export class HeaderComponent implements OnInit {
         let searchItems = [];
 
         term = term.toLowerCase();
-        // itemsArray.filter(items => {
-        //     items.type = 'product';
-        //     if (items.nameArFull.includes(term) || items.barCodeId.includes(term) || items.code.includes(term) || items.materialCode.includes(term) || items.rankingCode.includes(term)) {
-        //         searchItems.push(items);
-        //     }
-        //
-        //     // this.checkSearchResultEmpty(items);
-        // });
+        this.itemsService.searchByCode(term).subscribe(items => {
+            items.forEach(item => {
+                item['type'] = 'product';
+                searchItems.push(item);
+            });
+
+        });
         this.items.filter(menuItems => {
 
             if (menuItems.title.toLowerCase().includes(term) && menuItems.type === 'link') {

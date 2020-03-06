@@ -5,7 +5,7 @@ import {ItemsRoutingModule} from './items-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {ItemsComponent} from './items.component';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
@@ -38,6 +38,7 @@ import {TranslateModule} from '@ngx-translate/core';
         ItemsRoutingModule,
         FormsModule,
         ReactiveFormsModule,
+        NgbModule,
         HttpClientModule,
         HttpModule,
         TranslateModule,
