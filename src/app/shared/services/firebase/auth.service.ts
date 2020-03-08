@@ -6,15 +6,7 @@ import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestor
 import * as firebase from 'firebase/app';
 import {ToastrService} from 'ngx-toastr';
 import {CookieService} from 'ngx-cookie-service';
-
-export interface User {
-    uid: string;
-    email: string;
-    emailVerified: boolean;
-    name: string;
-    code: string;
-    lastLoginAt: number;
-}
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 @Injectable({
     providedIn: 'root'
@@ -25,9 +17,8 @@ export class AuthService implements OnInit {
     public showLoader = false;
 
     constructor(public afs: AngularFirestore,
-                public afAuth: AngularFireAuth,
-                public router: Router,
-                public toastrService: ToastrService) {
+                public afAuth: AngularFireAuth, public router: Router,
+                public toastrService: ToastrService, public jwtHelper: JwtHelperService) {
 
         this.afAuth.authState.subscribe(user => {
             if (user) {
@@ -35,8 +26,6 @@ export class AuthService implements OnInit {
                     this.currentUser = userDoc.data();
                     localStorage.setItem('user', JSON.stringify(this.currentUser));
                     this.showLoader = false;
-                    //this.router.navigate(['/customers/show']);
-                    this.toastrService.success('Authentication successful.');
                 });
             } else {
                 this.currentUser = null;
@@ -51,7 +40,13 @@ export class AuthService implements OnInit {
 
     SignIn(email, password) {
         this.showLoader = true;
-        return this.afAuth.auth.signInWithEmailAndPassword(email, password).catch((error) => {
+        return this.afAuth.auth.signInWithEmailAndPassword(email, password).then(async (res) => {
+            const token = await res.user.getIdToken();
+            localStorage.setItem('token', token);
+            localStorage.setItem('userData', JSON.stringify(this.jwtHelper.decodeToken(token)));
+            this.router.navigate(['/customers/show']);
+            this.toastrService.success('Authentication successful.');
+        }).catch((error) => {
             this.showLoader = false;
             this.toastrService.error('Wrong Email or Password.');
         });

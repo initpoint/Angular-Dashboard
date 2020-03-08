@@ -20,10 +20,15 @@ import {AngularFireModule} from '@angular/fire';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {environment} from '../environments/environment';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {JwtModule} from '@auth0/angular-jwt';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+export function tokenGetter() {
+    return localStorage.getItem('token');
 }
 
 @NgModule({
@@ -40,6 +45,11 @@ export function HttpLoaderFactory(http: HttpClient) {
         SharedModule,
         AppRoutingModule,
         HttpClientModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter,
+            }
+        }),
         ToastrModule.forRoot(),
         HttpClientModule,
         TranslateModule.forRoot({
