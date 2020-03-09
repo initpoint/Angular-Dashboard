@@ -238,6 +238,6 @@ export class ItemsComponent implements OnInit {
         this.columnObjects = [];
         this.rowCounter = 0;
         this.popupVisible = false;
+        this.itemsService.uploadProgress = 0;
     }
-
 }

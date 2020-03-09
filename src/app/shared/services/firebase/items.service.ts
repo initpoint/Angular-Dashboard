@@ -157,7 +157,7 @@ export class ItemsService implements OnInit {
     }
 
     addItem(data) {
-        let item = {
+        const item = {
             code: data.code || null,
             prices: {},
             pics: [],
@@ -171,17 +171,43 @@ export class ItemsService implements OnInit {
                 item[row] = data[row];
             }
         });
-        return this.db.collection('combinations').doc(item.code).set(item);
+        return this.db.doc(`combinations/${item.code}`).set(item, {merge: true});
     }
 
     addItems(data) {
         this.uploadProgress = 0;
-        return Promise.all(data.map(row => this.addItem(row).then(() => {
-            this.uploadProgress += 1 / data.length * 100;
-        }))).then(() => {
-            this.db.collection('meta').doc('items').update({count: firebase.firestore.FieldValue.increment(data.length)});
-            this.toastr.success(`${data.length} Items Added.`);
-            this.uploadProgress = 100;
+        return new Promise(resolve => {
+            this.db.doc('meta/items').get().subscribe(res => {
+                const itemsMeta = res.data() || {};
+                if (!itemsMeta.itemsCodes) {
+                    itemsMeta.itemsCodes = [];
+                }
+                if (!itemsMeta.count) {
+                    itemsMeta.count = 0;
+                }
+                const itemsToAdd = [];
+                const itemsToUpdate = [];
+                data.forEach(row => {
+                    if (!itemsMeta.itemsCodes.includes(row.code)) {
+                        itemsToAdd.push(this.addItem(row).then(() => {
+                            this.uploadProgress += 1 / data.length * 100;
+                        }));
+                        itemsMeta.itemsCodes.push(row.code);
+                        itemsMeta.count += 1;
+                    } else {
+                        itemsToUpdate.push(this.addItem(row).then(() => {
+                            this.uploadProgress += 1 / data.length * 100;
+                        }));
+                    }
+                });
+                this.db.doc('meta/items').set(itemsMeta);
+                Promise.all([...itemsToAdd, ...itemsToUpdate]).then(() => {
+                    this.toastr.success(`${itemsToAdd.length} Items Added.`);
+                    this.toastr.success(`${itemsToUpdate.length} Items Updated.`);
+                    this.uploadProgress = 100;
+                    resolve();
+                });
+            });
         });
     }
 }
