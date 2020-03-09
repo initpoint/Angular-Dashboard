@@ -14,7 +14,7 @@ export class UserService {
 
     constructor(public db: AngularFirestore,
                 public afAuth: AngularFireAuth,
-                private toastrService: ToastrService,
+                public toastrService: ToastrService,
     ) {
     }
 
@@ -51,8 +51,7 @@ export class UserService {
     }
 
     updateUser(userKey, value) {
-        value.userType = 'user';
-        return this.db.collection('users').doc(userKey).set(value);
+        return this.db.collection('users').doc(userKey).set(value, {merge: true});
     }
 
 // ToDo Search in everywhere

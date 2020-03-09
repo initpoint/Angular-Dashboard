@@ -57,7 +57,7 @@ export class NavService {
             title: 'Bills', path: '/bills', icon: 'dollar-sign', type: 'link', active: false,
         },
         {
-            title: 'Invoices', path: '/invoices', icon: 'dollar-sign', type: 'link', active: false,
+            title: 'Invoices', path: '/invoices', icon: 'printer', type: 'link', active: false,
         },
         {
             title: 'Permissions', path: '/permissions/show', icon: 'git-pull-request', type: 'link', active: false,
@@ -67,6 +67,9 @@ export class NavService {
         },
         {
             title: 'Users', path: '/users/show', icon: 'users', type: 'link', active: false,
+        },
+        {
+            title: 'Users Permissions', path: '/users-permissions', icon: 'user-check', type: 'link', active: false,
         },
         {
             path: '/chat', title: 'Chat', icon: 'message-square', type: 'link', bookmark: true

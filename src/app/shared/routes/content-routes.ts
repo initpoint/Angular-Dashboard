@@ -10,6 +10,13 @@ export const content: Routes = [
     }
   },
   {
+    path: 'users-permissions',
+    loadChildren: './components/users-permissions/users-permissions.module#UsersPermissionsModule',
+    data: {
+      breadcrumb: "Users Permissions"
+    }
+  },
+  {
     path: 'bills',
     loadChildren: './components/bills/bills.module#BillsModule',
     data: {
