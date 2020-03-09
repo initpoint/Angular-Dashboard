@@ -192,12 +192,4 @@ export class ImportService {
         });
         this.db.collection('meta').doc('promotions').update({count: firebase.firestore.FieldValue.increment(data.length)});
     }
-    importCombinations(data) {
-        data.forEach(row => {
-          this.itemsService.addItem(row).then(res=> {
-              console.log(res)
-          });
-        });
-        // this.db.collection('meta').doc('items').update({count: firebase.firestore.FieldValue.increment(data.length)});
-    }
 }

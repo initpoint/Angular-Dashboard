@@ -10,7 +10,8 @@ import {map} from 'rxjs/operators';
 export class ItemsService implements OnInit {
     lastItem = null;
     lastItemInPriceList = null;
-    uploadProgress: number = 0;
+    uploadProgress = 0;
+    totalProgress = 0;
 
     constructor(public db: AngularFirestore, private toastr: ToastrService) {
     }
@@ -170,8 +171,17 @@ export class ItemsService implements OnInit {
                 item[row] = data[row];
             }
         });
-        return this.db.collection('combinations').doc(item.code).set(item).then(() => {
-            this.toastr.success('Item Added.');
+        return this.db.collection('combinations').doc(item.code).set(item);
+    }
+
+    addItems(data) {
+        this.uploadProgress = 0;
+        return Promise.all(data.map(row => this.addItem(row).then(() => {
+            this.uploadProgress += 1 / data.length * 100;
+        }))).then(() => {
+            this.db.collection('meta').doc('items').update({count: firebase.firestore.FieldValue.increment(data.length)});
+            this.toastr.success(`${data.length} Items Added.`);
+            this.uploadProgress = 100;
         });
     }
 }

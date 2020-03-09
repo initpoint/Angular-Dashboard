@@ -3,13 +3,21 @@
 </button>
 <dx-popup
         [showTitle]="true"
-        [title]="'Data View'"
+        [title]="'Import Data'|translate"
         [dragEnabled]="false"
         [closeOnOutsideClick]="false"
         (onHiding)="cancelData()"
         [(visible)]="popupVisible">
+
+
+    <div class="loader-wrapper" *ngIf="showLoader">
+        <div class="loader bg-white">
+            <div class="whirly-loader"></div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-8">
+
             <div class="card-header">
                 <dx-file-uploader
                         selectButtonText="Select XLSX File"
@@ -26,33 +34,23 @@
                         [multiple]="false"
                         uploadMode="instantly">
                 </dx-file-uploader>
-                <h5>{{'Comparison'|translate}}</h5></div>
+                <h5>{{'Comparison'|translate}}</h5>
+            </div>
             <dx-data-grid #dataTable
                           keyExpr="text"
                           [dataSource]="columnToShow"
                           columnAutoWidth="true"
                           [paging]="{enabled:false}" height="550" showBorders="true"
                           [rtlEnabled]="lang">
-                <dxo-editing
-                        mode="cell"
-                        [allowUpdating]="true">
+                <dxo-editing mode="cell" [allowUpdating]="true">
                 </dxo-editing>
                 <dxo-scrolling mode="Infinite" showScrollbar="Always"></dxo-scrolling>
                 <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
                 <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
                 <dxi-column dataField="valueField" [setCellValue]="rowFound">
-                    <dxo-lookup
-                            [dataSource]="columnObjects"
-                            displayExpr="columnName"
-                            valueExpr="valueField">
-                    </dxo-lookup>
+                    <dxo-lookup [dataSource]="columnObjects" displayExpr="columnName" valueExpr="valueField"></dxo-lookup>
                 </dxi-column>
             </dx-data-grid>
-            <button *ngIf="columnObjects.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
-            <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
-            </button>
-            <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">Total
-                rows: {{rowCounter|number}}</h6>
         </div>
         <div class="col-md-4">
             <div class="card-header">
@@ -68,7 +66,17 @@
             </dx-data-grid>
         </div>
     </div>
+    <div class="row">
+        <ngb-progressbar class="col-12" showValue="true" type="info" [value]="itemsService.uploadProgress|| 0" [max]="100"></ngb-progressbar>
+    </div>
+    <div class="row">
+        <button *ngIf="columnObjects.length != 0 && (itemsService.uploadProgress ==0 || itemsService.uploadProgress ==100)" (click)="saveData();"
+                class="mt-2 btn btn-primary">Save</button>
+        <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel</button>
+        <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">{{'Data Count'|translate}}: {{rowCounter|number}}</h6>
+    </div>
 </dx-popup>
+
 <dx-data-grid
     #items
     [dataSource]="source"

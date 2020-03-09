@@ -22,8 +22,9 @@ export class ItemsComponent implements OnInit {
     value: any[] = [];
     columnObjects: any[] = [];
     columnToShow: any[] = [];
-    rowCounter: number = 0;
+    rowCounter = 0;
     dataFromFile: any[] = [];
+    showLoader = false;
 
     constructor(public itemsService: ItemsService, public importService: ImportService) {
         this.itemsService.lastItem = null;
@@ -53,7 +54,6 @@ export class ItemsComponent implements OnInit {
                 return this.itemsService.addItem(data);
             },
             update: (key, values) => {
-                console.log(key, values);
                 return this.itemsService.updateItem(key, values);
             }
         });
@@ -153,15 +153,18 @@ export class ItemsComponent implements OnInit {
     }
 
     importCombination(evt: any) {
-        this.popupVisible = true;
         /* wire up file reader */
         const target: DataTransfer = <DataTransfer>(evt.target);
         if (target.files.length !== 1) {
-            throw new Error('Cannot use multiple files');
+            return;
+            // throw new Error('Cannot use multiple files');
         }
+        this.showLoader = true;
+
         // this.show = true;
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
+
             /* read workbook */
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
@@ -171,64 +174,45 @@ export class ItemsComponent implements OnInit {
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws, {header: 'A', defval: ''});
             this.dataFromFile = data.slice(1);
-            this.columnToShow = [];
-            this.columnObjects = [];
-            let i = 0;
-            Object.values(data[0]).forEach(column => {
-                let key = Object.keys(data[0])[i];
-                if (column != '') {
-                    this.columnObjects.push({
-                        columnName: column + ' (' + key + ')',
-                        value: column,
-                        valueField: key,
-                    });
-                }
-                i++;
-            });
-            this.importService.combinationsStructure.forEach(column => {
-                let field = this.columnObjects.find(row => row.value === column.text);
-
-                if (field) {
-                    this.columnToShow.push({
-                        text: column.text,
-                        columnName: column.text + ' (' + field.valueField + ')',
-                        isFound: true,
-                        value: field.value,
-                        valueField: field.valueField,
-                        field: column.field
-                    });
-                } else {
-                    this.columnToShow.push({
-                        text: column.text,
-                        isFound: false,
-                        value: null,
-                        valueField: null,
-                        field: column.field
-                    });
-                }
-
-            });
             this.rowCounter = data.length - 1;
+            this.columnObjects = Object.entries(data[0]).map(([key, value]) => ({
+                columnName: value + ' (' + key + ')',
+                value: value,
+                valueField: key,
+            }));
+            this.columnToShow = this.importService.combinationsStructure.map(column => {
+                const field = this.columnObjects.find(row => row.value === column.text);
+                return {
+                    text: column.text,
+                    columnName: field ? field.columnName : null,
+                    isFound: !!field,
+                    value: field ? field.value : null,
+                    valueField: field ? field.valueField : null,
+                    field: column.field
+                };
+            });
+            this.showLoader = false;
+
         };
         reader.readAsBinaryString(target.files[0]);
     }
 
     saveData() {
-        const formatedData = [];
-        this.dataFromFile.forEach(item => {
-            Object.keys(item).forEach(key => {
-                const oldColumn = this.columnToShow.find(column => column.valueField == key);
-                if (oldColumn) {
+        const formatedData = this.dataFromFile.map(item => {
+            Object.keys(item).forEach(oldKey => {
+                const newColumn = this.columnToShow.find(column => column.valueField === oldKey);
+                if (newColumn) {
                     // replace old keys (A,B,C,....) with the fields names
-                    item[oldColumn.field] = item[key];
+                    item[newColumn.field] = item[oldKey];
                 }
                 // Delete old key
-                delete item[key];
+                delete item[oldKey];
             });
-            formatedData.push(item);
+            return item;
         });
-        this.importService.importCombinations(formatedData);
-        this.cancelData();
+        this.itemsService.addItems(formatedData).then(() => {
+            this.cancelData();
+        });
 
     }
 
@@ -255,4 +239,5 @@ export class ItemsComponent implements OnInit {
         this.rowCounter = 0;
         this.popupVisible = false;
     }
+
 }
