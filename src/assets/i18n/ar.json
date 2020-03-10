@@ -1,4 +1,9 @@
 {
+  "Logs": "السجلات",
+  "Users Permissions": "صلاحيات المستخدمين",
+  "Update Pricelist": "تحديث قائمة الأسعار",
+  "Update": "تحديث",
+  "Item No Available With Code": "تركيبة غير موجودة برمز:",
   "Messages Deleted": "تم حذف الدردشات",
   "Promotions Deleted": "تم حذف العروض",
   "Invoices Deleted": "تم حذف كشوفات الحساب",
@@ -128,7 +133,7 @@
   "Product": "منتج",
   "Quantity": "الكمية",
   "Download Template": "تحميل القالب",
-  "Import Pricelist": "استيراد قائمة اسعار",
+  "Import Pricelist": "إستيراد قائمة أسعار جديدة",
   "Comparison": "مقارنة",
   "Columns required": "الاعمدة المطلوبة",
   "Shipped quantity": "الكمية المباعه",

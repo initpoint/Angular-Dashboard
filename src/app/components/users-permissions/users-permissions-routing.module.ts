@@ -9,8 +9,8 @@ const routes: Routes = [
         path: '',
         component: UsersPermissionsComponent,
         data: {
-          title: "Permissions",
-          breadcrumb: "Permissions"
+          title: "Users Permissions",
+          breadcrumb: "Users Permissions"
         }
       },
     ]

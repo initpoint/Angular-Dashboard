@@ -4,11 +4,21 @@ import {PriceListService} from 'src/app/shared/services/firebase/pricelist.servi
 import {PriceListRoutingModule} from './pricelist-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PriceListComponent} from './pricelist.component';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import {DxButtonModule,DxSwitchModule,DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxNumberBoxModule} from 'devextreme-angular';
+import {
+    DxButtonModule,
+    DxSwitchModule,
+    DxFileUploaderModule,
+    DxPopupModule,
+    DxTemplateModule,
+    DxDataGridModule,
+    DxNumberBoxModule
+} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
     declarations: [PriceListComponent],
 
@@ -23,6 +33,7 @@ import {TranslateModule} from '@ngx-translate/core';
         CommonModule,
         PriceListRoutingModule,
         FormsModule,
+        NgbModule,
         ReactiveFormsModule,
         HttpClientModule,
         HttpModule,

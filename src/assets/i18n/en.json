@@ -1,4 +1,9 @@
 {
+  "Logs": "Logs",
+  "Users Permissions": "Users Permissions",
+  "Update Pricelist": "Update Price List",
+  "Update": "Update",
+  "Item No Available With Code": "Item No Available With Code:",
   "Messages Deleted": "Messages Deleted",
   "Promotions Deleted": "Promotions Deleted",
   "Invoices Deleted": "Invoices Deleted",
@@ -125,7 +130,7 @@
   "Order History": "Order History",
   "Shipped quantity": "Shipped quantity",
   "Download Template": "Download Template",
-  "Import Pricelist": "Import Pricelist",
+  "Import Pricelist": "Import New Price List",
   "Comparison": "Comparison",
   "Columns required": "Columns required",
   "Error 400": "Error 400",

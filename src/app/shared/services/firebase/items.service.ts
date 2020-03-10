@@ -30,12 +30,7 @@ export class ItemsService implements OnInit {
     }
 
     updateItem(key, newValues) {
-        return new Promise(resolve => {
-            this.db.collection('combinations').doc(key).set(newValues, {merge: true}).then(value => {
-                this.toastr.success('Item updated.');
-                resolve();
-            });
-        });
+        return this.db.collection('combinations').doc(key).set(newValues, {merge: true});
     }
 
     removeImage(row, path, pic) {
@@ -156,6 +151,10 @@ export class ItemsService implements OnInit {
         );
     }
 
+    getMetaItems() {
+        return this.db.doc('meta/items').get();
+    }
+
     addItem(data) {
         const item = {
             code: data.code || null,
@@ -164,7 +163,9 @@ export class ItemsService implements OnInit {
             barCodeId: [data.barCodeId],
             size: data.size || null,
             unitCode: data.unitCode || null,
-            unitNameAr: data.unitNameAr || null
+            unitNameAr: data.unitNameAr || null,
+            users: [],
+            isActive: true
         };
         Object.keys(data).forEach(row => {
             if (row != 'barCodeId') {
@@ -177,7 +178,7 @@ export class ItemsService implements OnInit {
     addItems(data) {
         this.uploadProgress = 0;
         return new Promise(resolve => {
-            this.db.doc('meta/items').get().subscribe(res => {
+            this.getMetaItems().subscribe(res => {
                 const itemsMeta = res.data() || {};
                 if (!itemsMeta.itemsCodes) {
                     itemsMeta.itemsCodes = [];
