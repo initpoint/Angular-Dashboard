@@ -4,6 +4,7 @@ import {DxDataGridComponent} from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import * as XLSX from 'xlsx';
 import {ImportService} from 'src/app/shared/services/firebase/import.service';
+import {LogsService} from 'src/app/shared/services/firebase/logs.service';
 
 @Component({
     selector: 'app-items',
@@ -26,7 +27,7 @@ export class ItemsComponent implements OnInit {
     dataFromFile: any[] = [];
     showLoader = false;
 
-    constructor(public itemsService: ItemsService, public importService: ImportService) {
+    constructor(public itemsService: ItemsService, public importService: ImportService,private logs:LogsService) {
         this.itemsService.lastItem = null;
         this.source = new CustomStore({
             key: 'code',
@@ -51,9 +52,13 @@ export class ItemsComponent implements OnInit {
                 }
             },
             insert: (data) => {
+                const logData = 'Created new item [' + data.code + ']';
+                this.logs.createLog(logData);
                 return this.itemsService.addItem(data);
             },
             update: (key, values) => {
+                const logData = 'Updated item [' + key + '] data [' + Object.keys(values) + '] to [' + Object.values(values) + ']';
+                this.logs.createLog(logData);
                 return this.itemsService.updateItem(key, values);
             }
         });
@@ -213,7 +218,8 @@ export class ItemsComponent implements OnInit {
         this.itemsService.addItems(formatedData).then(() => {
             this.cancelData();
         });
-
+        const logData = 'Imported combinations';
+        this.logs.createLog(logData);
     }
 
 

@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {PriceListService} from 'src/app/shared/services/firebase/pricelist.service';
+import {LogsService} from 'src/app/shared/services/firebase/logs.service';
 import DataSource from 'devextreme/data/data_source';
 import CustomStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
@@ -31,6 +32,7 @@ export class PriceListComponent implements OnInit {
     constructor(
         private priceListService: PriceListService,
         public itemsService: ItemsService,
+        private logs: LogsService,
         public importService: ImportService,
     ) {
         this.priceListSource = new CustomStore({
@@ -44,12 +46,18 @@ export class PriceListComponent implements OnInit {
                 });
             },
             update: (key, values) => {
+                const logData = 'Updated pricelist [' + key + '] data [' + Object.keys(values) + '] to [' + Object.values(values) + ']';
+                this.logs.createLog(logData);
                 return this.priceListService.updatePriceList(key, values);
             },
             remove: (key) => {
+                const logData = 'Updated pricelist [' + this.currentRow.name + '] [isActive] to [false]';
+                this.logs.createLog(logData);
                 return this.priceListService.updatePriceList(key, {isActive: false});
             },
             insert: (values) => {
+                const logData = 'Created new pricelist [' + values.name + ']';
+                this.logs.createLog(logData);
                 return this.priceListService.createPriceList(values);
             },
 
@@ -98,6 +106,7 @@ export class PriceListComponent implements OnInit {
                 return this.itemsService.updateItem(itemKey, newItem).then(() => {
                     this.currentRow.count -= 1;
                     this.priceListService.updatePriceList(this.currentRow.id, this.currentRow);
+
                 });
             }
         });
@@ -174,7 +183,10 @@ export class PriceListComponent implements OnInit {
             if (item.code != '' && item.code != undefined) {
                 this.itemsService.getItem(item.code).subscribe(doc => {
                     if (doc.exists) {
-                        this.itemsService.updateItem(doc.data().code, {prices: item.prices}).then();
+                        this.itemsService.updateItem(doc.data().code, {prices: item.prices}).then(res => {
+                            const logData = 'Updated item [' + doc.data().code + '] data [prices] to [' + item.prices + ']';
+                            this.logs.createLog(logData);
+                        });
                     }
                 });
             }
@@ -182,7 +194,10 @@ export class PriceListComponent implements OnInit {
         this.itemsService.db.collection('pricelist').doc(documents.pricelistCode).set({
             name: documents.pricelistName,
             code: documents.pricelistCode
-        }, {merge: true});
+        }, {merge: true}).then(res => {
+            const logData = 'Created new pricelist [' + documents.pricelistName + ']';
+            this.logs.createLog(logData);
+        });
 
     }
 
@@ -210,13 +225,15 @@ export class PriceListComponent implements OnInit {
         this.popupVisible = false;
     }
 
-
+// ToDo COMPLETE THIS
     setPrice(value: any, cellInfo: any) {
         console.log(value, cellInfo);
         // this.itemService.itemArray.find(x => x.code === cellInfo.data.code).prices[this.currentRow.id] = value;
         // this.itemService.getItem(cellInfo.data.code).subscribe(item => {
         //     item.data().prices[this.currentRow.id] = value;
         // });
+        // const logData = 'Updated item price [value] to pricelist [' + this.currentRow.name + ']';
+        // this.logs.createLog(logData);
     }
 
     addItemToList(data: any) {
@@ -225,5 +242,7 @@ export class PriceListComponent implements OnInit {
         this.currentRow.count += 1;
         this.itemsService.updateItem(data.code, data);
         this.priceListService.updatePriceList(this.currentRow.id, this.currentRow);
+        const logData = 'Added item [' + data.code + '] to pricelist [' + this.currentRow.name + ']';
+        this.logs.createLog(logData);
     }
 }

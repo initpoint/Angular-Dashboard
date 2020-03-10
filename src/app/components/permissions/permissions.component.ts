@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild, QueryList} from '@angular/core';
 import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
 import {ItemsService} from '../../shared/services/firebase/items.service';
+import {LogsService} from '../../shared/services/firebase/logs.service';
 import {DxDataGridComponent} from 'devextreme-angular';
 import * as XLSX from 'xlsx';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
@@ -25,6 +26,7 @@ export class PermissionComponent implements OnInit {
     allItemsSource: any;
 
     constructor(public itemsService: ItemsService,
+                private logs: LogsService,
                 private permissionService: PermissionService,
                 public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
@@ -106,7 +108,19 @@ export class PermissionComponent implements OnInit {
         ${removedPerms.length} Removed Premissions\n
         ${unchangedPerms.length} Unchanged Premissions\n`);
         if (proceed) {
-            this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms, unchangedPerms);
+            this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms, unchangedPerms).then(res => {
+                let logData = 'Updated customer Permissions [' + this.currentUser.name + '] data ';
+                if (addedPerms.length != 0) {
+                    logData = logData.concat('[added] to [' + addedPerms + ']  & ');
+                }
+                if (removedPerms.length != 0) {
+                    logData = logData.concat('[removed] to [' + removedPerms + ']  & ');
+                }
+                if (unchangedPerms.length != 0) {
+                    logData = logData.concat(' & [unchanged] to [' + unchangedPerms + ']');
+                }
+                this.logs.createLog(logData);
+            });
         }
     }
 

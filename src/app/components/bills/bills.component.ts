@@ -1,11 +1,8 @@
 import {Component, OnInit, Output} from '@angular/core';
 import {BillsService} from '../../shared/services/firebase/bills.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
-import {Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
 import * as XLSX from 'xlsx';
-import array from 'devextreme/ui/file_manager/file_provider/array';
-import {PermissionService} from '../../shared/services/firebase/permission.service';
+import {LogsService} from '../../shared/services/firebase/logs.service';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {formatDate} from '@angular/common';
@@ -28,7 +25,7 @@ export class BillsComponent implements OnInit {
     currentUser;
     customerBills = [];
 
-    constructor(public itemsService: ItemsService, public billsService: BillsService, public importService: ImportService, public customerService: CustomerService) {
+    constructor(public itemsService: ItemsService, private logs:LogsService,public billsService: BillsService, public importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
@@ -123,6 +120,8 @@ export class BillsComponent implements OnInit {
             customerId: this.currentUser.uid
         });
         this.cancelData();
+        const logData = 'Imported Bills';
+        this.logs.createLog(logData);
     }
 
     rowFound(row, value) {

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CustomersComponent } from './customers/customers.component';
+import { CustomersComponent } from './customers.component';
 const routes: Routes = [
   {
     path: '',
     children: [
       {
-        path: 'show',
+        path: '',
         component: CustomersComponent,
         data: {
           title: "Customers",

@@ -5,7 +5,7 @@ import {UsersRoutingModule} from './users-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {UserService} from '../../shared/services/firebase/user.service';
-import {UsersComponent} from './users/users.component';
+import {UsersComponent} from './users.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';

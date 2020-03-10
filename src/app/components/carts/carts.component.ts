@@ -2,8 +2,6 @@ import {Component, OnInit, Output} from '@angular/core';
 import {CartsService} from '../../shared/services/firebase/carts.service';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
-import * as XLSX from 'xlsx';
-
 @Component({
     selector: 'app-carts',
     templateUrl: './carts.component.html',

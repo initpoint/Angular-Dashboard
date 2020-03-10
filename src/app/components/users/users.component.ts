@@ -1,7 +1,6 @@
 import {Component, OnInit, Output} from '@angular/core';
-import {UserService} from '../../../shared/services/firebase/user.service';
-import {Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
+import {UserService} from '../../shared/services/firebase/user.service';
+import {LogsService} from '../../shared/services/firebase/logs.service';
 import CustomeStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
 
@@ -16,7 +15,7 @@ export class UsersComponent implements OnInit {
     lang = localStorage.getItem('lang') == 'ar';
     fieldView: boolean = true;
 
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService, private logs: LogsService) {
         this.customerData = new CustomeStore({
             key: 'uid',
             load: (opts) => {
@@ -28,12 +27,18 @@ export class UsersComponent implements OnInit {
                 });
             },
             update: (key, values) => {
+                const logData = 'Updated user [' + this.customerSource.items().find(user => user.uid === key).name + '] data [' + Object.keys(values) + '] to [' + Object.values(values) + ']';
+                this.logs.createLog(logData);
                 return this.userService.updateUser(key, values);
             },
             remove: (key) => {
+                const logData = 'User [' + this.customerSource.items().find(user => user.uid === key).name + '] deleted';
+                this.logs.createLog(logData);
                 return this.userService.deleteUser(key);
             },
             insert: (values) => {
+                const logData = 'Created new user [' + values.name + ']';
+                this.logs.createLog(logData);
                 return this.userService.createUser(values);
             },
         });

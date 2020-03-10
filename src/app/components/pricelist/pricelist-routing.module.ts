@@ -6,7 +6,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'show',
+        path: '',
         component: PriceListComponent,
         data: {
           title: "PriceList",

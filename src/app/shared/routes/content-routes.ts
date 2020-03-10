@@ -83,5 +83,11 @@ export const content: Routes = [
     data: {
       breadcrumb: "Chat"
     }
+  },{
+    path: 'logs',
+    loadChildren: './components/logs/logs.module#LogsModule',
+    data: {
+      breadcrumb: "Logs"
+    }
   },
 ];

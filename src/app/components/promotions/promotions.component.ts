@@ -4,6 +4,7 @@ import CustomStore from 'devextreme/data/custom_store';
 import {NgForm} from '@angular/forms';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
+import {LogsService} from '../../shared/services/firebase/logs.service';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -27,6 +28,7 @@ export class PromotionsComponent implements OnInit {
     constructor(
         private promotionsService: PromotionsService,
         public itemsService: ItemsService,
+        public logs: LogsService,
         public importService: ImportService,
     ) {
         this.promotionsSource = new CustomStore({
@@ -40,12 +42,18 @@ export class PromotionsComponent implements OnInit {
                 });
             },
             update: (key, values) => {
+                const logData = 'Updated promotion [' + key + '] data [' + Object.keys(values) + '] to [' + Object.values(values) + ']';
+                this.logs.createLog(logData);
                 return this.promotionsService.updatePromotion(key, values);
             },
             remove: (key) => {
+                const logData = 'Updated promotion [' + this.currentRow.name + '] [isActive] to [false]';
+                this.logs.createLog(logData);
                 return this.promotionsService.updatePromotion(key, {isActive: false});
             },
             insert: (values) => {
+                const logData = 'Created new promotion [' + values.name + ']';
+                this.logs.createLog(logData);
                 return this.promotionsService.createPromotion(values);
             },
 
@@ -150,6 +158,8 @@ export class PromotionsComponent implements OnInit {
         });
         // console.log(formatedData)
         this.importService.importPromotions(formatedData);
+        const logData = 'Imported promotions';
+        this.logs.createLog(logData);
         this.cancelData()
 
     }

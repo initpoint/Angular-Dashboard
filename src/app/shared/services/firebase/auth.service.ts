@@ -44,7 +44,7 @@ export class AuthService implements OnInit {
             const token = await res.user.getIdToken();
             localStorage.setItem('token', token);
             localStorage.setItem('userData', JSON.stringify(this.jwtHelper.decodeToken(token)));
-            this.router.navigate(['/customers/show']);
+            this.router.navigate(['/customers']);
             this.toastrService.success('Authentication successful.');
         }).catch((error) => {
             this.showLoader = false;

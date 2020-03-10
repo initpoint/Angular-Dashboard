@@ -1,11 +1,10 @@
-import {Component, OnInit, ViewChild, QueryList, ElementRef} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {UserService} from '../../shared/services/firebase/user.service';
+import {LogsService} from '../../shared/services/firebase/logs.service';
 import {DxDataGridComponent} from 'devextreme-angular';
-import * as XLSX from 'xlsx';
 import CustomeStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
 import {NavService} from '../../shared/services/nav.service';
-import * as firebase from '../../shared/services/firebase/carts.service';
 
 @Component({
     selector: 'app-users-permissions',
@@ -18,13 +17,11 @@ export class UsersPermissionsComponent implements OnInit {
     userPermissions: [] = [];
     lang;
     currentUser;
-    selectedItems: any;
     customerSource: DataSource;
     customerData: CustomeStore;
     allPages = [];
-    keys = [];
 
-    constructor(public userService: UserService,
+    constructor(public userService: UserService, public logs: LogsService,
                 private navService: NavService) {
         this.navService.items.subscribe(menuItems => {
             this.allPages = menuItems;
@@ -60,13 +57,14 @@ export class UsersPermissionsComponent implements OnInit {
 
     saveUserPermissions() {
         this.currentUser.permissions[this.permissionType.nativeElement.value] = this.pages.instance.getSelectedRowsData().map(page => page.path);
+        const logData = 'User [' + this.currentUser.name + '] Permissions Set [' + this.permissionType.nativeElement.value + '] to ' + this.currentUser.permissions[this.permissionType.nativeElement.value];
+        this.logs.createLog(logData);
         this.userService.updateUser(this.currentUser.uid, {permissions: this.currentUser.permissions}).then(res => {
             this.userService.toastrService.success('User Permission Updated');
         });
     }
 
     updatePermissionType(permission) {
-        console.log(permission);
         this.pages.instance.selectRows(this.userPermissions[permission], false);
     }
 }

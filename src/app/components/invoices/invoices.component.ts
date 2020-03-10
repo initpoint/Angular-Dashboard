@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
 import {formatDate} from '@angular/common';
 import {InvoicesService} from '../../shared/services/firebase/invoices.service';
+import {LogsService} from '../../shared/services/firebase/logs.service';
 
 @Component({
     selector: 'app-invoices',
@@ -21,7 +22,7 @@ export class InvoicesComponent implements OnInit {
     currentUser;
     customerInvoices = [];
 
-    constructor(public invoicesService: InvoicesService, public importService: ImportService, public customerService: CustomerService) {
+    constructor(public invoicesService: InvoicesService, private logs: LogsService, public importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
@@ -60,7 +61,7 @@ export class InvoicesComponent implements OnInit {
             this.dataFromFile = file.slice(1);
             this.rowCounter = this.dataFromFile.length;
             this.columnToShow = [];
-            this. fileColumns= Object.values(fileHeaderRow).map((columnValue, index) => {
+            this.fileColumns = Object.values(fileHeaderRow).map((columnValue, index) => {
                 return {text: columnValue, valueField: Object.keys(fileHeaderRow)[index]};
             });
             this.importService.invoiceStructure.forEach(invoiceStructureField => {
@@ -103,6 +104,8 @@ export class InvoicesComponent implements OnInit {
             invoices.push(fileRow);
         });
         this.invoicesService.addInvoices(invoices);
+        const logData = 'Imported Invoices';
+        this.logs.createLog(logData);
         this.cancelData();
     }
 

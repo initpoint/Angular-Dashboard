@@ -40,7 +40,7 @@ export class NavService {
 
     MENUITEMS: Menu[] = [
         {
-            title: 'Customers', icon: 'user', type: 'link', path: '/customers/show', active: false,
+            title: 'Customers', icon: 'user', type: 'link', path: '/customers', active: false,
         },
         {
             title: 'Items', path: '/items', icon: 'shopping-bag', type: 'link', active: false,
@@ -48,7 +48,7 @@ export class NavService {
             title: 'Promotions', path: '/promotions', icon: 'archive', type: 'link', active: false,
         },
         {
-            title: 'Price List', path: '/pricelist/show', icon: 'list', type: 'link', active: false,
+            title: 'Price List', path: '/pricelist', icon: 'list', type: 'link', active: false,
         },
         {
             title: 'Carts', path: '/carts', icon: 'shopping-cart', type: 'link', active: false,
@@ -60,19 +60,22 @@ export class NavService {
             title: 'Invoices', path: '/invoices', icon: 'printer', type: 'link', active: false,
         },
         {
-            title: 'Permissions', path: '/permissions/show', icon: 'git-pull-request', type: 'link', active: false,
+            title: 'Permissions', path: '/permissions', icon: 'git-pull-request', type: 'link', active: false,
         },
         {
             title: 'Settings', path: '/import', icon: 'settings', type: 'link', active: false,
         },
         {
-            title: 'Users', path: '/users/show', icon: 'users', type: 'link', active: false,
+            title: 'Users', path: '/users', icon: 'users', type: 'link', active: false,
         },
         {
             title: 'Users Permissions', path: '/users-permissions', icon: 'user-check', type: 'link', active: false,
         },
         {
             path: '/chat', title: 'Chat', icon: 'message-square', type: 'link', bookmark: true
+        },
+        {
+            path: '/logs', title: 'Logs', icon: 'file', type: 'link', bookmark: true
         },
     ];
     // Array

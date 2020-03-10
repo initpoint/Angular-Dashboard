@@ -5,7 +5,7 @@ import {CustomersRoutingModule} from './customers-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {CustomerService} from '../../shared/services/firebase/customer.service';
-import {CustomersComponent} from './customers/customers.component';
+import {CustomersComponent} from './customers.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
