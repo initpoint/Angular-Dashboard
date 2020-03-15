@@ -44,9 +44,30 @@
             </div>
         </dxi-item>
         <dxi-item [ratio]="1">
-        <button class="btn-dark btn"
-                (click)="giveAllPermissions()">{{'Give all permissions'|translate}}
-        </button>
+            <div [hidden]="!currentUser" class="dx-field">
+                <div class="dx-field-value">
+                    <dx-button
+                            [(rtlEnabled)]="lang"
+                            class="btn-success"
+                            icon="fa fa-plus"
+                            (click)="giveAllPermissions()"
+                            text="{{'giveAllPermissions'|translate}}">
+                    </dx-button>
+                </div>
+            </div>
+        </dxi-item>
+        <dxi-item [ratio]="1">
+            <div [hidden]="!currentUser" class="dx-field">
+                <div class="dx-field-value">
+                    <dx-button
+                            [(rtlEnabled)]="lang"
+                            class="btn-danger"
+                            icon="fa fa-trash-o"
+                            (click)="removeAllPermissions()"
+                            text="{{'removeAllPermissions'|translate}}">
+                    </dx-button>
+                </div>
+            </div>
         </dxi-item>
         <dxi-item [ratio]="1">
             <div class="dx-field">
@@ -101,7 +122,8 @@
     <dxi-column dataField="prices" [cellTemplate]="'hasPriceList'"
                 [caption]="'has Price List'|translate"></dxi-column>
     <div *dxTemplate="let data of 'hasPriceList'">
-        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)" class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
+        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)"
+                class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
     </div>
 
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode"
@@ -168,7 +190,8 @@
     <dxi-column dataField="prices" [cellTemplate]="'hasPriceList'"
                 [caption]="'has Price List'|translate"></dxi-column>
     <div *dxTemplate="let data of 'hasPriceList'">
-        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)" class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
+        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)"
+                class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
     </div>
 
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode"
