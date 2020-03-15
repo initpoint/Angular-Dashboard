@@ -31,6 +31,7 @@ export class UserService {
                     mobile: value.mobile || null,
                     name: value.name || null,
                     code: value.code || null,
+                    permissions: {update: [], create: [], delete: []}
                 });
                 return true;
             }).catch(function (err) {
