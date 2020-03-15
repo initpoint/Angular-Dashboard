@@ -98,7 +98,6 @@ export class PriceListComponent implements OnInit {
                 return this.itemsService.updateItem(itemKey, newItem).then(() => {
                     this.currentRow.count -= 1;
                     this.priceListService.updatePriceList(this.currentRow.id, this.currentRow);
-
                 });
             }
         });
