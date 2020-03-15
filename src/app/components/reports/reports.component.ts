@@ -17,6 +17,7 @@ export class ReportsComponent implements OnInit {
     selectedItem: string;
     selectedCustomer: string;
     selectedOptional: string;
+    private cartsData: any = [];
 
     constructor(public reportsService: ReportsService, public userService: UserService, public navService: NavService, public customerService: CustomerService,) {
     }
@@ -110,23 +111,24 @@ export class ReportsComponent implements OnInit {
             const WindowObject = window.open('', 'PrintWindow', 'width=' + w + ',height=' + h + ',top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes'
             );
 
-            printContents += '<tr>';
             selectedCarts.forEach(cart => {
-                printContents += `<td>${cart.data().customerId}</td>`;
-                printContents += '<td>';
-                Object.keys(cart.data().items).forEach(item => {
-                    this.reportsService.db.collection('combinations', ref => ref.where('code', '==', item)).valueChanges().subscribe(combination => {
-                        printContents += `${combination['nameArFull']},`;
+                if (cart.itemsArray.length != 0) {
+                    printContents += '<tr>';
+                    printContents += `<td>${cart.customerName}</td><td>`;
+                    cart.itemsArray.forEach(item => {
+                        printContents += `(${item.qty}x) (${item.data[0].code}) ${item.data[0].nameArFull}<br>`;
                     });
-                });
-                printContents += '</td>';
-                // htmlData += `<li>${cart.data().customerId}</li>`;
+                    printContents += '</td>';
+                    printContents += `<td>${cart.totalPrice}</td>`;
+                    printContents += '</tr>';
+                }
             });
-            printContents += '</tr>';
+
             let htmlData = '<html><style>table, th, td {border: 1px solid black;border-collapse: collapse;}td {text-align:center}</style><body><table style="width: 100%;margin-bottom: 1rem;color: #212529;"><thead><tr>';
 
-            htmlData += `<th scope="col">Customer</th>`;
-            htmlData += `<th scope="col">Items</th>`;
+            htmlData += `<th>Customer</th>`;
+            htmlData += `<th>Items</th>`;
+            htmlData += `<th>Total Price</th>`;
             htmlData += '</tr></thead><tbody>' + printContents + '</tbody></table></body></html>';
             WindowObject.document.writeln(htmlData);
             WindowObject.document.close();
@@ -140,8 +142,23 @@ export class ReportsComponent implements OnInit {
 
 
     getCustomerCarts(id) {
+
         this.reportsService.db.collection('carts', ref => ref.where('customerId', '==', id)).get().subscribe(carts => {
-            this.reportsFilter.optionals = carts.docs;
+            // this.reportsFilter.optionals = carts.docs;
+            this.reportsFilter.optionals = [];
+            carts.docs.map(cartRaw => {
+                const cart: any = cartRaw.data();
+                cart.id = cartRaw.id;
+                cart.itemsArray = Object.keys(cart.items).map(code => {
+                    let itemData = [];
+                    this.reportsService.db.collection('combinations').doc(code).valueChanges().subscribe(item => {
+                        itemData.push(item);
+                    });
+                    return {code: code, qty: cart.items[code], data: itemData};
+                });
+                this.reportsFilter.optionals.push(cart);
+            });
+
         });
     }
 }

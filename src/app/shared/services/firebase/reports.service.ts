@@ -13,42 +13,34 @@ export class ReportsService {
         name: 'New Combinations',
         fields: ['Created At', 'Code', 'Name', 'Removed At', 'Customer Code', 'Customer Name', 'Qty', 'Is New'],
         filters: {default: 'customers', optionals: 'combinations'},
-        collection: {default: 'combinations', optionals: 'customers'}
     }, {
         name: 'Cart',
         fields: ['createDate', 'Code', 'Name', 'Bill Date', 'customerId', 'customerName', 'Qty', 'Exported Qty', 'Different'],
         filters: {default: 'customer', optionals: 'carts'},
-        collection: {default: 'carts', optionals: 'customers'}
     }, {
         name: 'Customers',
         fields: ['Date', 'Code', 'Name', 'Customer Code', 'Customer Name', 'Action'],
         filters: {default: 'user', optionals: 'pages'},
-        collection: {default: 'logs', optionals: 'pages'}
     }, {
         name: 'Best Selling',
         fields: ['Date', 'Code', 'Name', 'Qty'],
         filters: {default: 'user', optionals: 'pages'},
-        collection: {default: 'logs', optionals: 'pages'}
     }, {
         name: 'Customers Inventory',
         fields: ['BarCode', 'Code', 'Name', 'Bill Qty', 'Shortage Qty', 'Over Qty', 'Match'],
         filters: {default: 'user', optionals: 'pages'},
-        collection: {default: 'logs', optionals: 'pages'}
     }, {
         name: 'Customers Visits',
         fields: ['Created At', 'Customer Code', 'Customer Name'],
         filters: {default: 'user', optionals: ''},
-        collection: {default: 'logs', optionals: ''}
     }, {
         name: 'Users Actions',
         fields: ['createdAt', 'user', 'page', 'action'],
-        filters: {default: 'user', optionals: 'pages'},
-        collection: {default: 'logs', optionals: 'pages'}
+        filters: {default: 'user', optionals: 'pages'}
     }, {
         name: 'Customers Permissions',
         fields: ['Created At', 'Customer Code', 'Customer Name', 'Page', 'Action'],
-        filters: {default: 'customers', optionals: ''},
-        collection: {default: 'customers', optionals: 'permission'}
+        filters: {default: 'customers', optionals: ''}
     }];
 
     constructor(public db: AngularFirestore,

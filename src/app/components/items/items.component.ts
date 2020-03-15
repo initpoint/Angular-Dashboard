@@ -22,7 +22,7 @@ export class ItemsComponent implements OnInit {
     value: any[] = [];
     columnToShow: any[] = [];
     rowCounter = 0;
-    private doneSaving = false;
+    public doneSaving = false;
 
     constructor(public itemsService: ItemsService, public importService: ImportService, public logsService: LogsService) {
         this.itemsService.lastItem = null;
