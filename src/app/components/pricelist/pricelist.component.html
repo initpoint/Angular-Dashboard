@@ -40,7 +40,7 @@
                 cellTemplate="priceTemplate" [caption]="'Price'|translate"></dxi-column>
     <div *dxTemplate="let data of 'priceTemplate'">{{data.data.prices[currentRow?.id]}}</div>
     <div *dxTemplate="let cellInfo of 'tagBoxEditor'">
-        <dx-number-box [value]="cellInfo.data.prices[currentRow?.id]" (onValueChanged)="setPrice($event.value,cellInfo)"></dx-number-box>
+        <dx-number-box [value]="cellInfo.data.prices[currentRow?.id]" (onValueChanged)="setPrice($event.value,cellInfo.data)"></dx-number-box>
     </div>
 </dx-data-grid>
 
