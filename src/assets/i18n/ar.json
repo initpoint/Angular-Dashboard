@@ -1,5 +1,9 @@
 {
+  "All Permissions Message": "هل أنت واثق من هذا؟ سوف تعطي هذا العميل كل صلاحيات و عددها",
+  "Remove Permissions Message": "هل أنت واثق من هذا؟ سوف تحذف كل صلاحيات لهذا العميل و عددها",
   "Reports": "التقارير",
+  "giveAllPermissions": "أعطاء كل الصلاحيات",
+  "removeAllPermissions": "حذف كل الصلاحيات",
   "Does not have price list": "ليست في قائمة اسعار العميل",
   "Import Combinations": "استيراد التركيبات",
   "Logs": "السجلات",

@@ -1,6 +1,10 @@
 {
+  "All Permissions Message": "Are you sure about this? you will give this customer all permissions",
+  "Remove Permissions Message": "Are you sure about this? you will remove all permissions from this customer",
   "Does not have price list": "Not in Customer Price List",
   "Reports": "Reports",
+  "giveAllPermissions": "Give all permissions",
+  "removeAllPermissions": "Remove all permissions",
   "Import Combinations": "Import Combinations",
   "Logs": "Logs",
   "Users Permissions": "Users Permissions",

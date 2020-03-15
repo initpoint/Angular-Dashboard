@@ -7,6 +7,7 @@ import {DxDataGridComponent} from 'devextreme-angular';
 import * as XLSX from 'xlsx';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
 import CustomStore from 'devextreme/data/custom_store';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
     selector: 'app-permission',
@@ -27,8 +28,9 @@ export class PermissionComponent implements OnInit {
     allItemsSource: any;
 
     constructor(public itemsService: ItemsService,
-                private logs: LogsService,
-                private toastr:ToastrService,
+                private logsService: LogsService,
+                private toastrService: ToastrService,
+                private translateService: TranslateService,
                 private permissionService: PermissionService,
                 public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
@@ -121,7 +123,7 @@ export class PermissionComponent implements OnInit {
                 if (unchangedPerms.length != 0) {
                     logData = logData.concat(' & [unchanged] to [' + unchangedPerms + ']');
                 }
-                this.logs.createLog(logData);
+                this.logsService.createLog(logData);
             });
         }
     }
@@ -165,10 +167,23 @@ export class PermissionComponent implements OnInit {
         }
         return false;
     }
+
     giveAllPermissions() {
         this.itemsService.getMetaItems().subscribe(items => {
-            this.selectedItems = items.data().itemsCodes;
-            this.saveCustomerPermissions();
+            this.translateService.get('All Permissions Message').subscribe(message => {
+                if (confirm(`${message} #${items.data().itemsCodes.length}`)) {
+                    this.selectedItems = items.data().itemsCodes;
+                    this.saveCustomerPermissions();
+                }
+            });
         });
+    }
+    removeAllPermissions() {
+            this.translateService.get('Remove Permissions Message').subscribe(message => {
+                if (confirm(`${message} #${this.customerItemsCodes.length}`)) {
+                    this.selectedItems = [];
+                    this.saveCustomerPermissions();
+                }
+            });
     }
 }
