@@ -18,7 +18,7 @@ export class ReportsComponent implements OnInit {
     selectedCustomer: string;
     selectedOptional: string;
 
-    constructor(private reportsService: ReportsService, public userService: UserService, public navService: NavService, public customerService: CustomerService,) {
+    constructor(public reportsService: ReportsService, public userService: UserService, public navService: NavService, public customerService: CustomerService,) {
     }
 
     onFocusedRowChanged(e: any) {
