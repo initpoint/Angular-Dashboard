@@ -147,15 +147,10 @@ export class PriceListComponent implements OnInit {
         });
     }
 
-// ToDo COMPLETE THIS
-    setPrice(value: any, cellInfo: any) {
-        console.log(value, cellInfo);
-        // this.itemService.itemArray.find(x => x.code === cellInfo.data.code).prices[this.currentRow.id] = value;
-        // this.itemService.getItem(cellInfo.data.code).subscribe(item => {
-        //     item.data().prices[this.currentRow.id] = value;
-        // });
-        // const logData = 'Updated item price [value] to pricelist [' + this.currentRow.name + ']';
-        // this.logs.createLog(logData);
+    setPrice(newPrice, item) {
+        item['prices'][this.currentRow.id] = newPrice;
+        this.itemsService.updateItem(item.code, item);
+        this.logs.createLog(`Updated pricelist:${this.currentRow.name} item:${item.code} to price:${newPrice}`);
     }
 
     addItemToList(data: any) {

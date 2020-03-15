@@ -95,7 +95,7 @@ export class ItemsService implements OnInit {
         } else {
             return this.db.collection('combinations',
                 ref => ref.where(fieldPath, '>=', 0)
-                    .startAfter(this.lastItemInPriceList).orderBy(fieldPath).limit(20)).get().pipe(
+                    .orderBy(fieldPath).startAfter(this.lastItemInPriceList).limit(20)).get().pipe(
                 map(x => x.docs.map(y => {
                     this.lastItemInPriceList = x.docs[x.docs.length - 1];
                     return {
