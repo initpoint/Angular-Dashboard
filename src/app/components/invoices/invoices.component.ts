@@ -14,12 +14,12 @@ import {LogsService} from '../../shared/services/firebase/logs.service';
 export class InvoicesComponent implements OnInit {
     customersSource: any;
     lang = localStorage.getItem('lang') === 'ar';
-    rowCounter: number = 0;
     currentUser;
     customerInvoices = [];
     doneSaving = false;
 
-    constructor(public invoicesService: InvoicesService, private logs: LogsService, public importService: ImportService, public customerService: CustomerService) {
+    constructor(public invoicesService: InvoicesService, private logs: LogsService, public importService: ImportService,
+                public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });

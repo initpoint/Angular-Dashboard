@@ -17,12 +17,9 @@ export class ItemsComponent implements OnInit {
     materialSelectedRows = {};
     rankingSelectedRows = {};
     currentRow: any;
-    popupVisible: boolean;
     imageUploaderpopup: boolean;
     value: any[] = [];
-    columnToShow: any[] = [];
-    rowCounter = 0;
-    public doneSaving = false;
+    doneSaving = false;
 
     constructor(public itemsService: ItemsService, public importService: ImportService, public logsService: LogsService) {
         this.itemsService.lastItem = null;
