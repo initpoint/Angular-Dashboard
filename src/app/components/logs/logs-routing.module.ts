@@ -9,8 +9,8 @@ const routes: Routes = [
         path: '',
         component: LogsComponent,
         data: {
-          title: "Users",
-          breadcrumb: "Users"
+          title: "Logs",
+          breadcrumb: "Logs"
         }
       },
     ]

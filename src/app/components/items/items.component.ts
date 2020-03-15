@@ -27,13 +27,13 @@ export class ItemsComponent implements OnInit {
     dataFromFile: any[] = [];
     showLoader = false;
 
-    constructor(public itemsService: ItemsService, public importService: ImportService,private logs:LogsService) {
+    constructor(public itemsService: ItemsService, public importService: ImportService, private logs: LogsService) {
         this.itemsService.lastItem = null;
         this.source = new CustomStore({
             key: 'code',
             totalCount: () => new Promise(resolve => {
                 this.itemsService.getItemsTotalCount().subscribe(metaDoc => {
-                    resolve(metaDoc.data()['count']);
+                    resolve(metaDoc.data() ? metaDoc.data()['count'] || 0 : 0);
                 });
             }),
             load: (opts) => {
@@ -158,18 +158,13 @@ export class ItemsComponent implements OnInit {
     }
 
     importCombination(evt: any) {
-        /* wire up file reader */
         const target: DataTransfer = <DataTransfer>(evt.target);
         if (target.files.length !== 1) {
             return;
-            // throw new Error('Cannot use multiple files');
         }
         this.showLoader = true;
-
-        // this.show = true;
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
-
             /* read workbook */
             const bstr: string = e.target.result;
             const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
@@ -178,8 +173,8 @@ export class ItemsComponent implements OnInit {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
             /* save data */
             const data = XLSX.utils.sheet_to_json(ws, {header: 'A', defval: ''});
-            this.dataFromFile = data.slice(1);
             this.rowCounter = data.length - 1;
+            this.dataFromFile = data.slice(1);
             this.columnObjects = Object.entries(data[0]).map(([key, value]) => ({
                 columnName: value + ' (' + key + ')',
                 value: value,
@@ -197,7 +192,6 @@ export class ItemsComponent implements OnInit {
                 };
             });
             this.showLoader = false;
-
         };
         reader.readAsBinaryString(target.files[0]);
     }
@@ -207,43 +201,36 @@ export class ItemsComponent implements OnInit {
             Object.keys(item).forEach(oldKey => {
                 const newColumn = this.columnToShow.find(column => column.valueField === oldKey);
                 if (newColumn) {
-                    // replace old keys (A,B,C,....) with the fields names
-                    item[newColumn.field] = item[oldKey];
+                    item[newColumn.field] = item[oldKey];// replace old keys (A,B,C,....) with the fields names
                 }
-                // Delete old key
                 delete item[oldKey];
             });
             return item;
         });
         this.itemsService.addItems(formatedData).then(() => {
-            this.cancelData();
+            this.closePopupAndClearData();
         });
         const logData = 'Imported combinations';
         this.logs.createLog(logData);
-    }
-
-
-    rowFound(row, value) {
-        (<any>this).defaultSetCellValue(row, value);
-
-    }
-
-    btnClicked() {
-        this.popupVisible = true;
     }
 
     downloadTemplate(data) {
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
         XLSX.utils.book_append_sheet(wb, ws, 'combination');
-        XLSX.writeFile(wb, 'Combinations.xlsx');
+        XLSX.writeFile(wb, 'Combinations Template.xlsx');
     }
 
-    cancelData() {
+    closePopupAndClearData() {
         this.columnToShow = [];
         this.columnObjects = [];
         this.rowCounter = 0;
         this.popupVisible = false;
         this.itemsService.uploadProgress = 0;
+    }
+
+    rowFound(row, value) {
+        (<any>this).defaultSetCellValue(row, value);
+
     }
 }

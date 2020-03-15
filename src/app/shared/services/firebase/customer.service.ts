@@ -29,7 +29,7 @@ export class CustomerService {
                 ref.doc(userData.user.uid).set({
                     uid: userData.user.uid,
                     email: value.email,
-                    mobile: value.mobile,
+                    phoneNumber: value.phoneNumber,
                     name: value.name,
                     code: value.code,
                     pricelist: value.pricelist || null,

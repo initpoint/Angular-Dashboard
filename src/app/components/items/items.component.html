@@ -1,15 +1,9 @@
-<button class="btn btn-success m-2" (click)="btnClicked()"><i
+<button class="btn btn-success m-2" (click)="popupVisible = true"><i
         class="icon-import"></i> {{'Import'|translate}} {{'Combinations'|translate}}
 </button>
-<dx-popup
-        [showTitle]="true"
-        [title]="'Import Data'|translate"
-        [dragEnabled]="false"
-        [closeOnOutsideClick]="false"
-        (onHiding)="cancelData()"
-        [(visible)]="popupVisible">
 
-
+<dx-popup [showTitle]="true" [title]="'Import Data'|translate" [dragEnabled]="false"
+          [closeOnOutsideClick]="false" (onHiding)="closePopupAndClearData()" [(visible)]="popupVisible">
     <div class="loader-wrapper" *ngIf="showLoader">
         <div class="loader bg-white">
             <div class="whirly-loader"></div>
@@ -17,34 +11,16 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-
             <div class="card-header">
-                <dx-file-uploader
-                        selectButtonText="Select XLSX File"
-                        [ngStyle]="lang && {'float':'right'}"
-                        [ngClass]="{'pull-right':!lang}"
-                        style="margin-top: -1rem"
-                        height="60px"
-                        width="20%"
-                        accept=".xlsx"
-                        [(rtlEnabled)]="lang"
-                        (change)="importCombination($event)"
-                        [showFileList]="false"
-                        [maxFileSize]="3000000"
-                        [multiple]="false"
-                        uploadMode="instantly">
-                </dx-file-uploader>
+                <dx-file-uploader [selectButtonText]="'Select XLSX File'|translate" [(rtlEnabled)]="lang" style="margin-top: -1rem"
+                                  [ngStyle]="lang && {'float':'right'}" [ngClass]="{'pull-right':!lang}"
+                                  height="60px" width="20%" accept=".xlsx" [multiple]="false" [showFileList]="false" [maxFileSize]="3000000"
+                                  (change)="importCombination($event)" uploadMode="instantly"></dx-file-uploader>
                 <h5>{{'Comparison'|translate}}</h5>
             </div>
-            <dx-data-grid #dataTable
-                          keyExpr="text"
-                          [dataSource]="columnToShow"
-                          columnAutoWidth="true"
-                          [paging]="{enabled:false}" height="550" showBorders="true"
-                          [rtlEnabled]="lang">
-                <dxo-editing mode="cell" [allowUpdating]="true">
-                </dxo-editing>
-                <dxo-scrolling mode="Infinite" showScrollbar="Always"></dxo-scrolling>
+            <dx-data-grid keyExpr="text" [dataSource]="columnToShow" columnAutoWidth="true" height="550" showBorders="true"
+                          [paging]="{enabled:false}" [scrolling]="{mode:'Infinite',showScrollbar:'Always',useNative:false}"
+                          [editing]="{mode:'cell',allowUpdating:true}" [rtlEnabled]="lang">
                 <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
                 <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
                 <dxi-column dataField="valueField" [setCellValue]="rowFound">
@@ -58,11 +34,9 @@
                         (click)="downloadTemplate(importService.combinationsStructure)"><i
                         class="icon-download"></i> {{'Download Template'|translate}}</button>
                 <h5>{{'Columns required'|translate}}</h5></div>
-            <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="550" showBorders="true"
-                          [dataSource]="importService.combinationsStructure"
-                          [rtlEnabled]="lang">
-                <dxo-scrolling mode="Infinite" useNative="false" showScrollbar="Always"></dxo-scrolling>
-                <dxi-column [allowEditing]="false" dataField="text" caption="Column Name"></dxi-column>
+            <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="550" showBorders="true" [rtlEnabled]="lang"
+                          [dataSource]="importService.combinationsStructure" [showColumnHeaders]="false"
+                          [scrolling]="{mode:'Infinite',showScrollbar:'Always',useNative:false}" [columns]="['text']">
             </dx-data-grid>
         </div>
     </div>
@@ -70,9 +44,10 @@
         <ngb-progressbar class="col-12" showValue="true" type="info" [value]="itemsService.uploadProgress|| 0" [max]="100"></ngb-progressbar>
     </div>
     <div class="row">
-        <button *ngIf="columnObjects.length != 0 && (itemsService.uploadProgress ==0 || itemsService.uploadProgress ==100)" (click)="saveData();"
-                class="mt-2 btn btn-primary">Save</button>
-        <button *ngIf="columnObjects.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel</button>
+        <button *ngIf="columnObjects.length != 0 && (itemsService.uploadProgress ==0 || itemsService.uploadProgress ==100)" (click)="saveData()"
+                class="mt-2 btn btn-primary">Save
+        </button>
+        <button *ngIf="columnObjects.length != 0" (click)="closePopupAndClearData();" class="mt-2 btn btn-default">Cancel</button>
         <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">{{'Data Count'|translate}}: {{rowCounter|number}}</h6>
     </div>
 </dx-popup>

@@ -3,6 +3,9 @@ import * as XLSX from 'xlsx';
 import {ImportService} from '../../shared/services/firebase/import.service';
 import {DxDataGridComponent} from 'devextreme-angular';
 import * as firebase from '../../shared/services/firebase/items.service';
+import {TranslateService} from '@ngx-translate/core';
+import {ToastrService} from 'ngx-toastr';
+import {ItemsService} from '../../shared/services/firebase/items.service';
 
 @Component({
     selector: 'app-import',
@@ -22,8 +25,8 @@ export class ImportComponent implements OnInit {
     rowCounter: number = 0;
     dataFromFile: any[] = [];
 
-    // wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
-    constructor(private importService: ImportService) {
+    constructor(private importService: ImportService, public translateService: TranslateService,
+                public toasterService: ToastrService, public itemsService: ItemsService) {
         this.lang = localStorage.getItem('lang') === 'ar';
     }
 
@@ -52,7 +55,6 @@ export class ImportComponent implements OnInit {
         };
         reader.readAsBinaryString(target.files[0]);
     }
-
 
 
     ngOnInit() {
@@ -97,44 +99,61 @@ export class ImportComponent implements OnInit {
     }
 
     reset() {
-        if (confirm('Are you sure about this?\n This will delete all the data you have\n This cannot be undone \nهل تريد مسح كل البيانات؟ \n لا يمكن التراجع عن ذلك')) {
-            console.log('Deleting Database');
-            this.importService.itemsService.db.collection('item').ref.get().then(res => {
-                res.docs.forEach(doc => {
-                    doc.ref.delete();
-                });
-                console.log('item deleted');
-            });
-            this.importService.itemsService.db.collection('permission').ref.get().then(res => {
-                res.docs.forEach(doc => {
-                    doc.ref.delete();
-                });
-                console.log('permissions deleted');
-            });
-            this.importService.itemsService.db.collection('carts').ref.get().then(res => {
-                res.docs.forEach(doc => {
-                    doc.ref.delete();
-                });
-                console.log('carts deleted');
-            });
-            this.importService.itemsService.db.collection('pricelist').ref.get().then(res => {
-                res.docs.forEach(doc => {
-                    doc.ref.delete();
-                });
-                console.log('pricelist deleted');
-            });
-            this.importService.itemsService.db.collection('carts').ref.get().then(res => {
-                res.docs.forEach(doc => {
-                    doc.ref.delete();
-                });
-                console.log('carts deleted');
-            });
-            this.importService.itemsService.db.collection('combinations').ref.get().then(res => {
-                res.docs.forEach(doc => {
-                    doc.ref.delete();
-                });
-                console.log('combinations deleted');
-            });
+        // todo delete pictures in firestorage
+        if (confirm('Are you sure about this?\n This will delete all the data you have\n This cannot be undone ' +
+            '\nهل تريد مسح كل البيانات؟ \n لا يمكن التراجع عن ذلك')) {
+
+            this.translateService.get('Dropping DB').subscribe(msg => this.toasterService.warning(msg));
+
+            this.importService.itemsService.db.collection('permission').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Permission Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('carts').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Carts Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('pricelist').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Pricelist Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('combinations').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Combinations Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('logs').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Logs Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('meta').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Meta Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('bills').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Bills Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('invoices').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Invoices Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('promotions').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Promotions Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
+
+            this.importService.itemsService.db.collection('messages').ref.get().then(res =>
+                Promise.all(res.docs.map(doc => doc.ref.delete())).then(() =>
+                    this.translateService.get('Messages Deleted').subscribe(msg => this.toasterService.success(msg))
+                ));
         }
     }
 
