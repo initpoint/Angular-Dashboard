@@ -44,7 +44,7 @@ export class LogsService {
     }
 
     getLogs() {
-        return this.db.collection('logs').snapshotChanges().pipe(
+        return this.db.collection('logs', ref => ref.orderBy('createdAt', 'desc')).snapshotChanges().pipe(
             map(x => x.map(y => {
                 return {
                     id: y.payload.doc.id,

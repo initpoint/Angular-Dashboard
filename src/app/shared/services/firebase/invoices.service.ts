@@ -23,8 +23,13 @@ export class InvoicesService {
     }
 
     addInvoices(invoices: any[]) {
-        Promise.all(invoices.map(invoice => {
-            this.db.collection('invoices').add(invoice);
+        return Promise.all(invoices.map(invoice => {
+            this.db.collection('invoices', ref => ref.where('description', '==', invoice.description))
+                .get().subscribe(data => {
+                if (data.size === 0) {
+                    this.db.collection(`invoices`).add(invoice);
+                }
+            });
         })).then(() => {
             this.toastrService.success('All Invoices Added');
         });

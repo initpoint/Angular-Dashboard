@@ -24,7 +24,7 @@
         [title]="'Import Bill'|translate"
         [dragEnabled]="false"
         [closeOnOutsideClick]="false"
-        (onHiding)="cancelData()"
+        (onHiding)="closePopupAndClearData()"
         [(visible)]="popupVisible">
     <div class="row">
         <div class="col-md-8">
@@ -67,7 +67,7 @@
                 </dxi-column>
             </dx-data-grid>
             <button *ngIf="fileColumns.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
-            <button *ngIf="fileColumns.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
+            <button *ngIf="fileColumns.length != 0" (click)="closePopupAndClearData();" class="mt-2 btn btn-default">Cancel
             </button>
             <h6 *ngIf="fileColumns.length != 0" class="card-title mt-2 pull-right">Total
                 rows: {{rowCounter|number}}</h6>

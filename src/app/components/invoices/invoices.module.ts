@@ -11,6 +11,7 @@ import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
 import {DxDataGridModule, DxFileUploaderModule, DxPopupModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
     declarations: [InvoicesComponent],
@@ -27,6 +28,7 @@ import {TranslateModule} from '@ngx-translate/core';
         HttpModule,
         ToastrModule.forRoot(),
         TranslateModule,
+        SharedModule,
     ],
     providers: [BillsService]
 })

@@ -24,8 +24,9 @@ export class BillsComponent implements OnInit {
     popupVisible = false;
     currentUser;
     customerBills = [];
+    showLoader =false;
 
-    constructor(public itemsService: ItemsService, private logs:LogsService,public billsService: BillsService, public importService: ImportService, public customerService: CustomerService) {
+    constructor(public itemsService: ItemsService, private logs: LogsService, public billsService: BillsService, public importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
         });
@@ -42,12 +43,12 @@ export class BillsComponent implements OnInit {
         });
     }
 
-    addBill(event) {
-        /* wire up file reader */
-        const target: DataTransfer = <DataTransfer>(event.target);
+    addBill(evt: any) {
+        const target: DataTransfer = <DataTransfer>(evt.target);
         if (target.files.length !== 1) {
-            throw new Error('Cannot use multiple files');
+            return;
         }
+        this.showLoader = true;
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
             /* read workbook */
@@ -90,13 +91,6 @@ export class BillsComponent implements OnInit {
         reader.readAsBinaryString(target.files[0]);
     }
 
-    downloadTemplate(data) {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
-        XLSX.utils.book_append_sheet(wb, ws, 'Bills');
-        XLSX.writeFile(wb, 'BillTemplate.xlsx');
-    }
-
     saveData() {
         let billInfo = [];
         this.dataFromFile.forEach(fileRow => {
@@ -119,20 +113,27 @@ export class BillsComponent implements OnInit {
             createDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
             customerId: this.currentUser.uid
         });
-        this.cancelData();
+        this.closePopupAndClearData();
         const logData = 'Imported Bills';
         this.logs.createLog(logData);
     }
 
-    rowFound(row, value) {
-        (<any>this).defaultSetCellValue(row, value);
-
+    downloadTemplate(data) {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
+        XLSX.utils.book_append_sheet(wb, ws, 'bill');
+        XLSX.writeFile(wb, 'Bill Template.xlsx');
     }
 
-    cancelData() {
+    closePopupAndClearData() {
         this.columnToShow = [];
         this.fileColumns = [];
         this.rowCounter = 0;
         this.popupVisible = false;
+        this.itemsService.uploadProgress = 0;
+    }
+
+    rowFound(row, value) {
+        (<any>this).defaultSetCellValue(row, value);
     }
 }

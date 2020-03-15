@@ -20,6 +20,7 @@ import {
     DxCheckBoxModule
 } from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
     declarations: [ItemsComponent],
@@ -32,8 +33,8 @@ import {TranslateModule} from '@ngx-translate/core';
         DxTemplateModule, DxRadioGroupModule,
         DxFileUploaderModule,
         DxCheckBoxModule,
-        CommonModule,
         DxTreeListModule,
+        CommonModule,
         ItemsRoutingModule,
         FormsModule,
         ReactiveFormsModule,
@@ -41,7 +42,7 @@ import {TranslateModule} from '@ngx-translate/core';
         HttpClientModule,
         HttpModule,
         TranslateModule,
-        ToastrModule.forRoot(),
+        ToastrModule.forRoot(), SharedModule,
 
     ],
 

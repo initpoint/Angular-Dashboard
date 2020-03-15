@@ -2,7 +2,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ItemsService} from 'src/app/shared/services/firebase/items.service';
 import {DxDataGridComponent} from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
-import * as XLSX from 'xlsx';
 import {ImportService} from 'src/app/shared/services/firebase/import.service';
 import {LogsService} from 'src/app/shared/services/firebase/logs.service';
 
@@ -21,13 +20,11 @@ export class ItemsComponent implements OnInit {
     popupVisible: boolean;
     imageUploaderpopup: boolean;
     value: any[] = [];
-    columnObjects: any[] = [];
     columnToShow: any[] = [];
     rowCounter = 0;
-    dataFromFile: any[] = [];
-    showLoader = false;
+    private doneSaving = false;
 
-    constructor(public itemsService: ItemsService, public importService: ImportService, private logs: LogsService) {
+    constructor(public itemsService: ItemsService, public importService: ImportService, public logsService: LogsService) {
         this.itemsService.lastItem = null;
         this.source = new CustomStore({
             key: 'code',
@@ -53,14 +50,31 @@ export class ItemsComponent implements OnInit {
             },
             insert: (data) => {
                 const logData = 'Created new item [' + data.code + ']';
-                this.logs.createLog(logData);
+                this.logsService.createLog(logData);
                 return this.itemsService.addItem(data);
             },
             update: (key, values) => {
                 const logData = 'Updated item [' + key + '] data [' + Object.keys(values) + '] to [' + Object.values(values) + ']';
-                this.logs.createLog(logData);
+                this.logsService.createLog(logData);
                 return this.itemsService.updateItem(key, values);
             }
+        });
+    }
+
+    saveImportedData(dataFromFile, columnToShow) {
+        const formatedData = dataFromFile.map(fileRow => {
+            Object.keys(fileRow).forEach(oldKey => {
+                const newColumn = columnToShow.find(column => column.valueField === oldKey);
+                if (newColumn) {
+                    fileRow[newColumn.field] = fileRow[oldKey]; // replace old keys (A,B,C,....) with the fields names
+                }
+                delete fileRow[oldKey];
+            });
+            return fileRow;
+        });
+        this.itemsService.addItems(formatedData).then(() => {
+            this.logsService.createLog(`Imported ${formatedData.length} Combinations`);
+            this.doneSaving = true;
         });
     }
 
@@ -75,8 +89,8 @@ export class ItemsComponent implements OnInit {
     }
 
     deleteImage(pic) {
-        let path = pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/');
-        if (confirm('Are your sure you want to delete this Image') == true) {
+        const path = pic.split('/').reverse()[0].split('?')[0].replace('%2F', '/');
+        if (confirm('Are your sure you want to delete this Image') === true) {
             this.itemsService.removeImage(this.currentRow, path, pic).then(res => {
                 document.getElementById(path.split('/')[1]).remove();
             });
@@ -86,8 +100,10 @@ export class ItemsComponent implements OnInit {
     uploadImages() {
         let i = 0;
         if (!document.getElementsByClassName('list-group')[0]) {
-            document.getElementsByClassName('widget-container')[0].closest('.dx-template-wrapper').insertAdjacentHTML('afterbegin', '<ul class="list-group"></ul>');
-            document.getElementsByClassName('list-group')[0].insertAdjacentHTML('afterbegin', '<li class="list-group-item avatars list-group-item-action"></li>');
+            document.getElementsByClassName('widget-container')[0]
+                .closest('.dx-template-wrapper').insertAdjacentHTML('afterbegin', '<ul class="list-group"></ul>');
+            document.getElementsByClassName('list-group')[0]
+                .insertAdjacentHTML('afterbegin', '<li class="list-group-item avatars list-group-item-action"></li>');
         }
         this.value.forEach(file => {
             file.newName = Math.floor(Math.random() * 10000000) + '-' + i + '.' + file.name.split('.').reverse()[0];
@@ -155,82 +171,5 @@ export class ItemsComponent implements OnInit {
             }
             document.getElementsByClassName('dx-fileuploader-files-container')[0].remove();
         }
-    }
-
-    importCombination(evt: any) {
-        const target: DataTransfer = <DataTransfer>(evt.target);
-        if (target.files.length !== 1) {
-            return;
-        }
-        this.showLoader = true;
-        const reader: FileReader = new FileReader();
-        reader.onload = (e: any) => {
-            /* read workbook */
-            const bstr: string = e.target.result;
-            const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
-            /* grab first sheet */
-            const wsname: string = wb.SheetNames[0];
-            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-            /* save data */
-            const data = XLSX.utils.sheet_to_json(ws, {header: 'A', defval: ''});
-            this.rowCounter = data.length - 1;
-            this.dataFromFile = data.slice(1);
-            this.columnObjects = Object.entries(data[0]).map(([key, value]) => ({
-                columnName: value + ' (' + key + ')',
-                value: value,
-                valueField: key,
-            }));
-            this.columnToShow = this.importService.combinationsStructure.map(column => {
-                const field = this.columnObjects.find(row => row.value === column.text);
-                return {
-                    text: column.text,
-                    columnName: field ? field.columnName : null,
-                    isFound: !!field,
-                    value: field ? field.value : null,
-                    valueField: field ? field.valueField : null,
-                    field: column.field
-                };
-            });
-            this.showLoader = false;
-        };
-        reader.readAsBinaryString(target.files[0]);
-    }
-
-    saveData() {
-        const formatedData = this.dataFromFile.map(item => {
-            Object.keys(item).forEach(oldKey => {
-                const newColumn = this.columnToShow.find(column => column.valueField === oldKey);
-                if (newColumn) {
-                    item[newColumn.field] = item[oldKey];// replace old keys (A,B,C,....) with the fields names
-                }
-                delete item[oldKey];
-            });
-            return item;
-        });
-        this.itemsService.addItems(formatedData).then(() => {
-            this.closePopupAndClearData();
-        });
-        const logData = 'Imported combinations';
-        this.logs.createLog(logData);
-    }
-
-    downloadTemplate(data) {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet([data.map(item => item.text)], {skipHeader: true});
-        XLSX.utils.book_append_sheet(wb, ws, 'combination');
-        XLSX.writeFile(wb, 'Combinations Template.xlsx');
-    }
-
-    closePopupAndClearData() {
-        this.columnToShow = [];
-        this.columnObjects = [];
-        this.rowCounter = 0;
-        this.popupVisible = false;
-        this.itemsService.uploadProgress = 0;
-    }
-
-    rowFound(row, value) {
-        (<any>this).defaultSetCellValue(row, value);
-
     }
 }

@@ -15,78 +15,10 @@
     <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
                 [cellTemplate]="'importPermissionBtn'" [caption]="'Import Invoice'|translate"></dxi-column>
     <div *dxTemplate="let data of 'importPermissionBtn'">
-        <button class="btn btn-success m-2" (click)="this.popupVisible = true;"><i class="icon-import"></i> {{'Import Invoice'|translate}}</button>
+        <app-import-view [btnText]="'Import Invoice'" [structure]="importService.invoiceStructure" (onSaving)="saveImportedData($event[0],$event[1])"
+                         [templateFileName]="'Invoices Template.xlsx'" [templateSheetName]="'invoices'" [doneSaving]="doneSaving"></app-import-view>
     </div>
 </dx-data-grid>
-
-<dx-popup
-        [showTitle]="true"
-        [title]="'Import Invoice'|translate"
-        [dragEnabled]="false"
-        [closeOnOutsideClick]="false"
-        (onHiding)="cancelData()"
-        [(visible)]="popupVisible">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card-header">
-                <dx-file-uploader
-                        [selectButtonText]="'Select File'|translate"
-                        [ngStyle]="lang && {'float':'right'}"
-                        [ngClass]="{'pull-right':!lang}"
-                        style="margin-top: -1rem"
-                        height="60px"
-                        width="20%"
-                        accept=".xlsx"
-                        [(rtlEnabled)]="lang"
-                        (change)="addInvoice($event)"
-                        [showFileList]="false"
-                        [maxFileSize]="3000000"
-                        [multiple]="false"
-                        uploadMode="instantly">
-                </dx-file-uploader>
-                <h5>{{'Comparison'|translate}}</h5></div>
-            <dx-data-grid #dataTable
-                          keyExpr="text"
-                          [dataSource]="columnToShow"
-                          columnAutoWidth="true"
-                          [paging]="{enabled:false}" height="550" showBorders="true"
-                          [rtlEnabled]="lang">
-                <dxo-editing
-                        mode="cell"
-                        [allowUpdating]="true">
-                </dxo-editing>
-                <dxo-scrolling mode="Infinite" showScrollbar="Always"></dxo-scrolling>
-                <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
-                <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
-                <dxi-column dataField="valueField" [setCellValue]="rowFound">
-                    <dxo-lookup
-                            [dataSource]="fileColumns"
-                            displayExpr="text"
-                            valueExpr="valueField">
-                    </dxo-lookup>
-                </dxi-column>
-            </dx-data-grid>
-            <button *ngIf="fileColumns.length != 0" (click)="saveData();" class="mt-2 btn btn-primary">Save</button>
-            <button *ngIf="fileColumns.length != 0" (click)="cancelData();" class="mt-2 btn btn-default">Cancel
-            </button>
-            <h6 *ngIf="fileColumns.length != 0" class="card-title mt-2 pull-right">Total
-                rows: {{rowCounter|number}}</h6>
-        </div>
-        <div class="col-md-4">
-            <div class="card-header">
-                <button class="btn btn-primary" [ngStyle]=" lang && {'float':'right'}" [ngClass]="{'pull-right':!lang}"
-                        (click)="downloadTemplate(importService.invoiceStructure)"><i
-                        class="icon-download"></i> {{'Download Template'|translate}}</button>
-                <h5>{{'Columns required'|translate}}</h5></div>
-            <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="550" showBorders="true"
-                          [dataSource]="importService.invoiceStructure"
-                          [rtlEnabled]="lang">
-                <dxo-scrolling mode="Infinite" useNative="false" showScrollbar="Always"></dxo-scrolling>
-                <dxi-column [allowEditing]="false" dataField="text" caption="Column Name"></dxi-column>
-            </dx-data-grid>
-        </div>
-    </div>
-</dx-popup>
 
 
 <dx-data-grid [dataSource]="customerInvoices" [showBorders]="false"
