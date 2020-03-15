@@ -120,20 +120,15 @@
                         </li>
                     </ul>
                 </li>
-                <li class="onhover-dropdown">
-                    <div class="media align-items-center">{{authService.currentUser?.name}}</div>
-                    <ul class="profile-dropdown onhover-show-div p-20">
-                        <li><a href="javascript:void(0)" (click)="authService.SignOut()">
-                            <app-feather-icons [icon]="'log-out'"></app-feather-icons>
-                            {{'Log Out' | translate}}
-                        </a></li>
-                    </ul>
+                <li>
+                    <a href="javascript:void(0)" class="text-dark">{{authService.currentUser?.name}}</a>
                 </li>
-                <li><a href="javascript:void(0)" (click)="authService.SignOut()">
-                    <app-feather-icons [icon]="'log-out'"></app-feather-icons>
-                    {{'Log Out' | translate}}
-                </a></li>
-
+                <li>
+                    <a href="javascript:void(0)" (click)="authService.SignOut()">
+                        <i class="fa fa-sign-out"></i> {{'Log Out' | translate}}
+                        <!--  <app-feather-icons [icon]="'log-out'"></app-feather-icons>-->
+                    </a>
+                </li>
             </ul>
             <div class="d-lg-none mobile-toggle pull-right" (click)="openMobileNav()">
                 <app-feather-icons [icon]="'more-horizontal'"></app-feather-icons>
