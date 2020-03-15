@@ -42,6 +42,12 @@ export const content: Routes = [
     data: {
       breadcrumb: "Items"
     }
+  },{
+    path: 'reports',
+    loadChildren: './components/reports/reports.module#ReportsModule',
+    data: {
+      breadcrumb: "Reports"
+    }
   },
   {
     path: 'pricelist',

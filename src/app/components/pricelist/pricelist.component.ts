@@ -184,7 +184,7 @@ export class PriceListComponent implements OnInit {
                 this.itemsService.getItem(item.code).subscribe(doc => {
                     if (doc.exists) {
                         this.itemsService.updateItem(doc.data().code, {prices: item.prices}).then(res => {
-                            const logData = 'Updated item [' + doc.data().code + '] data [prices] to [' + item.prices + ']';
+                            const logData = 'Updated item [' + doc.data().code + '] PriceList [' + documents.pricelistName + '] [prices] to [' + item.price + ']';
                             this.logs.createLog(logData);
                         });
                     }

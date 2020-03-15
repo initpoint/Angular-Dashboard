@@ -1,4 +1,10 @@
 {
+  "Users Permissions": "Users Permissions",
+  "Title": "Title",
+  "Path": "Path",
+  "Logs": "Logs",
+  "Action": "Action",
+  "Page": "Page",
   "Import Data": "Import Data",
   "Data Count": "Data Count",
   "Apply On": "Apply On",
@@ -70,6 +76,7 @@
   "Items": "Products Tree",
   "Upload": "Upload",
   "Users": "Users",
+  "User": "User",
   "Customers": "Customers",
   "Users Profile": "Users Profile",
   "Edit User": "Edit User",

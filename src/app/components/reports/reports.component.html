@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <dx-data-grid keyExpr="name" [dataSource]="reportsService.allreport" [showBorders]="true"
+                                  [hoverStateEnabled]="true" [focusedRowEnabled]="true"
+                                  (onFocusedRowChanged)="onFocusedRowChanged($event)" [rtlEnabled]="lang"
+                                  [columnAutoWidth]="true">
+                        <dxo-header-filter [visible]="true"></dxo-header-filter>
+                        <dxo-search-panel [visible]="true"></dxo-search-panel>
+                        <dxo-selection mode="single"></dxo-selection>
+                        <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
+                    </dx-data-grid>
+                    <div class="mt-5" *ngIf="reportsFilter && currentReport">
+                        <select *ngIf="currentReport.filters.default == 'user'" #User
+                                (change)="selectedUser=User.value" class="form-control">
+                            <option selected value="all">Select...</option>
+                            <option *ngFor="let data of reportsFilter.default"
+                                    [value]="data.name">{{data.name}}</option>
+                        </select>
+                        <select *ngIf="currentReport.filters.default == 'customer'" #Customer
+                                (change)="selectedCustomer=Customer.value; getCustomerCarts(Customer.value);"
+                                class="form-control">
+                            <option *ngFor="let data of reportsFilter.default" [value]="data.uid">{{data.name}}</option>
+                        </select>
+                        <select *ngIf="currentReport.filters.optionals == 'carts'" #carts
+                                (change)="selectedOptional= carts.value" class="form-control">
+                            <option selected>Select...</option>
+                            <option *ngIf="reportsFilter.optionals?.length > 1" value="all">All</option>
+                            <option *ngFor="let data of reportsFilter.optionals"
+                                    [value]="data.id">{{data.id}}</option>
+                        </select>
+                        <select *ngIf="currentReport.filters.optionals == 'pages'" #paths
+                                (change)="selectedOptional= paths.value" class="form-control">
+                            <option selected>Select...</option>
+                            <option value="all">All</option>
+                            <option *ngFor="let data of reportsFilter.optionals"
+                                    [value]="data.path">{{data.title}}</option>
+                        </select>
+
+                        <button class="btn btn-dark mt-2"
+                                (click)="onFiltersChanged()">Print Report
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

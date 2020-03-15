@@ -22,7 +22,6 @@ export class CartsService {
             }))
         );
     }
-
     deleteCart(key) {
         return this.db.collection('carts').doc(key).delete().then(res => {
             this.toastr.error('Cart Deleted.');

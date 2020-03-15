@@ -76,6 +76,8 @@ export class NavService {
         },
         {
             path: '/logs', title: 'Logs', icon: 'file', type: 'link', bookmark: true
+        },{
+            path: '/reports', title: 'Reports', icon: 'file', type: 'link', bookmark: true
         },
     ];
     // Array
