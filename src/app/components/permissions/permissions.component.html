@@ -43,7 +43,11 @@
                 </div>
             </div>
         </dxi-item>
-        <dxi-item [ratio]="1"></dxi-item>
+        <dxi-item [ratio]="1">
+        <button class="btn-dark btn"
+                (click)="giveAllPermissions()">{{'Give all permissions'|translate}}
+        </button>
+        </dxi-item>
         <dxi-item [ratio]="1">
             <div class="dx-field">
                 <div class="dx-field-label ">{{'Only Show filtered Items'|translate}}</div>
@@ -76,24 +80,35 @@
     <dxo-group-panel [visible]="true"></dxo-group-panel>
     <dxo-selection mode="multiple" [showCheckBoxesMode]="'none'"></dxo-selection>
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId" [caption]="'Bar Code'|translate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId"
+                [caption]="'Bar Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="code" [caption]="'Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="nameArFull"
+                [caption]="'Name Ar'|translate"></dxi-column>
     <dxi-column [visible]="false" dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
     <dxi-column [visible]="false" dataField="size" [caption]="'Size'|translate"></dxi-column>
 
-    <dxi-column dataField="isNewList" datatype="boolean" [cellTemplate]="'ActiveButton'" [caption]="'Is New'|translate"></dxi-column>
+    <dxi-column dataField="isNewList" datatype="boolean" [cellTemplate]="'ActiveButton'"
+                [caption]="'Is New'|translate"></dxi-column>
     <div *dxTemplate="let data of 'ActiveButton'">
         <button (click)="data.value = !data.value;"
                 class="btn btn-xs btn-pill"
                 [ngClass]="isNew(data) ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
     </div>
 
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupCellTemplate="rankingTemplate"
+    <dxi-column dataField="prices" [cellTemplate]="'hasPriceList'"
+                [caption]="'has Price List'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'hasPriceList'">
+        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)" class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
+    </div>
+
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode"
+                groupCellTemplate="rankingTemplate"
                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupCellTemplate="materialTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode"
+                groupCellTemplate="materialTemplate"
                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
 
     <div *dxTemplate="let ranking of 'rankingTemplate'">
@@ -133,24 +148,34 @@
     <dxo-group-panel [visible]="true"></dxo-group-panel>
     <dxo-selection mode="multiple" [showCheckBoxesMode]="'always'"></dxo-selection>
     <dxo-grouping [autoExpandAll]="false" expandMode="rowClick"></dxo-grouping>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId" [caption]="'Bar Code'|translate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="barCodeId"
+                [caption]="'Bar Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="code" [caption]="'Code'|translate"
                 [formItem]="{visible: false}"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="nameArFull"
+                [caption]="'Name Ar'|translate"></dxi-column>
     <dxi-column [visible]="false" dataField="unitNameAr" [caption]="'Unit'|translate"></dxi-column>
     <dxi-column [visible]="false" dataField="size" [caption]="'Size'|translate"></dxi-column>
 
-    <dxi-column dataField="isNewList" datatype="boolean" [cellTemplate]="'ActiveButton'" [caption]="'Is New'|translate"></dxi-column>
+    <dxi-column dataField="isNewList" datatype="boolean" [cellTemplate]="'ActiveButton'"
+                [caption]="'Is New'|translate"></dxi-column>
     <div *dxTemplate="let data of 'ActiveButton'">
         <button (click)="data.value = !data.value;"
                 class="btn btn-xs btn-pill"
                 [ngClass]="isNew(data) ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
     </div>
+    <dxi-column dataField="prices" [cellTemplate]="'hasPriceList'"
+                [caption]="'has Price List'|translate"></dxi-column>
+    <div *dxTemplate="let data of 'hasPriceList'">
+        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)" class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
+    </div>
 
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode" groupCellTemplate="rankingTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="rankingCode"
+                groupCellTemplate="rankingTemplate"
                 [caption]="'Ranking'|translate" [formItem]="{visible: false}"></dxi-column>
-    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode" groupCellTemplate="materialTemplate"
+    <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="materialCode"
+                groupCellTemplate="materialTemplate"
                 [caption]="'Material'|translate" [formItem]="{visible: false}"></dxi-column>
 
     <div *dxTemplate="let ranking of 'rankingTemplate'">

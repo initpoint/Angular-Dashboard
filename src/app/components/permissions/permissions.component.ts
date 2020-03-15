@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild, QueryList} from '@angular/core';
 import {PermissionService} from 'src/app/shared/services/firebase/permission.service';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {LogsService} from '../../shared/services/firebase/logs.service';
+import {ToastrService} from 'ngx-toastr';
 import {DxDataGridComponent} from 'devextreme-angular';
 import * as XLSX from 'xlsx';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
@@ -27,6 +28,7 @@ export class PermissionComponent implements OnInit {
 
     constructor(public itemsService: ItemsService,
                 private logs: LogsService,
+                private toastr:ToastrService,
                 private permissionService: PermissionService,
                 public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
@@ -162,5 +164,11 @@ export class PermissionComponent implements OnInit {
             return true;
         }
         return false;
+    }
+    giveAllPermissions() {
+        this.itemsService.getMetaItems().subscribe(items => {
+            this.selectedItems = items.data().itemsCodes;
+            this.saveCustomerPermissions();
+        });
     }
 }

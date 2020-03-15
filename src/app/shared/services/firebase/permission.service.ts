@@ -46,7 +46,7 @@ export class PermissionService {
         })).then(res1 => {
             this.toastrService.success(`Removed ${removedPerms.length} Permissions`);
 
-            this.db.doc('permission/' + uid).update(customerPermissionsDoc).then(res => {
+            this.db.doc('permission/' + uid).set(customerPermissionsDoc,{merge:true}).then(res => {
                 Promise.all(addedPerms.map(docId => {
                     this.itemsService.getItem(docId).subscribe(doc => {
                         const item = doc.data();
