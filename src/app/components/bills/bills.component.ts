@@ -1,7 +1,6 @@
-import {Component, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {BillsService} from '../../shared/services/firebase/bills.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
-import * as XLSX from 'xlsx';
 import {LogsService} from '../../shared/services/firebase/logs.service';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
 import {ItemsService} from '../../shared/services/firebase/items.service';
@@ -40,6 +39,7 @@ export class BillsComponent implements OnInit {
     }
 
     saveImportedData(dataFromFile, columnToShow) {
+        this.doneSaving = false;
         const billInfo = dataFromFile.map(fileRow => {
             Object.keys(fileRow).forEach(oldKey => {
                 const newColumn = columnToShow.find(column => column.valueField === oldKey);

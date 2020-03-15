@@ -1,55 +1,5 @@
-<button class="btn btn-success m-2" (click)="newPopupVisible = true"><i class="icon-import"></i> {{'Import Pricelist'|translate}}</button>
-
-<dx-popup [showTitle]="true" [title]="'Import Data'|translate" [dragEnabled]="false"
-          [closeOnOutsideClick]="false" (onHiding)="closePopupAndClearData()" [(visible)]="newPopupVisible">
-    <div class="loader-wrapper" *ngIf="showLoader">
-        <div class="loader bg-white">
-            <div class="whirly-loader"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card-header">
-                <dx-file-uploader [selectButtonText]="'Select XLSX File'|translate" [(rtlEnabled)]="lang" style="margin-top: -1rem"
-                                  [ngStyle]="lang && {'float':'right'}" [ngClass]="{'pull-right':!lang}"
-                                  height="60px" width="20%" accept=".xlsx" [multiple]="false" [showFileList]="false" [maxFileSize]="3000000"
-                                  (change)="importPriceList($event)" uploadMode="instantly"></dx-file-uploader>
-                <h5>{{'Comparison'|translate}}</h5>
-            </div>
-            <dx-data-grid keyExpr="text" [dataSource]="columnToShow" columnAutoWidth="true" height="550" showBorders="true"
-                          [paging]="{enabled:false}" [scrolling]="{mode:'Infinite',showScrollbar:'Always',useNative:false}"
-                          [editing]="{mode:'cell',allowUpdating:true}" [rtlEnabled]="lang">
-                <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
-                <dxi-column [allowEditing]="false" dataField="isFound"></dxi-column>
-                <dxi-column dataField="valueField" [setCellValue]="rowFound">
-                    <dxo-lookup [dataSource]="columnObjects" displayExpr="columnName" valueExpr="valueField"></dxo-lookup>
-                </dxi-column>
-            </dx-data-grid>
-        </div>
-        <div class="col-md-4">
-            <div class="card-header">
-                <button class="btn btn-primary" [ngStyle]=" lang && {'float':'right'}" [ngClass]="{'pull-right':!lang}"
-                        (click)="downloadTemplate(importService.priceListData)"><i
-                        class="icon-download"></i> {{'Download Template'|translate}}</button>
-                <h5>{{'Columns required'|translate}}</h5></div>
-            <dx-data-grid columnAutoWidth="true" [paging]="{enabled:false}" height="550" showBorders="true" [rtlEnabled]="lang"
-                          [dataSource]="importService.priceListData" [showColumnHeaders]="false"
-                          [scrolling]="{mode:'Infinite',showScrollbar:'Always',useNative:false}" [columns]="['text']">
-            </dx-data-grid>
-        </div>
-    </div>
-    <div class="row">
-        <ngb-progressbar class="col-12" showValue="true" type="info" [value]="itemsService.uploadProgress|| 0" [max]="100"></ngb-progressbar>
-    </div>
-    <div class="row">
-        <button *ngIf="columnObjects.length != 0 && (itemsService.uploadProgress ==0 || itemsService.uploadProgress ==100)" (click)="saveData()"
-                class="mt-2 btn btn-primary">Save
-        </button>
-        <button *ngIf="columnObjects.length != 0" (click)="closePopupAndClearData();" class="mt-2 btn btn-default">Cancel</button>
-        <h6 *ngIf="columnObjects.length != 0" class="card-title mt-2 float-right">{{'Data Count'|translate}}: {{rowCounter|number}}</h6>
-    </div>
-</dx-popup>
-
+<app-import-view [btnText]="'Import Pricelist'" [structure]="importService.priceListData" (onSaving)="saveImportedData($event[0],$event[1])"
+                 [templateFileName]="'Price List Template.xlsx'" [templateSheetName]="'pricelist'" [doneSaving]="doneSaving"></app-import-view>
 
 <!--PriceLists datagrid-->
 <dx-data-grid [dataSource]="priceListSource" [showBorders]="true" [rtlEnabled]="lang" [hoverStateEnabled]="true"

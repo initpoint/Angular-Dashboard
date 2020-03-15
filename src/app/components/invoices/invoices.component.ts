@@ -1,6 +1,5 @@
-import {Component, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ImportService} from '../../shared/services/firebase/import.service';
-import * as XLSX from 'xlsx';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
 import {formatDate} from '@angular/common';
 import {InvoicesService} from '../../shared/services/firebase/invoices.service';
