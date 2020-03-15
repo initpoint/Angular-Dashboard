@@ -18,6 +18,7 @@ import {
 } from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
     declarations: [PriceListComponent],
@@ -39,6 +40,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
         HttpModule,
         TranslateModule,
         ToastrModule.forRoot(),
+        SharedModule,
 
     ],
 
