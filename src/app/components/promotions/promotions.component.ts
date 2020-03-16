@@ -6,6 +6,9 @@ import {ItemsService} from '../../shared/services/firebase/items.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
 import {LogsService} from '../../shared/services/firebase/logs.service';
 import * as XLSX from 'xlsx';
+import {ToastrService} from 'ngx-toastr';
+import {FormBuilder, Validators, FormGroup} from '@angular/forms';
+
 
 @Component({
     selector: 'app-promotions',
@@ -19,18 +22,35 @@ export class PromotionsComponent implements OnInit {
     lang;
     currentRow;
     promotionsSource: CustomStore;
-
     columnObjects: any[] = [];
     columnToShow: any[] = [];
     rowCounter: number = 0;
     dataFromFile: any[] = [];
-
+    promotionSelected;
+    showCreationForm: boolean = false;
+    itemsCodes: [];
+    discountForm: FormGroup;
     constructor(
         private promotionsService: PromotionsService,
+        private toastrService: ToastrService,
         public itemsService: ItemsService,
-        public logs: LogsService,
-        public importService: ImportService,
+        public logsService: LogsService,
+        public importService: ImportService, private fb: FormBuilder,
     ) {
+        this.itemsService.getMetaItems().subscribe(items => {
+            this.itemsCodes = items.data().itemsCodes;
+        });
+        this.discountForm = fb.group({
+            name: ['', Validators.required],
+            code: ['', Validators.required],
+            disCountType: ['', Validators.required],
+            disCountAmount: ['', Validators.required],
+            disCountPercentage: ['', Validators.required],
+            validFrom: ['', Validators.required],
+            validTo: ['', Validators.required],
+            notes: ['', Validators.required],
+            selectedItems: ['', Validators.required],
+        });
         this.promotionsSource = new CustomStore({
             key: 'id',
             load: (opts) => {
@@ -43,17 +63,17 @@ export class PromotionsComponent implements OnInit {
             },
             update: (key, values) => {
                 const logData = 'Updated promotion [' + key + '] data [' + Object.keys(values) + '] to [' + Object.values(values) + ']';
-                this.logs.createLog(logData);
+                this.logsService.createLog(logData);
                 return this.promotionsService.updatePromotion(key, values);
             },
             remove: (key) => {
                 const logData = 'Updated promotion [' + this.currentRow.name + '] [isActive] to [false]';
-                this.logs.createLog(logData);
+                this.logsService.createLog(logData);
                 return this.promotionsService.updatePromotion(key, {isActive: false});
             },
             insert: (values) => {
                 const logData = 'Created new promotion [' + values.name + ']';
-                this.logs.createLog(logData);
+                this.logsService.createLog(logData);
                 return this.promotionsService.createPromotion(values);
             },
 
@@ -154,13 +174,15 @@ export class PromotionsComponent implements OnInit {
                 // Delete old key
                 delete item[key];
             });
-            formatedData.push(item)
+            formatedData.push(item);
         });
         // console.log(formatedData)
-        this.importService.importPromotions(formatedData);
-        const logData = 'Imported promotions';
-        this.logs.createLog(logData);
-        this.cancelData()
+        this.importService.importPromotions(formatedData).then(res => {
+            this.toastrService.success(`${this.dataFromFile.length} Promotions imported successfully`);
+            const logData = 'Imported promotions';
+            this.logsService.createLog(logData);
+            this.cancelData();
+        });
 
     }
 
@@ -187,9 +209,8 @@ export class PromotionsComponent implements OnInit {
         this.rowCounter = 0;
         this.popupVisible = false;
     }
-
-
-    addPromotions() {
-        alert('this feature is not implemented yet');
+    // ToDO not finished yet
+    addPromotion() {
+        console.log(this.discountForm);
     }
 }

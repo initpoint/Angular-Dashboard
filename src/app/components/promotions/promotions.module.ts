@@ -7,19 +7,20 @@ import {PromotionsComponent} from './promotions.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import {DxButtonModule,DxSwitchModule,DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxNumberBoxModule} from 'devextreme-angular';
+import {DxButtonModule,DxLookupModule,DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxTagBoxModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
+
 @NgModule({
     declarations: [PromotionsComponent],
 
     imports: [
-        DxSwitchModule,
+        DxLookupModule,
         DxPopupModule,
         DxFileUploaderModule,
         DxDataGridModule,
         DxButtonModule,
         DxTemplateModule,
-        DxNumberBoxModule,
+        DxTagBoxModule,
         CommonModule,
         PromotionsRoutingModule,
         FormsModule,

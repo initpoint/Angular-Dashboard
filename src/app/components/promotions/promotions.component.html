@@ -42,7 +42,7 @@
                 <dxi-column dataField="valueField" [setCellValue]="rowFound">
                     <dxo-lookup
                             [dataSource]="columnObjects"
-                            displayExpr="text"
+                            displayExpr="columnName"
                             valueExpr="valueField">
                     </dxo-lookup>
                 </dxi-column>
@@ -68,7 +68,72 @@
         </div>
     </div>
 </dx-popup>
-<button class="btn btn-dark" (click)="addPromotions();"><i class="fa fa-plus"></i> Add Promotion</button>
+<button class="btn btn-dark" (click)="showCreationForm = true"><i class="fa fa-plus"></i> Add Promotion</button>
+<div class="card" *ngIf="showCreationForm">
+    <div class="card-body">
+        <select (change)="promotionSelected = promotionType.value" #promotionType class="form-control">
+            <option value="discount">خصم عام</option>
+            <option value="freeItem">خصم المواد</option>
+        </select>
+        <form  [formGroup]="discountForm" *ngIf="promotionType.value == 'discount'">
+            <h6>Promotion Information</h6>
+            <div class="form-group">
+                <label class="col-form-label">Name</label>
+                <input type="text" formControlName="nameArFull" placeholder="Promotion Name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">Code</label>
+                <input type="text" formControlName="code" placeholder="Enter Promotion Code" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">Type</label>
+                <select #discountType formControlName="disCountType" class="form-control">
+                    <option value="amount">مبلغ</option>
+                    <option value="percentage">%</option>
+                </select>
+            </div>
+            <div class="form-group" *ngIf="discountType.value == 'amount'">
+                <label class="col-form-label">Amount</label>
+                <input type="number" formControlName="disCountAmount" min="0" placeholder="Enter Promotion Amount"
+                       class="form-control">
+
+            </div>
+            <div class="form-group" *ngIf="discountType.value == 'percentage'">
+                <label class="col-form-label">Percentage</label>
+                <input type="number" formControlName="disCountPercentage" step="1" min="0" max="100"
+                       placeholder="Enter Promotion Percentage"
+                       class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">Valid From</label>
+                <input type="date" formControlName="validFrom" dataformatas="DD/MM/YYYY"
+                       placeholder="Enter Promotion Percentage"
+                       class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">Valid To</label>
+                <input type="date" dataformatas="DD/MM/YYYY" formControlName="validTo"
+                       placeholder="Enter Promotion Percentage"
+                       class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">Notes</label>
+                <textarea formControlName="notes" class="form-control"></textarea>
+            </div>
+            <hr class="mt-4 mb-4">
+            <h6>Items to apply promotion</h6>
+            <div class="form-group">
+                <dx-tag-box formControlName="selectedItems" [showClearButton]="true" [searchEnabled]="true"
+                            [hideSelectedItems]="true" [multiline]="true"
+                            [items]="itemsCodes"></dx-tag-box>
+            </div>
+            <button class="btn btn-success" (click)="addPromotion()">Submit</button>
+        </form>
+        <form *ngIf="promotionType.value == 'freeItem'">
+            This is freeItem Form
+        </form>
+    </div>
+</div>
 <!--All Items datagrid-->
 <dx-data-grid [dataSource]="promotionsSource"
               [showBorders]="false" [rtlEnabled]="lang" [showRowLines]="false"
@@ -79,24 +144,25 @@
     <dxo-paging [pageSize]="20"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
-    <dxo-editing mode="cell" [allowUpdating]="true" [useIcons]="true"></dxo-editing>
+    <!--    <dxo-editing mode="cell" [allowUpdating]="true" [useIcons]="true"></dxo-editing>-->
     <dxo-export [enabled]="true" fileName="Promotions" [allowExportSelectedData]="true"></dxo-export>
     <dxi-column [allowHiding]="false" dataField="code" [caption]="'Code'|translate"
                 allowEditing="false">
     </dxi-column>
     <dxi-column [allowHiding]="false"
                 dataField="nameArFull" [caption]="'Name Ar'|translate"></dxi-column>
-    <dxi-column dataField="applyOn" [caption]="'Apply On'|translate"></dxi-column>
-    <dxi-column dataField="childrenType" [caption]="'Children Type'|translate"></dxi-column>
+    <!--    <dxi-column dataField="applyOn" [formItem]="{visible: false}" [caption]="'Apply On'|translate"></dxi-column>-->
+    <!--    <dxi-column dataField="childrenType" [formItem]="{visible: false}" [caption]="'Children Type'|translate"></dxi-column>-->
     <dxi-column dataField="disCountType" [caption]="'DisCount Type'|translate"></dxi-column>
     <dxi-column dataField="disCountValue" [caption]="'DisCount Value'|translate"></dxi-column>
     <dxi-column dataField="discountAmount" [caption]="'Discount Amount'|translate"></dxi-column>
     <dxi-column dataField="discountPercentage" [caption]="'Discount Percentage'|translate"></dxi-column>
-    <dxi-column dataField="excludeFromTotalDiscount" [caption]="'Exclude From Total Discount'|translate"></dxi-column>
-    <dxi-column dataField="hasFreeItem" [caption]="'has Free Item'|translate"></dxi-column>
-    <dxi-column dataField="isTotalDiscount" [caption]="'is Total Discount'|translate"></dxi-column>
-    <dxi-column dataField="hasChildren" [caption]="'hasChildren'|translate"></dxi-column>
-    <dxi-column dataField="paymentMethods" [caption]="'Payment Methods'|translate"></dxi-column>
+    <!--    <dxi-column dataField="excludeFromTotalDiscount" [formItem]="{visible: false}" [caption]="'Exclude From Total Discount'|translate"></dxi-column>-->
+    <!--    <dxi-column dataField="hasFreeItem" [formItem]="{visible: false}" [caption]="'has Free Item'|translate"></dxi-column>-->
+    <!--    <dxi-column dataField="isTotalDiscount" [formItem]="{visible: false}" [caption]="'is Total Discount'|translate"></dxi-column>-->
+    <!--    <dxi-column dataField="hasChildren" [formItem]="{visible: false}" [caption]="'hasChildren'|translate"></dxi-column>-->
+    <!--    <dxi-column dataField="paymentMethods" [formItem]="{visible: false}" [caption]="'Payment Methods'|translate"></dxi-column>-->
+    <dxi-column dataField="typeOfValue" [caption]="'DisCount Value'|translate"></dxi-column>
     <dxi-column dataField="promotionType" [caption]="'Promotion Type'|translate"></dxi-column>
     <dxi-column dataField="unitName" [allowGrouping]="false" [caption]="'Unit'|translate"></dxi-column>
     <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>

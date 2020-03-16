@@ -166,7 +166,6 @@ export class ImportService {
     importPromotions(data) {
         data.forEach(item => {
             this.db.collection('promotions').doc(item.code).set(item, {merge: true}).then(res => {
-
                 if (item.materialDiscountCombinationCode) {
                     this.itemsService.getItem(item.materialDiscountCombinationCode).subscribe(combination => {
                         if (combination.exists) {
@@ -190,6 +189,6 @@ export class ImportService {
                 }
             });
         });
-        this.db.collection('meta').doc('promotions').update({count: firebase.firestore.FieldValue.increment(data.length)});
+       return this.db.collection('meta').doc('promotions').set({count: firebase.firestore.FieldValue.increment(data.length)}, {merge: true});
     }
 }
