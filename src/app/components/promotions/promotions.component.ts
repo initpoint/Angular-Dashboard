@@ -189,4 +189,7 @@ export class PromotionsComponent implements OnInit {
     }
 
 
+    addPromotions() {
+        alert('this feature is not implemented yet');
+    }
 }

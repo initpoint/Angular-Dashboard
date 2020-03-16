@@ -26,25 +26,25 @@ export class ChatComponent implements OnInit {
         this.customerService.getActiveCustomers().subscribe(users => {
             this.searchUsers = users;
             this.users = users;
+            this.id = '0';
+            if (localStorage.getItem('chatId') != null) {
+                this.id = localStorage.getItem('chatId');
+            }
+            this.userChat(this.id);
+            this.getProfile();
         });
-        this.id = '0';
-        if (localStorage.getItem('chatId') != null) {
-            this.id = localStorage.getItem('chatId');
-        }
+
     }
 
     ngOnInit() {
-        this.userChat(this.id);
-        this.getProfile();
+
     }
 
-    public tabbed(val) {
-        this.openTab = val;
-    }
 
     // Get user Profile
     public getProfile() {
         this.profile = JSON.parse(localStorage.getItem('user'));
+
     }
 
     // User Chat

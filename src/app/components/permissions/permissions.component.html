@@ -118,7 +118,6 @@
                 class="btn btn-xs btn-pill"
                 [ngClass]="isNew(data) ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
     </div>
-
     <dxi-column dataField="prices" [cellTemplate]="'hasPriceList'"
                 [caption]="'has Price List'|translate"></dxi-column>
     <div *dxTemplate="let data of 'hasPriceList'">

@@ -82,7 +82,7 @@
                     <app-feather-icons [icon]="'bell'"></app-feather-icons>
                     <span *ngIf="notification.notifications.length > 0" class="dot"></span>
                     <ul class="notification-dropdown onhover-show-div">
-                        <li>Notification <span *ngIf="notification.notifications.length > 0"
+                        <li>{{'Notification'|translate}} <span *ngIf="notification.notifications.length > 0"
                                                class="badge badge-pill badge-primary pull-right">{{notification.notifications.length}}</span>
                         </li>
                         <li *ngFor="let notification of notification.notifications"><a

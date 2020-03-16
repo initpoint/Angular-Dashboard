@@ -51,7 +51,7 @@ export class ChatService {
 
     // Get chat History
     public getChatHistory(uid) {
-        return this.db.collection('messages', ref => ref.where('customerId', '==', uid).orderBy('createDate'))
+        return this.db.collection('messages', ref => ref.where('customerId', '==', uid).orderBy('createDate','asc'))
             .snapshotChanges().pipe(map(x => x.map(y => {
                     return {
                         id: y.payload.doc.id,
