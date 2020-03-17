@@ -63,7 +63,7 @@ export class CreatePromotionsComponent implements OnInit {
             }
             delete promotionData.disCountValue;
             // خصم المادة
-        } else {
+        } else if (this.promotionSelected.nativeElement.value == 'خصم المواد') {
             promotionData.materialDiscountType = promotionData.disCountType;
             promotionData.materialDiscountValue = promotionData.disCountValue;
             promotionData.isTotalDiscount = 'لا';

@@ -48,7 +48,7 @@ export class PromotionsComponent implements OnInit {
                 return this.promotionsService.updatePromotion(key, values);
             },
             remove: (key) => {
-                const logData = 'Updated promotion [' + this.currentRow.nameArFull + '] [isActive] to [false]';
+                const logData = 'Updated promotion [' + this.currentRow.code + '] [isActive] to [false]';
                 this.logsService.createLog(logData);
                 return this.promotionsService.updatePromotion(key, {isActive: false});
             },
