@@ -32,6 +32,12 @@ export class PromotionsService {
         });
     }
 
+    deletePromotion(key) {
+        return this.db.collection('promotions').doc(key).delete().then(() => {
+            this.toastr.success('Promotion Deleted.');
+        });
+    }
+
     getPromotion(key) {
         return this.db.collection('promotions').doc(key).get();
     }

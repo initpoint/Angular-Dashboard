@@ -4,6 +4,7 @@
         <select #promotionType (change)="discountForm.reset();" class="form-control">
             <option value="خصم عام">خصم عام</option>
             <option value="خصم المواد">خصم المواد</option>
+            <option value="مواد مجانية">المواد المجانية</option>
         </select>
         <form [formGroup]="discountForm">
             <div class="form-row">
@@ -39,7 +40,7 @@
                 </div>
             </div>
             <div class="mb-2" *ngIf="promotionType.value == 'خصم المواد'">
-                Select Free items
+                Select items
                 <dx-select-box [searchEnabled]="true" (onSelectionChanged)="selectItem($event)"
                                [items]="itemsCodes"></dx-select-box>
                 <div class="mt-1 card-body" *ngIf="selectedItems.materialDiscountCombinationNameAr">
@@ -48,7 +49,23 @@
                     <p class="f-16"> Combination name: {{selectedItems.materialDiscountCombinationNameAr}} </p>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="mb-2" *ngIf="promotionType.value == 'مواد مجانية'">
+                Select Free items
+                <dx-select-box [searchEnabled]="true" (onSelectionChanged)="selectItem($event)"
+                               [items]="itemsCodes"></dx-select-box>
+                <div class="mt-1 card-body" *ngIf="selectedItems.freeItemCombinationNameAr">
+                    <p class="f-16">Combination barCode: {{selectedItems.freeItemCombinationBarCodeId}}</p>
+                    <p class="f-16">Combination Code: {{selectedItems.freeItemCombinationCode}} </p>
+                    <p class="f-16"> Combination name: {{selectedItems.freeItemCombinationNameAr}} </p>
+                    <p class="f-16"> Combination unitCode: {{selectedItems.freeItemUnitCode}} </p>
+                    <p class="f-16"> Combination unitName: {{selectedItems.freeItemUnitName}} </p>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label">{{'Free Qty'|translate}}</label>
+                    <input type="number" min="1" class="form-control" formControlName="freeItemAmount">
+                </div>
+            </div>
+            <div class="form-row" *ngIf="promotionType.value != 'مواد مجانية'">
                 <div class="col-md-8">
                     <div class="form-group">
                         <label class="col-form-label">{{'DisCount Type'|translate}}</label>
@@ -77,18 +94,9 @@
                 <label class="col-form-label">{{'Notes'|translate}}</label>
                 <textarea formControlName="notes" class="form-control"></textarea>
             </div>
-            <button type="button" class="btn btn-success" (click)="addPromotion()"><i class="fa fa-check"></i> {{'Add'|translate}}</button>
+            <button type="button" class="btn btn-success" (click)="addPromotion()"><i
+                    class="fa fa-check"></i> {{'Add'|translate}}</button>
         </form>
     </div>
 </div>
 
-<!--                <dx-data-grid [dataSource]="selectedItems"  keyExpr="item" (onRowInserted)="selectItem($event)">-->
-<!--                    <dxo-editing mode="form" [allowAdding]="true" [allowDeleting]="true" [allowUpdating]="true" [useIcons]="true"></dxo-editing>-->
-<!--                    <dxi-column dataField="item" [caption]="'Items'|translate" >-->
-<!--                        <dxo-lookup [dataSource]="itemsCodes"></dxo-lookup>-->
-<!--                    </dxi-column>-->
-<!--                    <dxi-column dataField="materialDiscountType" [caption]="'DisCount Type'|translate">-->
-<!--                        <dxo-lookup [dataSource]="discountTypes"></dxo-lookup>-->
-<!--                    </dxi-column>-->
-<!--                    <dxi-column dataField="materialDiscountValue" [caption]="'Discount Value'|translate"></dxi-column>-->
-<!--                </dx-data-grid>-->

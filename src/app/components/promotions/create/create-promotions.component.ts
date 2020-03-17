@@ -36,6 +36,7 @@ export class CreatePromotionsComponent implements OnInit {
             validTo: ['', Validators.required],
             status: ['', Validators.required],
             notes: [''],
+            freeItemAmount: [''],
         });
     }
 
@@ -80,6 +81,14 @@ export class CreatePromotionsComponent implements OnInit {
             promotionData.materialDiscountCombinationBarCodeId = this.selectedItems.materialDiscountCombinationBarCodeId;
             promotionData.materialDiscountCombinationCode = this.selectedItems.materialDiscountCombinationCode;
             promotionData.materialDiscountCombinationNameAr = this.selectedItems.materialDiscountCombinationNameAr;
+        } else if (this.promotionSelected.nativeElement.value == 'مواد مجانية') {
+            promotionData.isTotalDiscount = 'لا';
+            promotionData.hasFreeItem = 'نعم';
+            promotionData.freeItemCombinationBarCodeId = this.selectedItems.freeItemCombinationBarCodeId;
+            promotionData.freeItemCombinationCode = this.selectedItems.freeItemCombinationCode;
+            promotionData.freeItemCombinationNameAr = this.selectedItems.freeItemCombinationNameAr;
+            promotionData.freeItemUnitCode = this.selectedItems.freeItemUnitCode;
+            promotionData.freeItemUnitName = this.selectedItems.freeItemUnitName;
         }
         promotionData.status = promotionData.status ? 'غير فعال' : 'فعال';
         if (this.discountForm.valid) {
@@ -107,17 +116,24 @@ export class CreatePromotionsComponent implements OnInit {
             });
 
         } else {
-            console.log(this.discountForm);
             this.toastrService.error('All fields are required');
         }
     }
 
     selectItem(event) {
         this.itemsService.getItem(event.selectedItem).subscribe(item => {
-            this.selectedItems.materialDiscountCombinationBarCodeId = item.data().barCodeId[0];
-            this.selectedItems.materialDiscountCombinationCode = item.data().code;
-            this.selectedItems.materialDiscountCombinationNameAr = item.data().nameArFull;
-
+            if (this.promotionSelected.nativeElement.value == 'خصم المواد') {
+                this.selectedItems.materialDiscountCombinationBarCodeId = item.data().barCodeId[0];
+                this.selectedItems.materialDiscountCombinationCode = item.data().code;
+                this.selectedItems.materialDiscountCombinationNameAr = item.data().nameArFull;
+            } else if (this.promotionSelected.nativeElement.value == 'مواد مجانية') {
+                this.selectedItems.freeItemCombinationBarCodeId = item.data().barCodeId[0];
+                this.selectedItems.freeItemCombinationCode = item.data().code;
+                this.selectedItems.freeItemCombinationNameAr = item.data().nameArFull;
+                this.selectedItems.freeItemUnitCode = item.data().unitCode;
+                this.selectedItems.freeItemUnitName = item.data().unitNameAr;
+            }
         });
+
     }
 }
