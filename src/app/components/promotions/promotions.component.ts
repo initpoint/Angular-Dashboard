@@ -1,14 +1,11 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PromotionsService} from 'src/app/shared/services/firebase/promotions.service';
 import CustomStore from 'devextreme/data/custom_store';
-import {NgForm} from '@angular/forms';
 import {ItemsService} from '../../shared/services/firebase/items.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
 import {LogsService} from '../../shared/services/firebase/logs.service';
 import * as XLSX from 'xlsx';
 import {ToastrService} from 'ngx-toastr';
-import {FormBuilder, Validators, FormGroup} from '@angular/forms';
-
 
 @Component({
     selector: 'app-promotions',
@@ -16,7 +13,6 @@ import {FormBuilder, Validators, FormGroup} from '@angular/forms';
     styleUrls: ['./promotions.component.scss'],
 })
 export class PromotionsComponent implements OnInit {
-    @ViewChild('form', {static: false}) form: NgForm;
     popupVisible = false;
     value: any[] = [];
     lang;
@@ -26,31 +22,16 @@ export class PromotionsComponent implements OnInit {
     columnToShow: any[] = [];
     rowCounter: number = 0;
     dataFromFile: any[] = [];
-    promotionSelected;
-    showCreationForm: boolean = false;
-    itemsCodes: [];
-    discountForm: FormGroup;
+    promotionsTypes = ['خصم عام', 'خصم المواد'];
+    discountTypes = ['%', 'مبلغ'];
+
     constructor(
         private promotionsService: PromotionsService,
         private toastrService: ToastrService,
         public itemsService: ItemsService,
         public logsService: LogsService,
-        public importService: ImportService, private fb: FormBuilder,
+        public importService: ImportService,
     ) {
-        this.itemsService.getMetaItems().subscribe(items => {
-            this.itemsCodes = items.data().itemsCodes;
-        });
-        this.discountForm = fb.group({
-            name: ['', Validators.required],
-            code: ['', Validators.required],
-            disCountType: ['', Validators.required],
-            disCountAmount: ['', Validators.required],
-            disCountPercentage: ['', Validators.required],
-            validFrom: ['', Validators.required],
-            validTo: ['', Validators.required],
-            notes: ['', Validators.required],
-            selectedItems: ['', Validators.required],
-        });
         this.promotionsSource = new CustomStore({
             key: 'id',
             load: (opts) => {
@@ -67,14 +48,9 @@ export class PromotionsComponent implements OnInit {
                 return this.promotionsService.updatePromotion(key, values);
             },
             remove: (key) => {
-                const logData = 'Updated promotion [' + this.currentRow.name + '] [isActive] to [false]';
+                const logData = 'Updated promotion [' + this.currentRow.nameArFull + '] [isActive] to [false]';
                 this.logsService.createLog(logData);
                 return this.promotionsService.updatePromotion(key, {isActive: false});
-            },
-            insert: (values) => {
-                const logData = 'Created new promotion [' + values.name + ']';
-                this.logsService.createLog(logData);
-                return this.promotionsService.createPromotion(values);
             },
 
         });
@@ -209,8 +185,6 @@ export class PromotionsComponent implements OnInit {
         this.rowCounter = 0;
         this.popupVisible = false;
     }
-    // ToDO not finished yet
-    addPromotion() {
-        console.log(this.discountForm);
-    }
+
+
 }

@@ -12,7 +12,7 @@ import {AppComponent} from './app.component';
 import {LoginComponent} from './auth/login/login.component';
 import {ForgetpasswordComponent} from './auth/forgetpassword/forgetpassword.component';
 import {ToastrModule} from 'ngx-toastr';
-
+import { DragulaModule } from 'ng2-dragula';
 import {AuthService} from './shared/services/firebase/auth.service';
 import {AdminGuard} from './shared/guard/admin.guard';
 import {CookieService} from 'ngx-cookie-service';
@@ -45,6 +45,7 @@ export function tokenGetter() {
         SharedModule,
         AppRoutingModule,
         HttpClientModule,
+        DragulaModule.forRoot(),
         JwtModule.forRoot({
             config: {
                 tokenGetter,

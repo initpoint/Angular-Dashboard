@@ -4,14 +4,15 @@ import {PromotionsService} from 'src/app/shared/services/firebase/promotions.ser
 import {PromotionsRoutingModule} from './promotions-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PromotionsComponent} from './promotions.component';
+import {CreatePromotionsComponent} from './create/create-promotions.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {HttpModule} from '@angular/http';
 import {ToastrModule} from 'ngx-toastr';
-import {DxButtonModule,DxLookupModule,DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxTagBoxModule} from 'devextreme-angular';
+import {DxButtonModule,DxLookupModule,DxFileUploaderModule,DxPopupModule ,DxTemplateModule, DxDataGridModule,DxSelectBoxModule} from 'devextreme-angular';
 import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
-    declarations: [PromotionsComponent],
+    declarations: [PromotionsComponent,CreatePromotionsComponent],
 
     imports: [
         DxLookupModule,
@@ -20,7 +21,7 @@ import {TranslateModule} from '@ngx-translate/core';
         DxDataGridModule,
         DxButtonModule,
         DxTemplateModule,
-        DxTagBoxModule,
+        DxSelectBoxModule,
         CommonModule,
         PromotionsRoutingModule,
         FormsModule,

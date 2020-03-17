@@ -32,8 +32,12 @@ export class PromotionsService {
         });
     }
 
-    createPromotion(values) {
-        return this.db.collection('promotions').add(values).then(() => {
+    getPromotion(key) {
+        return this.db.collection('promotions').doc(key).get();
+    }
+
+    createPromotion(docId, values) {
+        return this.db.collection('promotions').doc(docId).set(values).then(() => {
             this.toastr.success('Promotion Added.');
         });
     }
