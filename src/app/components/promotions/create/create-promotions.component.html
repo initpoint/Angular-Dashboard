@@ -1,0 +1,94 @@
+<div class="card">
+    <div class="card-body">
+        <label class="col-form-label">{{'Promotion Type'|translate}}</label>
+        <select #promotionType (change)="discountForm.reset();" class="form-control">
+            <option value="خصم عام">خصم عام</option>
+            <option value="خصم المواد">خصم المواد</option>
+        </select>
+        <form [formGroup]="discountForm">
+            <div class="form-row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label class="col-form-label">{{'Name'|translate}}</label>
+                        <input type="text" required="" formControlName="nameArFull" placeholder="Promotion Name"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-form-label">{{'Code'|translate}}</label>
+                        <input type="text" required="" formControlName="code" placeholder="Enter Promotion Code"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-form-label">{{'Valid From'|translate}}</label>
+                        <input type="date" required="" formControlName="validFrom" dataformatas="DD/MM/YYYY"
+                               class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-form-label">{{'Valid To'|translate}}</label>
+                        <input type="date" required="" dataformatas="DD/MM/YYYY" formControlName="validTo"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2" *ngIf="promotionType.value == 'خصم المواد'">
+                Select Free items
+                <dx-select-box [searchEnabled]="true" (onSelectionChanged)="selectItem($event)"
+                               [items]="itemsCodes"></dx-select-box>
+                <div class="mt-1 card-body" *ngIf="selectedItems.materialDiscountCombinationNameAr">
+                    <p class="f-16">Combination barCode: {{selectedItems.materialDiscountCombinationBarCodeId}}</p>
+                    <p class="f-16">Combination Code: {{selectedItems.materialDiscountCombinationCode}} </p>
+                    <p class="f-16"> Combination name: {{selectedItems.materialDiscountCombinationNameAr}} </p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label class="col-form-label">{{'DisCount Type'|translate}}</label>
+                        <select formControlName="disCountType" class="form-control">
+                            <option value="مبلغ">مبلغ</option>
+                            <option value="%">%</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-form-label">{{'DisCount Value'|translate}}</label>
+                        <input type="number" formControlName="disCountValue" min="0"
+                               placeholder="Enter discount value"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="ml-3 checkbox checkbox-solid-primary">
+                    <input id="checkbox1" type="checkbox" [checked]="true" required="" formControlName="status">
+                    <label for="checkbox1">{{'Is Active'|translate}}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-form-label">{{'Notes'|translate}}</label>
+                <textarea formControlName="notes" class="form-control"></textarea>
+            </div>
+            <button type="button" class="btn btn-success" (click)="addPromotion()"><i class="fa fa-check"></i> {{'Add'|translate}}</button>
+        </form>
+    </div>
+</div>
+
+<!--                <dx-data-grid [dataSource]="selectedItems"  keyExpr="item" (onRowInserted)="selectItem($event)">-->
+<!--                    <dxo-editing mode="form" [allowAdding]="true" [allowDeleting]="true" [allowUpdating]="true" [useIcons]="true"></dxo-editing>-->
+<!--                    <dxi-column dataField="item" [caption]="'Items'|translate" >-->
+<!--                        <dxo-lookup [dataSource]="itemsCodes"></dxo-lookup>-->
+<!--                    </dxi-column>-->
+<!--                    <dxi-column dataField="materialDiscountType" [caption]="'DisCount Type'|translate">-->
+<!--                        <dxo-lookup [dataSource]="discountTypes"></dxo-lookup>-->
+<!--                    </dxi-column>-->
+<!--                    <dxi-column dataField="materialDiscountValue" [caption]="'Discount Value'|translate"></dxi-column>-->
+<!--                </dx-data-grid>-->
