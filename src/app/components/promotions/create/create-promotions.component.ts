@@ -6,6 +6,8 @@ import {LogsService} from '../../../shared/services/firebase/logs.service';
 import {ToastrService} from 'ngx-toastr';
 import {FormBuilder, Validators, FormGroup} from '@angular/forms';
 import * as firebase from 'firebase';
+import {formatDate} from '@angular/common';
+
 @Component({
     selector: 'app-create-promotions',
     templateUrl: './create-promotions.component.html',
@@ -46,6 +48,8 @@ export class CreatePromotionsComponent implements OnInit {
     // ToDO not finished yet
     addPromotion() {
         let promotionData = this.discountForm.value;
+        promotionData.validFrom = formatDate(new Date(promotionData.validFrom), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US');
+        promotionData.validTo = formatDate(new Date(promotionData.validTo), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US');
         promotionData.promotionType = this.promotionSelected.nativeElement.value;
         this.importService.promotionStructure.forEach(promotion => {
             if (!promotionData.hasOwnProperty(promotion.field)) {
