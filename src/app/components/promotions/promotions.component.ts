@@ -6,6 +6,7 @@ import {ImportService} from '../../shared/services/firebase/import.service';
 import {LogsService} from '../../shared/services/firebase/logs.service';
 import * as XLSX from 'xlsx';
 import {ToastrService} from 'ngx-toastr';
+import {formatDate} from '@angular/common';
 
 @Component({
     selector: 'app-promotions',
@@ -151,9 +152,16 @@ export class PromotionsComponent implements OnInit {
                 // Delete old key
                 delete item[key];
             });
+            if (item.validFrom != undefined && item.validTo != undefined) {
+                item.validFrom = item.validFrom.toString().split(' ')[0].split('/');
+                item.validFrom = item.validFrom[2] + '-' + item.validFrom[1] + '-' + item.validFrom[0];
+                item.validFrom = formatDate(new Date(item.validFrom), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US');
+                item.validTo = item.validTo.toString().split(' ')[0].split('/');
+                item.validTo = item.validTo[2] + '-' + item.validTo[1] + '-' + item.validTo[0];
+                item.validTo = formatDate(new Date(item.validTo), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US');
+            }
             formatedData.push(item);
         });
-        // console.log(formatedData)
         this.importService.importPromotions(formatedData).then(res => {
             this.toastrService.success(`${this.dataFromFile.length} Promotions imported successfully`);
             const logData = 'Imported promotions';
