@@ -23,8 +23,10 @@ export class PromotionsComponent implements OnInit {
     columnToShow: any[] = [];
     rowCounter: number = 0;
     dataFromFile: any[] = [];
-    promotionsTypes = ['خصم عام', 'خصم المواد'];
+    promotionsTypes = ['خصم عام', 'خصم المواد', 'مواد مجانية'];
     discountTypes = ['%', 'مبلغ'];
+    materialFieldView: boolean = true;
+    freeFieldView: boolean = true;
 
     constructor(
         private promotionsService: PromotionsService,
@@ -63,7 +65,9 @@ export class PromotionsComponent implements OnInit {
     }
 
     onFocusedRowChanged($event: any) {
-        this.currentRow = $event.row.data;
+        if ($event.row) {
+            this.currentRow = $event.row.data;
+        }
     }
 
     importPromotion(evt: any) {
@@ -195,5 +199,11 @@ export class PromotionsComponent implements OnInit {
         this.popupVisible = false;
     }
 
+    editorPreparing(event) {
+        if (event.parentType === 'dataRow' && event.row.data) {
+            this.materialFieldView = event.row.data.promotionType == 'خصم المواد';
+            this.freeFieldView = event.row.data.promotionType == 'مواد مجانية';
 
+        }
+    }
 }

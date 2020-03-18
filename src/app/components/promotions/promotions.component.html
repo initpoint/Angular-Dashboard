@@ -74,6 +74,7 @@
 <dx-data-grid [dataSource]="promotionsSource"
               [showBorders]="false" [rtlEnabled]="lang" [showRowLines]="false"
               [columnAutoWidth]="true" [hoverStateEnabled]="true"
+              (onEditorPreparing)="editorPreparing($event)"
               (onFocusedRowChanged)="onFocusedRowChanged($event)"
               [focusedRowEnabled]="true" [wordWrapEnabled]="true">
     <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
@@ -93,8 +94,8 @@
     <dxi-column dataField="disCountType" [caption]="'DisCount Type'|translate">
         <dxo-lookup [dataSource]="discountTypes"></dxo-lookup>
     </dxi-column>
-    <dxi-column dataField="disCountAmount" [caption]="'Discount Amount'|translate"></dxi-column>
-    <dxi-column dataField="disCountPercentage" [caption]="'Discount Percentage'|translate"></dxi-column>
+    <dxi-column dataField="disCountAmount"  [caption]="'Discount Amount'|translate"></dxi-column>
+    <dxi-column dataField="disCountPercentage"  [caption]="'Discount Percentage'|translate"></dxi-column>
     <!--    <dxi-column dataField="excludeFromTotalDiscount" [formItem]="{visible: false}" [caption]="'Exclude From Total Discount'|translate"></dxi-column>-->
     <dxi-column dataField="hasFreeItem" [visible]="false"
                 [caption]="'has Free Item'|translate"></dxi-column>
@@ -110,12 +111,22 @@
     </dxi-column>
     <!--    <dxi-column dataField="unitName" [allowGrouping]="false" [caption]="'Unit'|translate"></dxi-column>-->
     <!--    <dxi-column dataField="size" [caption]="'Size'|translate"></dxi-column>-->
-    <dxi-column dataField="materialDiscountType" [visible]="false" [caption]="'Material Discount Type'|translate"></dxi-column>
-    <dxi-column dataField="materialDiscountAmount" [visible]="false" [caption]="'Material Discount Amount'|translate"></dxi-column>
-    <dxi-column dataField="materialDiscountPercentage" [visible]="false" [caption]="'Material Discount Percentage'|translate"></dxi-column>
-    <dxi-column dataField="materialDiscountCombinationBarCodeId" [visible]="false" [caption]="'Combinaiton BarCode'|translate"></dxi-column>
-    <dxi-column dataField="materialDiscountCombinationCode" [visible]="false" [caption]="'Combination Code'|translate"></dxi-column>
-    <dxi-column dataField="materialDiscountCombinationNameAr" [visible]="false" [caption]="'Combination Name'|translate"></dxi-column>
+    <dxi-column dataField="materialDiscountType" [visible]="false" [formItem]="{visible: materialFieldView}" [caption]="'Material Discount Type'|translate">
+        <dxo-lookup [dataSource]="discountTypes">
+        </dxo-lookup>
+    </dxi-column>
+    <dxi-column dataField="materialDiscountAmount" [visible]="false" [formItem]="{visible: materialFieldView}" [caption]="'Material Discount Amount'|translate"></dxi-column>
+    <dxi-column dataField="materialDiscountPercentage" [visible]="false" [formItem]="{visible: materialFieldView}" [caption]="'Material Discount Percentage'|translate"></dxi-column>
+    <dxi-column dataField="materialDiscountCombinationBarCodeId" [visible]="false" [formItem]="{visible: false}" [caption]="'Combinaiton BarCode'|translate"></dxi-column>
+    <dxi-column dataField="materialDiscountCombinationCode" [visible]="false" [formItem]="{visible: materialFieldView}" [caption]="'Combination Code'|translate"></dxi-column>
+    <dxi-column dataField="materialDiscountCombinationNameAr" [visible]="false" [formItem]="{visible: false}" [caption]="'Combination Name'|translate"></dxi-column>
+
+    <dxi-column dataField="freeItemCombinationBarCodeId" [visible]="false" [formItem]="{visible: false}" [caption]="'Combinaiton BarCode'|translate"></dxi-column>
+    <dxi-column dataField="freeItemCombinationCode" [visible]="false" [formItem]="{visible: freeFieldView}" [caption]="'Combination Code'|translate"></dxi-column>
+    <dxi-column dataField="freeItemCombinationNameAr" [visible]="false" [formItem]="{visible: false}" [caption]="'Combination Name'|translate"></dxi-column>
+    <dxi-column dataField="freeItemAmount" [visible]="false" [formItem]="{visible: freeFieldView}" [caption]="'Quantity'|translate"></dxi-column>
+    <dxi-column dataField="freeItemUnitName" [visible]="false" [formItem]="{visible: false}" [caption]="'Unit'|translate"></dxi-column>
+    <dxi-column dataField="freeItemUnitCode" [visible]="false" [formItem]="{visible: false}" [caption]="'Unit Code'|translate"></dxi-column>
     <dxi-column [showInColumnChooser]="false" [allowHiding]="false" dataField="validFrom" [format]="'dd/MM/yyyy'" dataType="datetime"
                 [caption]="'Valid From'|translate"></dxi-column>
     <dxi-column [showInColumnChooser]="false" [allowHiding]="false" dataField="validTo" [format]="'dd/MM/yyyy'" dataType="datetime"
