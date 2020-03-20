@@ -37,8 +37,11 @@ export class CreatePromotionsComponent implements OnInit {
             validFrom: ['', Validators.required],
             validTo: ['', Validators.required],
             status: ['', Validators.required],
+            conditionType: ['', Validators.required],
             notes: [''],
             freeItemAmount: [''],
+            conditionRangeFrom: [''],
+            conditionRangeTo: [''],
         });
     }
 
@@ -66,34 +69,44 @@ export class CreatePromotionsComponent implements OnInit {
             } else if (promotionData.disCountType == 'مبلغ') {
                 promotionData.disCountAmount = promotionData.disCountValue;
             }
-            delete promotionData.disCountValue;
+
             // خصم المادة
-        } else if (this.promotionSelected.nativeElement.value == 'خصم المواد') {
-            promotionData.materialDiscountType = promotionData.disCountType;
-            promotionData.materialDiscountValue = promotionData.disCountValue;
-            promotionData.isTotalDiscount = 'لا';
-            promotionData.hasFreeItem = 'لا';
-            if (promotionData.materialDiscountType == '%') {
-                promotionData.materialDiscountPercentage = promotionData.materialDiscountValue;
-            } else if (promotionData.materialDiscountType == 'مبلغ') {
-                promotionData.materialDiscountAmount = promotionData.materialDiscountValue;
+        } else {
+            promotionData.conditionCombinationBarCodeId = this.selectedItems.conditionCombinationBarCodeId;
+            promotionData.conditionCombinationCode = this.selectedItems.conditionCombinationCode;
+            promotionData.conditionCombinationNameAr = this.selectedItems.conditionCombinationNameAr;
+            promotionData.conditionUnitCode = this.selectedItems.conditionUnitCode;
+            promotionData.conditionUnitName = this.selectedItems.conditionUnitName;
+            promotionData.conditionMaterialType = 'مخزون';
+            if (promotionData.conditionType == 'خصم المواد') {
+                promotionData.materialDiscountType = promotionData.disCountType;
+                promotionData.materialDiscountValue = promotionData.disCountValue;
+                promotionData.isTotalDiscount = 'لا';
+                promotionData.hasFreeItem = 'لا';
+                if (promotionData.materialDiscountType == '%') {
+                    promotionData.materialDiscountPercentage = promotionData.materialDiscountValue;
+                } else if (promotionData.materialDiscountType == 'مبلغ') {
+                    promotionData.materialDiscountAmount = promotionData.materialDiscountValue;
+                }
+                delete promotionData.materialDiscountValue;
+                delete promotionData.disCountValue;
+                promotionData.disCountType = '';
+                promotionData.disCountValue = '';
+                promotionData.materialDiscountCombinationBarCodeId = this.selectedItems.materialDiscountCombinationBarCodeId;
+                promotionData.materialDiscountCombinationCode = this.selectedItems.materialDiscountCombinationCode;
+                promotionData.materialDiscountCombinationNameAr = this.selectedItems.materialDiscountCombinationNameAr;
+            } else if (promotionData.conditionType == 'مواد مجانية') {
+                promotionData.isTotalDiscount = 'لا';
+                promotionData.hasFreeItem = 'نعم';
+                promotionData.freeItemCombinationBarCodeId = this.selectedItems.freeItemCombinationBarCodeId;
+                promotionData.freeItemCombinationCode = this.selectedItems.freeItemCombinationCode;
+                promotionData.freeItemCombinationNameAr = this.selectedItems.freeItemCombinationNameAr;
+                promotionData.freeItemUnitCode = this.selectedItems.freeItemUnitCode;
+                promotionData.freeItemUnitName = this.selectedItems.freeItemUnitName;
             }
-            delete promotionData.materialDiscountValue;
-            delete promotionData.disCountValue;
-            promotionData.disCountType = '';
-            promotionData.disCountValue = '';
-            promotionData.materialDiscountCombinationBarCodeId = this.selectedItems.materialDiscountCombinationBarCodeId;
-            promotionData.materialDiscountCombinationCode = this.selectedItems.materialDiscountCombinationCode;
-            promotionData.materialDiscountCombinationNameAr = this.selectedItems.materialDiscountCombinationNameAr;
-        } else if (this.promotionSelected.nativeElement.value == 'مواد مجانية') {
-            promotionData.isTotalDiscount = 'لا';
-            promotionData.hasFreeItem = 'نعم';
-            promotionData.freeItemCombinationBarCodeId = this.selectedItems.freeItemCombinationBarCodeId;
-            promotionData.freeItemCombinationCode = this.selectedItems.freeItemCombinationCode;
-            promotionData.freeItemCombinationNameAr = this.selectedItems.freeItemCombinationNameAr;
-            promotionData.freeItemUnitCode = this.selectedItems.freeItemUnitCode;
-            promotionData.freeItemUnitName = this.selectedItems.freeItemUnitName;
         }
+        delete promotionData.disCountValue;
+        delete promotionData.conditionType;
         promotionData.status = promotionData.status ? 'غير فعال' : 'فعال';
         if (this.discountForm.valid) {
             this.promotionsService.getPromotion(promotionData.code).subscribe(promo => {
@@ -126,17 +139,29 @@ export class CreatePromotionsComponent implements OnInit {
 
     selectItem(event) {
         this.itemsService.getItem(event.selectedItem).subscribe(item => {
-            if (this.promotionSelected.nativeElement.value == 'خصم المواد') {
+            if (this.discountForm.value.conditionType == 'خصم المواد') {
                 this.selectedItems.materialDiscountCombinationBarCodeId = item.data().barCodeId[0];
                 this.selectedItems.materialDiscountCombinationCode = item.data().code;
                 this.selectedItems.materialDiscountCombinationNameAr = item.data().nameArFull;
-            } else if (this.promotionSelected.nativeElement.value == 'مواد مجانية') {
+            } else if (this.discountForm.value.conditionType == 'مواد مجانية') {
                 this.selectedItems.freeItemCombinationBarCodeId = item.data().barCodeId[0];
                 this.selectedItems.freeItemCombinationCode = item.data().code;
                 this.selectedItems.freeItemCombinationNameAr = item.data().nameArFull;
                 this.selectedItems.freeItemUnitCode = item.data().unitCode;
                 this.selectedItems.freeItemUnitName = item.data().unitNameAr;
             }
+        });
+
+    }
+
+    getConditionItem(event) {
+        this.itemsService.getItem(event.selectedItem).subscribe(item => {
+            this.selectedItems.conditionCombinationBarCodeId = item.data().barCodeId[0];
+            this.selectedItems.conditionCombinationCode = item.data().code;
+            this.selectedItems.conditionCombinationNameAr = item.data().nameArFull;
+            this.selectedItems.conditionMaterialType = 'مخزون';
+            this.selectedItems.conditionUnitCode = item.data().unitCode;
+            this.selectedItems.conditionUnitName = item.data().unitNameAr;
         });
 
     }

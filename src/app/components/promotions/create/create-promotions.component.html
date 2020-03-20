@@ -3,22 +3,21 @@
         <label class="col-form-label">{{'Promotion Type'|translate}}</label>
         <select #promotionType (change)="discountForm.reset();" class="form-control">
             <option value="خصم عام">خصم عام</option>
-            <option value="خصم المواد">خصم المواد</option>
-            <option value="مواد مجانية">المواد المجانية</option>
+            <option value="خصم مواد مشروط">خصم مواد مشروط</option>
         </select>
         <form [formGroup]="discountForm">
             <div class="form-row">
                 <div class="col-md-8">
                     <div class="form-group">
                         <label class="col-form-label">{{'Name'|translate}}</label>
-                        <input type="text" required="" formControlName="nameArFull" placeholder="Promotion Name"
+                        <input type="text" required="" formControlName="nameArFull"
                                class="form-control">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="col-form-label">{{'Code'|translate}}</label>
-                        <input type="text" required="" formControlName="code" placeholder="Enter Promotion Code"
+                        <input type="text" required="" formControlName="code"
                                class="form-control">
                     </div>
                 </div>
@@ -39,33 +38,74 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-2" *ngIf="promotionType.value == 'خصم المواد'">
-                Select items
-                <dx-select-box [searchEnabled]="true" (onSelectionChanged)="selectItem($event)"
-                               [items]="itemsCodes"></dx-select-box>
-                <div class="mt-1 card-body" *ngIf="selectedItems.materialDiscountCombinationNameAr">
-                    <p class="f-16">Combination barCode: {{selectedItems.materialDiscountCombinationBarCodeId}}</p>
-                    <p class="f-16">Combination Code: {{selectedItems.materialDiscountCombinationCode}} </p>
-                    <p class="f-16"> Combination name: {{selectedItems.materialDiscountCombinationNameAr}} </p>
+            <div *ngIf="promotionType.value != 'خصم عام'">
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="col-form-label">{{'Condition Type'|translate}}</label>
+                            <select #conditionType [required]="true" formControlName="conditionType"
+                                    class="form-control">
+                                <option value="خصم المواد">خصم المواد</option>
+                                <option value="مواد مجانية">المواد المجانية</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">{{'Combination'|translate}}</label>
+                        <dx-select-box [disabled]="!conditionType.checkValidity()" #Item [searchEnabled]="true"
+                                       (onSelectionChanged)="getConditionItem($event)"
+                                       [items]="itemsCodes"></dx-select-box>
+                        <div class="mt-1 card-body" *ngIf="selectedItems.conditionCombinationBarCodeId">
+                            <p class="f-16">Combination barCode: {{selectedItems.conditionCombinationBarCodeId}}</p>
+                            <p class="f-16">Combination Code: {{selectedItems.conditionCombinationCode}} </p>
+                            <p class="f-16"> Combination name: {{selectedItems.conditionCombinationNameAr}} </p>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-form-label">{{'Range From'|translate}}</label>
+                            <input type="number" min="1" class="form-control"
+                                   formControlName="conditionRangeFrom">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-form-label">{{'Range To'|translate}}</label>
+                            <input type="number" min="1" class="form-control" formControlName="conditionRangeTo">
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="Item">
+                    <div class="mb-2" *ngIf="conditionType.value == 'خصم المواد'">
+                        Select items
+                        <dx-select-box [searchEnabled]="true" (onSelectionChanged)="selectItem($event)"
+                                       [items]="itemsCodes"></dx-select-box>
+                        <div class="mt-1 card-body" *ngIf="selectedItems.materialDiscountCombinationNameAr">
+                            <p class="f-16">Combination
+                                barCode: {{selectedItems.materialDiscountCombinationBarCodeId}}</p>
+                            <p class="f-16">Combination Code: {{selectedItems.materialDiscountCombinationCode}} </p>
+                            <p class="f-16"> Combination name: {{selectedItems.materialDiscountCombinationNameAr}} </p>
+                        </div>
+                    </div>
+                    <div class="mb-2" *ngIf="conditionType.value == 'مواد مجانية'">
+                        Select Free items
+                        <dx-select-box [searchEnabled]="true" (onSelectionChanged)="selectItem($event)"
+                                       [items]="itemsCodes"></dx-select-box>
+                        <div class="mt-1 card-body" *ngIf="selectedItems.freeItemCombinationNameAr">
+                            <p class="f-16">Combination barCode: {{selectedItems.freeItemCombinationBarCodeId}}</p>
+                            <p class="f-16">Combination Code: {{selectedItems.freeItemCombinationCode}} </p>
+                            <p class="f-16"> Combination name: {{selectedItems.freeItemCombinationNameAr}} </p>
+                            <p class="f-16"> Combination unitCode: {{selectedItems.freeItemUnitCode}} </p>
+                            <p class="f-16"> Combination unitName: {{selectedItems.freeItemUnitName}} </p>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">{{'Free Qty'|translate}}</label>
+                            <input type="number" min="1" class="form-control" formControlName="freeItemAmount">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="mb-2" *ngIf="promotionType.value == 'مواد مجانية'">
-                Select Free items
-                <dx-select-box [searchEnabled]="true" (onSelectionChanged)="selectItem($event)"
-                               [items]="itemsCodes"></dx-select-box>
-                <div class="mt-1 card-body" *ngIf="selectedItems.freeItemCombinationNameAr">
-                    <p class="f-16">Combination barCode: {{selectedItems.freeItemCombinationBarCodeId}}</p>
-                    <p class="f-16">Combination Code: {{selectedItems.freeItemCombinationCode}} </p>
-                    <p class="f-16"> Combination name: {{selectedItems.freeItemCombinationNameAr}} </p>
-                    <p class="f-16"> Combination unitCode: {{selectedItems.freeItemUnitCode}} </p>
-                    <p class="f-16"> Combination unitName: {{selectedItems.freeItemUnitName}} </p>
-                </div>
-                <div class="form-group">
-                    <label class="col-form-label">{{'Free Qty'|translate}}</label>
-                    <input type="number" min="1" class="form-control" formControlName="freeItemAmount">
-                </div>
-            </div>
-            <div class="form-row" *ngIf="promotionType.value != 'مواد مجانية'">
+            <div class="form-row" *ngIf="promotionType.value == 'خصم عام'">
                 <div class="col-md-8">
                     <div class="form-group">
                         <label class="col-form-label">{{'DisCount Type'|translate}}</label>
@@ -79,11 +119,11 @@
                     <div class="form-group">
                         <label class="col-form-label">{{'DisCount Value'|translate}}</label>
                         <input type="number" formControlName="disCountValue" min="0"
-                               placeholder="Enter discount value"
                                class="form-control">
                     </div>
                 </div>
             </div>
+
             <div class="form-group">
                 <div class="ml-3 checkbox checkbox-solid-primary">
                     <input id="checkbox1" type="checkbox" [checked]="true" formControlName="status">
