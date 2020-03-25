@@ -31,7 +31,7 @@ export class UserService {
                     mobile: value.mobile || null,
                     name: value.name || null,
                     code: value.code || null,
-                    permissions: {update: [], create: [], delete: []}
+                    permissions: {update: [], create: [], delete: [],view: [],import:[],export:[]}
                 });
                 return true;
             }).catch(function (err) {
@@ -55,7 +55,6 @@ export class UserService {
         return this.db.collection('users').doc(userKey).set(value, {merge: true});
     }
 
-// ToDo Search in everywhere
     searchUsers(searchValue) {
         return this.db.collection('users', ref => ref.where('name', '>=', searchValue)
             .where('name', '<=', searchValue + '\uf8ff')
