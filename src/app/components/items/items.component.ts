@@ -114,7 +114,7 @@ export class ItemsComponent implements OnInit {
     updateCombinationActivation(data) {
         this.itemsService.updateItem(data.data.id, {isActive: data.value}).then(res => {
             this.toastrService.success('Combination Updated.');
-            const logData = 'Updated Combination [' + data.data.name + '] data [isActive] to [' + data.value + ']';
+            const logData = 'Updated Combination [' + data.data.code + '] data [isActive] to [' + data.value + ']';
             this.logsService.createLog(logData);
         });
     }
