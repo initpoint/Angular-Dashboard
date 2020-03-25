@@ -20,11 +20,16 @@ export class LogsComponent implements OnInit {
     constructor(private logsService: LogsService) {
         this.logData = new CustomeStore({
             key: 'id',
+            totalCount: () => new Promise(resolve => {
+                this.logsService.getLogsTotalCount().subscribe(metaDoc => {
+                    resolve(metaDoc.data() ? metaDoc.data()['count'] || 0 : 0);
+                });
+            }),
             load: (opts) => {
                 return new Promise((resolve, reject) => {
                     this.lang = localStorage.getItem('lang') == 'ar';
-                    this.logsService.getLogs().subscribe(res => {
-                        resolve({data: res});
+                    this.logsService.getLogsForPagination().subscribe(items => {
+                        resolve(items);
                     });
                 });
             },
@@ -41,7 +46,7 @@ export class LogsComponent implements OnInit {
         if (confirm('Are you sure about this?\n This will delete all the data you have\n This cannot be undone ' +
             '\nهل تريد مسح كل البيانات؟ \n لا يمكن التراجع عن ذلك')) {
             this.selectedRows.forEach(key => {
-                this.logsService.deleteLog(key).then(res=> {
+                this.logsService.deleteLog(key).then(res => {
                     this.logData.remove(key);
                 });
             });

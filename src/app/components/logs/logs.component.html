@@ -1,7 +1,7 @@
 <button (click)="removeAllSelection()" [disabled]="!selectedRows?.length" class="btn m-2 font-weight-bold"
         [ngClass]="selectedRows?.length ? 'btn-danger' : 'btn-light'">Delete Selected Items
 </button>
-<dx-data-grid #logsGrid [dataSource]="logSource" [(selectedRowKeys)]="selectedRows" [showBorders]="true"
+<dx-data-grid #logsGrid [remoteOperations]="{filtering:true,paging:true,sorting: true}" [dataSource]="logSource" [(selectedRowKeys)]="selectedRows" [showBorders]="true"
               [rtlEnabled]="lang" [columnAutoWidth]="true">
     <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
@@ -11,12 +11,14 @@
             [useIcons]="true"
             [allowDeleting]="true">
     </dxo-editing>
+    <dxo-scrolling mode="virtual" rowRenderingMode="virtual" useNative="false" showScrollbar="Always"></dxo-scrolling>
+    <dxo-paging [pageSize]="5"></dxo-paging>
     <dxo-export [enabled]="true" fileName="Logs" [allowExportSelectedData]="true"></dxo-export>
     <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
     <dxi-column dataField="user" [caption]="'User'|translate"></dxi-column>
     <dxi-column dataField="action" [caption]="'Action'|translate"></dxi-column>
     <dxi-column dataField="page" [caption]="'Page'|translate"></dxi-column>
-    <dxi-column dataField="createdAt" [caption]="'Created at'|translate" [format]="'hh:mm dd/MM/yyyy'"
+    <dxi-column dataField="createDate" [caption]="'Created at'|translate" [format]="'hh:mm dd/MM/yyyy'"
                 dataType="datetime"></dxi-column>
 </dx-data-grid>
 
