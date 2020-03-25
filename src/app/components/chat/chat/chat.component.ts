@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ChatUsers} from '../../../shared/model/chat.model';
 import {ChatService} from '../../../shared/services/chat.service';
 import {CustomerService} from '../../../shared/services/firebase/customer.service';
+import {formatDate} from '@angular/common';
 
 @Component({
     selector: 'app-chat',
@@ -71,9 +72,11 @@ export class ChatComponent implements OnInit {
         this.error = false;
         const chat = {
             sender: this.profile.uid,
-            receiver: this.chatUser.uid,
-            receiver_name: this.chatUser.name,
-            message: form.value.message
+            customerId: this.chatUser.uid,
+            customerName: this.chatUser.name,
+            text: form.value.message,
+            createDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
+            senderType: 'user'
         };
         this.chatService.sendMessage(chat);
         this.chatText = '';

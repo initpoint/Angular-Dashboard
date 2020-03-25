@@ -1,123 +1,138 @@
 <!-- Container-fluid starts-->
 <div class="container-fluid">
-  <div class="row">
-    <div class="col call-chat-sidebar col-sm-12">
-      <div class="card">
-        <div class="card-body chat-body">
-          <div class="chat-box">
-            <!-- Chat left side Start-->
-            <div class="chat-left-aside">
-              <div class="media">
-                <div class="about">
-                  <div class="name f-w-600">{{profile?.name}}</div>
-                </div>
-              </div>
-              <div class="people-list" id="people-list">
-                <div class="search">
-                  <form class="theme-form">
-                    <div class="form-group">
-                      <input class="form-control" [(ngModel)]="searchText" [ngModelOptions]="{standalone: true}"
-                        (keyup)="searchTerm(searchText)" type="text" placeholder="search"><i class="fa fa-search"></i>
-                    </div>
-                  </form>
-                </div>
-                <ul class="list">
-                  <ng-container *ngFor="let user of searchUsers">
-                    <li class="clearfix">
-                      <a href="javascript:void(0)" (click)="userChat(user.uid)">
-                        <div class="status-circle" [ngClass]="{'online' : user.online, 'offline' : !user.online}"></div>
-                        <div class="about">
-                          <div class="name">{{user?.name}}</div>
+    <div class="row">
+        <div class="col call-chat-sidebar col-sm-12">
+            <div class="card">
+                <div class="card-body chat-body">
+                    <div class="chat-box">
+                        <!-- Chat left side Start-->
+                        <div class="chat-left-aside">
+                            <div class="media">
+                                <div class="about">
+                                    <div class="name f-w-600">{{profile?.name}}</div>
+                                </div>
+                            </div>
+                            <div class="people-list" id="people-list">
+                                <div class="search">
+                                    <form class="theme-form">
+                                        <div class="form-group">
+                                            <input class="form-control" [(ngModel)]="searchText"
+                                                   [ngModelOptions]="{standalone: true}"
+                                                   (keyup)="searchTerm(searchText)" type="text" placeholder="search"><i
+                                                class="fa fa-search"></i>
+                                        </div>
+                                    </form>
+                                </div>
+                                <ul class="list">
+                                    <ng-container *ngFor="let user of searchUsers">
+                                        <li class="clearfix">
+                                            <a href="javascript:void(0)" (click)="userChat(user.uid)">
+                                                <div class="status-circle"
+                                                     [ngClass]="{'online' : user.online, 'offline' : !user.online}"></div>
+                                                <div class="about">
+                                                    <div class="name">{{user?.name}}</div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ng-container>
+                                    <ng-container *ngIf="!searchUsers.length">
+                                        <div class="search-not-found chat-search text-center">
+                                            <div>
+                                                <img src="assets/images/search-not-found.png" alt=""
+                                                     class="second-search">
+                                                <p>Sorry, We didn't find any results matching this search</p>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ul>
+                            </div>
                         </div>
-                      </a>
-                    </li>
-                  </ng-container>
-                  <ng-container *ngIf="!searchUsers.length">
-                    <div class="search-not-found chat-search text-center">
-                      <div>
-                        <img src="assets/images/search-not-found.png" alt="" class="second-search">
-                        <p>Sorry, We didn't find any results matching this search</p>
-                      </div>
+                        <!-- Chat left side Ends-->
                     </div>
-                  </ng-container>
-                </ul>
-              </div>
+                </div>
             </div>
-            <!-- Chat left side Ends-->
-          </div>
         </div>
-      </div>
-    </div>
-    <div class="col call-chat-body">
-      <div class="card">
-        <div class="card-body p-0">
-          <div class="row chat-box">
-            <!-- Chat right side start-->
-            <div class="col pr-0 chat-right-aside">
-              <!-- chat start-->
-              <div class="chat">
-                <!-- chat-header start-->
-                <div class="chat-header clearfix">
-                  <div class="about">
-                    <div class="name">{{chatUser?.name}}  <span class="font-primary f-12"
-                        *ngIf="chatUser?.typing">Typing...</span></div>
-                      <div class="status digits" *ngIf="!chatUser?.online && chatUser">{{'Offline'|translate}}</div>
-                    <div class="status digits" *ngIf="chatUser?.online && chatUser">{{'Online'|translate}}</div>
-                  </div>
-                </div>
-                <!-- chat-header end-->
-                <div class="chat-history chat-msg-box custom-scrollbar">
-                    <ul>
-                    <li *ngFor="let chat of chats" [ngClass]="{'clearfix': chat.sender == profile.uid }">
-                      <ng-template #myChat>
-                        <div class="message other-message pull-right">
-                          <div class="message-data">
-                            <span class="message-data-time">{{chat?.createDate | date:'yyyy-MM-dd h:mm a'}}</span>
-                          </div>{{chat?.text}}
-                        </div>
-                      </ng-template>
-                      <div class="message my-message " *ngIf="chat.sender != profile.uid; else myChat">
-                         <div class="message-data text-right">
-                          <span class="message-data-time">{{chat?.createDate | date:'yyyy-MM-dd h:mm a'}}</span>
-                        </div>{{chat?.text}}
-                      </div>
+        <div class="col call-chat-body">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="row chat-box">
+                        <!-- Chat right side start-->
+                        <div class="col pr-0 chat-right-aside">
+                            <!-- chat start-->
+                            <div class="chat">
+                                <!-- chat-header start-->
+                                <div class="chat-header clearfix">
+                                    <div class="about">
+                                        <div class="name">{{chatUser?.name}}  <span class="font-primary f-12"
+                                                                                    *ngIf="chatUser?.typing">Typing...</span>
+                                        </div>
+                                        <div class="status digits"
+                                             *ngIf="!chatUser?.online && chatUser">{{'Offline'|translate}}</div>
+                                        <div class="status digits"
+                                             *ngIf="chatUser?.online && chatUser">{{'Online'|translate}}</div>
+                                    </div>
+                                </div>
+                                <!-- chat-header end-->
+                                <div class="chat-history chat-msg-box custom-scrollbar">
+                                    <ul>
+                                        <li *ngFor="let chat of chats"
+                                            [ngClass]="{'clearfix': chat?.senderType == 'user'}">
+                                            <ng-template #myChat>
+                                                <div class="message other-message pull-right">
+                                                    <div class="message-data">
+                                                        <span class="message-data-time">{{chat?.createDate | date:'yyyy-MM-dd h:mm a'}}</span>
+                                                    </div>
+                                                    {{chat?.text}}
+                                                </div>
+                                            </ng-template>
+                                            <div class="message my-message "
+                                                 *ngIf="chat?.senderType != 'user'; else myChat">
+                                                <div class="message-data text-right">
+                                                    <span class="message-data-time">{{chat?.createDate | date:'yyyy-MM-dd h:mm a'}}</span>
+                                                </div>
+                                                {{chat?.text}}
+                                            </div>
 
-                    </li>
-                    <ng-container *ngIf="!chats">
-                      <div class="image-not-found">
-                        <div class="d-block start-conversion">
-                          <img src="assets/images/start-conversion.jpg">
+                                        </li>
+                                        <ng-container *ngIf="!chats">
+                                            <div class="image-not-found">
+                                                <div class="d-block start-conversion">
+                                                    <img src="assets/images/start-conversion.jpg">
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </ul>
+                                </div>
+                                <!-- end chat-history-->
+                                <form #chatForm="ngForm" (ngSubmit)="sendMessage(chatForm)">
+                                    <div class="chat-message clearfix">
+                                        <div class="row">
+                                            <div class="col-xl-12 d-flex">
+                                                <div class="input-group text-box">
+                                                    <input class="form-control input-txt-bx"
+                                                           [class.border-danger]="error" [(ngModel)]="chatText"
+                                                           id="message-to-send" ngModel type="text" autocomplete="off"
+                                                           name="message"
+                                                           placeholder="{{'Type a message'|translate}}......">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-primary" (click)="sendMessage(chatForm)"
+                                                                type="button">{{'Send'|translate}}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- end chat-message-->
+                                <!-- chat end-->
+                                <!-- Chat right side ends-->
+                            </div>
                         </div>
-                      </div>
-                    </ng-container>
-                    </ul>
-                </div>
-                <!-- end chat-history-->
-                <form #chatForm="ngForm" (ngSubmit)="sendMessage(chatForm)">
-                  <div class="chat-message clearfix">
-                    <div class="row">
-                      <div class="col-xl-12 d-flex">
-                        <div class="input-group text-box">
-                          <input class="form-control input-txt-bx" [class.border-danger]="error" [(ngModel)]="chatText"
-                            id="message-to-send" ngModel type="text" autocomplete="off" name="message" placeholder="{{'Type a message'|translate}}......">
-                          <div class="input-group-append">
-                            <button class="btn btn-primary" (click)="sendMessage(chatForm)" type="button">{{'Send'|translate}}</button>
-                          </div>
-                        </div>
-                      </div>
+
                     </div>
-                  </div>
-                </form>
-                <!-- end chat-message-->
-                <!-- chat end-->
-                <!-- Chat right side ends-->
-              </div>
+                </div>
             </div>
-
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 <!-- Container-fluid Ends -->

@@ -21,12 +21,13 @@ export class NotificationService {
                     let data = doc.payload.doc.data();
                     data['icon'] = 'message-square';
                     data['url'] = '/chat';
-                    //doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user')['uid']) &&
-                    if (doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user'))['uid'] && Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60) <= 5) {
+                    data['time'] = new Date(data['createDate']).getTime();
+                    // Send to toastr before time exceed 5 mints
+                    if (data['sender'] != JSON.parse(localStorage.getItem('user'))['uid'] && Math.round((Date.now() - data['time']) / 1000 / 60) <= 5) {
                         newMessages.push(doc.payload.doc.data());
                     }
                     // Allow only 24 hours to display the notification on the notification list
-                    if (doc.payload.doc.data()['sender'] != JSON.parse(localStorage.getItem('user'))['uid'] && Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60 / 60) <= 24) {
+                    if (data['sender'] != JSON.parse(localStorage.getItem('user'))['uid'] && Math.round((Date.now() - data['time']) / 1000 / 60 / 60) <= 24) {
                         this.notifications.push(data);
                     }
                 }
@@ -60,11 +61,12 @@ export class NotificationService {
                     let data = doc.payload.doc.data();
                     data['icon'] = 'shopping-cart';
                     data['url'] = '/carts';
-                    if (Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60) <= 5) {
+                    data['time'] = new Date(data['createDate']).getTime();
+                    if (Math.round((Date.now() - data['time']) / 1000 / 60) <= 5) {
                         newCarts.push(doc.payload.doc.data());
                     }
                     // Allow only 24 hours to display the notification on the notification list
-                    if (Math.round((Date.now() - doc.payload.doc.data()['createdAt']) / 1000 / 60 / 60) <= 24) {
+                    if (Math.round((Date.now() - data['time']) / 1000 / 60 / 60) <= 24) {
                         this.notifications.push(data);
                     }
                 }

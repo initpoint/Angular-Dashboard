@@ -63,14 +63,7 @@ export class ChatService {
 
     // Send Message to user
     public sendMessage(chat) {
-        this.db.collection('messages').add(
-            {
-                customerId: chat.receiver,
-                customerName: chat.receiver_name,
-                text: chat.message,
-                createDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
-                sender: chat.sender
-            }).then(res => {
+        this.db.collection('messages').add(chat).then(res => {
             setTimeout(function () {
                 document.querySelector('.chat-history').scrollBy({top: 200, behavior: 'smooth'});
             }, 310);
