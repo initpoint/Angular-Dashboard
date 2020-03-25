@@ -5,6 +5,7 @@ import CustomStore from 'devextreme/data/custom_store';
 import {ImportService} from 'src/app/shared/services/firebase/import.service';
 import {LogsService} from 'src/app/shared/services/firebase/logs.service';
 import {ToastrService} from 'ngx-toastr';
+import {Router} from '@angular/router';
 @Component({
     selector: 'app-items',
     templateUrl: './items.component.html',
@@ -17,11 +18,12 @@ export class ItemsComponent implements OnInit {
     materialSelectedRows = {};
     rankingSelectedRows = {};
     currentRow: any;
+    currentUser = JSON.parse(localStorage.getItem('user'));
     imageUploaderpopup: boolean;
     value: any[] = [];
     doneSaving = false;
 
-    constructor(public itemsService: ItemsService, public importService: ImportService, public logsService: LogsService,private toastrService:ToastrService) {
+    constructor(public itemsService: ItemsService, public importService: ImportService, public logsService: LogsService,private toastrService:ToastrService,private router: Router,) {
         this.itemsService.lastItem = null;
         this.source = new CustomStore({
             key: 'code',
@@ -76,6 +78,9 @@ export class ItemsComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.currentUser.permissions.canUpdate = this.currentUser.permissions.update.includes(this.router.url);
+        this.currentUser.permissions.canCreate = this.currentUser.permissions.create.includes(this.router.url);
+        this.currentUser.permissions.canRemove = this.currentUser.permissions.delete.includes(this.router.url);
         this.lang = localStorage.getItem('lang') === 'ar';
         setTimeout(() => {
             if (this.dataGrid && localStorage.getItem('barCodeId')) {

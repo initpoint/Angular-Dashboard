@@ -22,7 +22,8 @@ export const content: Routes = [
     data: {
       breadcrumb: "Bills"
     }
-  },{
+  },
+  {
     path: 'promotions',
     loadChildren: './components/promotions/promotions.module#PromotionsModule',
     data: {
@@ -42,7 +43,8 @@ export const content: Routes = [
     data: {
       breadcrumb: "Items"
     }
-  },{
+  },
+  {
     path: 'reports',
     loadChildren: './components/reports/reports.module#ReportsModule',
     data: {
@@ -83,13 +85,15 @@ export const content: Routes = [
     data: {
       breadcrumb: "Import"
     }
-  },{
+  },
+  {
     path: 'chat',
     loadChildren: './components/chat/chat.module#ChatModule',
     data: {
       breadcrumb: "Chat"
     }
-  },{
+  },
+  {
     path: 'logs',
     loadChildren: './components/logs/logs.module#LogsModule',
     data: {

@@ -12,17 +12,18 @@
     <dxi-column dataField="lastLoginAt" [caption]="'Last Login'|translate"
                 [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
 </dx-data-grid>
-<div class="dx-fieldset" [hidden]="!currentUser">
+<div class="dx-fieldset" [hidden]="!selectedUser">
     <dx-box [rtlEnabled]="lang" direction="row" width="100%" [height]="20">
         <dxi-item [ratio]="1">
             <div class="dx-field">
                 <div class="dx-field-value">
                     <dx-button
                             [(rtlEnabled)]="lang"
+                            [(disabled)]="!currentUser.permissions.canUpdate"
                             class="btn-success send"
                             icon="fa fa-save"
-                            (click)="saveUserPermissions()"
-                            text="{{'Save'|translate}}">
+                            [text]="(currentUser.permissions.canUpdate ? 'Save' : 'Permission required')|translate"
+                            (click)="saveUserPermissions()">
                     </dx-button>
                 </div>
             </div>
@@ -30,10 +31,13 @@
         <dxi-item [ratio]="2">
             <div class="dx-field">
                 <div class="dx-field-value">
-                    <select (change)="updatePermissionType(permissions.value)" #permissions class="form-control digits">
+                    <select [disabled]="!currentUser.permissions.canUpdate" (change)="updatePermissionType(permissions.value)" #permissions class="form-control digits">
                         <option value="update">Update</option>
                         <option value="delete">Delete</option>
                         <option value="create">Create</option>
+                        <option value="view">View</option>
+                        <option value="export">Export</option>
+                        <option value="import">Import</option>
                     </select>
                 </div>
             </div>

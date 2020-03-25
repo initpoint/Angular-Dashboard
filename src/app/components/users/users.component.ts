@@ -3,7 +3,7 @@ import {UserService} from '../../shared/services/firebase/user.service';
 import {LogsService} from '../../shared/services/firebase/logs.service';
 import CustomeStore from 'devextreme/data/custom_store';
 import DataSource from 'devextreme/data/data_source';
-
+import {Router} from '@angular/router';
 @Component({
     selector: 'app-user',
     templateUrl: './users.component.html',
@@ -12,10 +12,11 @@ import DataSource from 'devextreme/data/data_source';
 export class UsersComponent implements OnInit {
     customerSource: DataSource;
     customerData: CustomeStore;
+    currentUser = JSON.parse(localStorage.getItem('user'));
     lang = localStorage.getItem('lang') == 'ar';
     fieldView: boolean = true;
 
-    constructor(private userService: UserService, private logs: LogsService) {
+    constructor(private userService: UserService, private logs: LogsService,private router:Router) {
         this.customerData = new CustomeStore({
             key: 'uid',
             load: (opts) => {
@@ -57,5 +58,11 @@ export class UsersComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.currentUser.permissions.canUpdate = this.currentUser.permissions.update.includes(this.router.url);
+        this.currentUser.permissions.canCreate = this.currentUser.permissions.create.includes(this.router.url);
+        this.currentUser.permissions.canRemove = this.currentUser.permissions.delete.includes(this.router.url);
+        this.currentUser.permissions.canExport = this.currentUser.permissions.export.includes(this.router.url);
+        this.currentUser.permissions.canImport = this.currentUser.permissions.import.includes(this.router.url);
+        this.currentUser.permissions.canView = this.currentUser.permissions.view.includes(this.router.url);
     }
 }

@@ -7,6 +7,7 @@ import {ItemsService} from '../../shared/services/firebase/items.service';
 import {formatDate} from '@angular/common';
 
 import * as firebase from 'firebase';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-bills',
@@ -16,11 +17,11 @@ import * as firebase from 'firebase';
 export class BillsComponent implements OnInit {
     customersSource: any;
     lang = localStorage.getItem('lang') === 'ar';
-    currentUser;
+    currentCustomer;
     customerBills = [];
     doneSaving = false;
-
-    constructor(public itemsService: ItemsService, private logs: LogsService, public billsService: BillsService,
+    currentUser = JSON.parse(localStorage.getItem('user'));
+    constructor(public itemsService: ItemsService, private logs: LogsService, public billsService: BillsService,private router: Router,
                 public importService: ImportService, public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
@@ -28,12 +29,18 @@ export class BillsComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.currentUser.permissions.canUpdate = this.currentUser.permissions.update.includes(this.router.url);
+        this.currentUser.permissions.canCreate = this.currentUser.permissions.create.includes(this.router.url);
+        this.currentUser.permissions.canRemove = this.currentUser.permissions.delete.includes(this.router.url);
+        this.currentUser.permissions.canExport = this.currentUser.permissions.export.includes(this.router.url);
+        this.currentUser.permissions.canImport = this.currentUser.permissions.import.includes(this.router.url);
+        this.currentUser.permissions.canView = this.currentUser.permissions.view.includes(this.router.url);
     }
 
     onFocusedRowChanged(e: any) {
-        this.currentUser = e.row.data;
+        this.currentCustomer = e.row.data;
         this.customerBills = [];
-        this.billsService.getCustomerBills(this.currentUser.uid).subscribe(items => {
+        this.billsService.getCustomerBills(this.currentCustomer.uid).subscribe(items => {
             this.customerBills = items;
         });
     }
@@ -56,7 +63,7 @@ export class BillsComponent implements OnInit {
         this.billsService.addBill({
             items: billInfo,
             createDate: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.SSSSSS', 'en-US'),
-            customerId: this.currentUser.uid
+            customerId: this.currentCustomer.uid
         });
         this.logs.createLog('Imported Bills');
         this.doneSaving = true;

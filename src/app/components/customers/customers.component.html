@@ -10,13 +10,13 @@
     <dxo-search-panel [visible]="true"></dxo-search-panel>
     <dxo-editing
             mode="popup"
-            [allowAdding]="true"
-            [allowUpdating]="true"
+            [allowAdding]="currentUser.permissions.canCreate"
+            [allowUpdating]="currentUser.permissions.canUpdate"
             [useIcons]="true"
-            [allowDeleting]="true">
+            [allowDeleting]="currentUser.permissions.canRemove">
     </dxo-editing>
     <dxo-group-panel [visible]="true"></dxo-group-panel>
-    <dxo-export [enabled]="true" fileName="Customers" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-export [enabled]="currentUser.permissions.canExport" fileName="Customers" [allowExportSelectedData]="true"></dxo-export>
     <dxo-selection mode="multiple"></dxo-selection>
     <dxi-column dataField="code" [allowFiltering]="false" [allowGrouping]="false"
                 [caption]="'Code'|translate"></dxi-column>
@@ -38,7 +38,7 @@
     <dxi-column [formItem]="{visible: false}" dataField="isActive" datatype="boolean" [allowSearch]="false"
                 [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
     <div *dxTemplate="let data of 'ActiveButton'">
-        <button (click)="data.value = !data.value;updateCustomerActivation(data)"
+        <button [disabled]="!currentUser.permissions.canRemove" (click)="data.value = !data.value;updateCustomerActivation(data)"
                 title="Click to {{(data.value ? 'Disable' : 'Active') |translate}}"
                 class="btn btn-xs btn-pill"
                 [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Is Active' : "Pending" )|translate}}</button>
@@ -47,7 +47,7 @@
                 [cellTemplate]="'TaxButton'"
                 [caption]="'Has Tax'|translate"></dxi-column>
     <div *dxTemplate="let data of 'TaxButton'">
-        <button (click)="data.value = !data.value;updateCustomerTax(data)"
+        <button [disabled]="!currentUser.permissions.canUpdate" (click)="data.value = !data.value;updateCustomerTax(data)"
                 title="Click to {{(data.value ? 'Remove Tax' : 'Add Tax' ) |translate}}"
                 class="btn btn-xs btn-pill"
                 [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Has Taxes' : "No Taxes") |translate}}</button>
@@ -56,7 +56,7 @@
                 [cellTemplate]="'SeeSoldStockButton'"
                 [caption]="'Can See Sold Stock'|translate"></dxi-column>
     <div *dxTemplate="let data of 'SeeSoldStockButton'">
-        <button (click)="data.value = !data.value;updateCustomerCanSeeSoldStock(data)"
+        <button [disabled]="!currentUser.permissions.canUpdate" (click)="data.value = !data.value;updateCustomerCanSeeSoldStock(data)"
                 title="Click to {{data.value ? 'Disable' : 'Enable'  |translate}}"
                 class="btn btn-xs btn-pill"
                 [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Enabled' : "Disabled") |translate}}</button>

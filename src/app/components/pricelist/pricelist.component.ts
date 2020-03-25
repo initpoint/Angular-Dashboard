@@ -7,6 +7,7 @@ import {ItemsService} from '../../shared/services/firebase/items.service';
 import {ImportService} from '../../shared/services/firebase/import.service';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-PriceList',
@@ -18,6 +19,7 @@ export class PriceListComponent implements OnInit {
     updatePopupVisible = false;
     lang;
     currentRow;
+    currentUser = JSON.parse(localStorage.getItem('user'));
     priceListSource: CustomStore;
     priceListItemsSource: CustomStore;
     allItemsSource: CustomStore;
@@ -25,6 +27,7 @@ export class PriceListComponent implements OnInit {
     doneSaving = false;
 
     constructor(private priceListService: PriceListService, public itemsService: ItemsService,
+                private router: Router,
                 private logs: LogsService, public importService: ImportService, public toasterService: ToastrService,
                 public translateService: TranslateService) {
         this.priceListSource = new CustomStore({
@@ -74,6 +77,12 @@ export class PriceListComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.currentUser.permissions.canUpdate = this.currentUser.permissions.update.includes(this.router.url);
+        this.currentUser.permissions.canCreate = this.currentUser.permissions.create.includes(this.router.url);
+        this.currentUser.permissions.canRemove = this.currentUser.permissions.delete.includes(this.router.url);
+        this.currentUser.permissions.canExport = this.currentUser.permissions.export.includes(this.router.url);
+        this.currentUser.permissions.canImport = this.currentUser.permissions.import.includes(this.router.url);
+        this.currentUser.permissions.canView = this.currentUser.permissions.view.includes(this.router.url);
         this.lang = localStorage.getItem('lang') == 'ar';
     }
 

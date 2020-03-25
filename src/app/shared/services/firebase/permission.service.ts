@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {ToastrService} from 'ngx-toastr';
-import {map} from 'rxjs/operators';
-import {CustomerService} from './customer.service';
 import * as firebase from 'firebase';
 
 import {ItemsService} from './items.service';
@@ -18,6 +16,11 @@ export class PermissionService {
                 public itemsService: ItemsService
     ) {
     }
+
+    chunkArray = (arr, size) =>
+        Array.from({length: Math.ceil(arr.length / size)}, (v, i) =>
+            arr.slice(i * size, i * size + size)
+        );
 
     getUserPermissions(uid) {
         return this.db.doc('permission/' + uid).get();
@@ -46,7 +49,7 @@ export class PermissionService {
         })).then(res1 => {
             this.toastrService.success(`Removed ${removedPerms.length} Permissions`);
 
-            this.db.doc('permission/' + uid).set(customerPermissionsDoc,{merge:true}).then(res => {
+            this.db.doc('permission/' + uid).set(customerPermissionsDoc, {merge: true}).then(res => {
                 Promise.all(addedPerms.map(docId => {
                     this.itemsService.getItem(docId).subscribe(doc => {
                         const item = doc.data();

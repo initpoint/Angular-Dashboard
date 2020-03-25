@@ -1,4 +1,4 @@
-<button class="btn btn-success m-2" (click)="btnClicked()"><i class="icon-import"></i> {{'Import Promotions'|translate}}
+<button class="btn btn-success m-2" [disabled]="!currentUser.permissions.canImport" (click)="btnClicked()"><i class="icon-import"></i> {{(currentUser.permissions.canImport ? 'Import Promotions' : 'Permission required')|translate}}
 </button>
 <dx-popup
         [showTitle]="true"
@@ -11,7 +11,8 @@
         <div class="col-md-8">
             <div class="card-header">
                 <dx-file-uploader
-                        selectButtonText="Select XLSX File"
+                        [(disabled)]="!currentUser.permissions.canCreate"
+                        [selectButtonText]="(currentUser.permissions.canCreate ? 'Select XLSX File' : 'Permission required')|translate"
                         [ngStyle]="lang && {'float':'right'}"
                         [ngClass]="{'pull-right':!lang}"
                         style="margin-top: -1rem"
@@ -34,7 +35,7 @@
                           [rtlEnabled]="lang">
                 <dxo-editing
                         mode="cell"
-                        [allowUpdating]="true">
+                        [allowUpdating]="currentUser.permissions.canUpdate">
                 </dxo-editing>
                 <dxo-scrolling mode="Infinite" showScrollbar="Always"></dxo-scrolling>
                 <dxi-column [allowEditing]="false" dataField="text"></dxi-column>
@@ -68,8 +69,8 @@
         </div>
     </div>
 </dx-popup>
-<a class="btn btn-dark mr-2" [routerLink]="['/promotions/create']"><i class="fa fa-plus"></i> {{'Add'|translate}} {{'Promotion'|translate}}
-</a>
+<button class="btn btn-dark mr-2" [disabled]="!currentUser.permissions.canCreate" [routerLink]="['/promotions/create']"><i class="fa fa-plus"></i> {{(currentUser.permissions.canCreate ? 'Create Promotions' : 'Permission required')|translate}}
+</button>
 <!--All Items datagrid-->
 <dx-data-grid [dataSource]="promotionsSource"
               [showBorders]="false" [rtlEnabled]="lang" [showRowLines]="false"
@@ -82,8 +83,8 @@
     <dxo-paging [pageSize]="20"></dxo-paging>
     <dxo-header-filter [visible]="true"></dxo-header-filter>
     <dxo-search-panel [visible]="true"></dxo-search-panel>
-    <dxo-editing mode="form" [allowDeleting]="true" [allowUpdating]="true" [useIcons]="true"></dxo-editing>
-    <dxo-export [enabled]="true" fileName="Promotions" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-editing mode="form" [allowDeleting]="currentUser.permissions.canRemove" [allowUpdating]="currentUser.permissions.canUpdate" [useIcons]="true"></dxo-editing>
+    <dxo-export [enabled]="currentUser.permissions.canExport" fileName="Promotions" [allowExportSelectedData]="true"></dxo-export>
     <dxi-column [allowHiding]="false" [showInColumnChooser]="false" dataField="code" [caption]="'Code'|translate"
                 allowEditing="false">
     </dxi-column>

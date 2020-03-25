@@ -13,10 +13,12 @@
     <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
                 [cellTemplate]="'importPermissionBtn'" [caption]="'Import Permissions'|translate"></dxi-column>
     <div *dxTemplate="let data of 'importPermissionBtn'">
+
         <dx-file-uploader
-                [selectButtonText]="'Select XLSX File'|translate"
+                [selectButtonText]="(currentUser.permissions.canImport ? 'Select XLSX File' : 'Permission required')|translate"
                 labelText=""
                 accept=".xlsx"
+                [(disabled)]="!currentUser.permissions.canUpdate"
                 [(rtlEnabled)]="lang"
                 (change)="importPermissions($event)"
                 [showFileList]="false"
@@ -28,43 +30,46 @@
 </dx-data-grid>
 
 <!--Options-->
-<div class="dx-fieldset" [hidden]="!currentUser">
+<div class="dx-fieldset" [hidden]="!currentCustomer">
     <dx-box [rtlEnabled]="lang" direction="row" width="100%" [height]="20">
         <dxi-item [ratio]="1">
             <div [hidden]="showCurrentPermissions" class="dx-field m-15">
                 <div class="dx-field-value">
                     <dx-button
+                            [(disabled)]="!currentUser.permissions.canUpdate"
                             [(rtlEnabled)]="lang"
                             class="btn-success send"
                             icon="fa fa-save"
                             (click)="saveCustomerPermissions()"
-                            text="{{'Save'|translate}}">
+                            [text]="(currentUser.permissions.canUpdate ? 'Save' : 'Permission required')|translate">
                     </dx-button>
                 </div>
             </div>
         </dxi-item>
         <dxi-item [ratio]="1">
-            <div [hidden]="!currentUser" class="dx-field">
+            <div [hidden]="!currentCustomer" class="dx-field">
                 <div class="dx-field-value">
                     <dx-button
+                            [disabled]="!currentUser.permissions.canUpdate"
                             [(rtlEnabled)]="lang"
                             class="btn-success"
                             icon="fa fa-plus"
                             (click)="giveAllPermissions()"
-                            text="{{'giveAllPermissions'|translate}}">
+                            [text]="(currentUser.permissions.canUpdate ? 'giveAllPermissions' : 'Permission required')|translate">
                     </dx-button>
                 </div>
             </div>
         </dxi-item>
         <dxi-item [ratio]="1">
-            <div [hidden]="!currentUser" class="dx-field">
+            <div [hidden]="!currentCustomer" class="dx-field">
                 <div class="dx-field-value">
                     <dx-button
+                            [disabled]="!currentUser.permissions.canRemove"
                             [(rtlEnabled)]="lang"
                             class="btn-danger"
                             icon="fa fa-trash-o"
                             (click)="removeAllPermissions()"
-                            text="{{'removeAllPermissions'|translate}}">
+                            [text]="(currentUser.permissions.canRemove ? 'removeAllPermissions' : 'Permission required')|translate">
                     </dx-button>
                 </div>
             </div>
@@ -114,14 +119,13 @@
     <dxi-column dataField="isNewList" datatype="boolean" [cellTemplate]="'ActiveButton'"
                 [caption]="'Is New'|translate"></dxi-column>
     <div *dxTemplate="let data of 'ActiveButton'">
-        <button (click)="data.value = !data.value;"
-                class="btn btn-xs btn-pill"
+        <button class="btn btn-xs btn-pill"
                 [ngClass]="isNew(data) ? 'btn-danger' : 'btn-light'">{{'Is New'|translate}}</button>
     </div>
     <dxi-column dataField="prices" [cellTemplate]="'hasPriceList'"
                 [caption]="'has Price List'|translate"></dxi-column>
     <div *dxTemplate="let data of 'hasPriceList'">
-        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)"
+        <button *ngIf="!data.data.prices.hasOwnProperty(currentCustomer.pricelist)"
                 class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
     </div>
 
@@ -189,7 +193,7 @@
     <dxi-column dataField="prices" [cellTemplate]="'hasPriceList'"
                 [caption]="'has Price List'|translate"></dxi-column>
     <div *dxTemplate="let data of 'hasPriceList'">
-        <button *ngIf="!data.data.prices.hasOwnProperty(currentUser.pricelist)"
+        <button *ngIf="!data.data.prices.hasOwnProperty(currentCustomer.pricelist)"
                 class="btn btn-xs btn-pill btn-danger">{{'Does not have price list'|translate}}</button>
     </div>
 

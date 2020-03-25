@@ -1,4 +1,4 @@
-<app-import-view [btnText]="'Import Combinations'" [structure]="importService.combinationsStructure" (onSaving)="saveImportedData($event[0],$event[1])"
+<app-import-view *ngIf="currentUser.permissions.canImport" [btnText]="'Import Combinations'" [structure]="importService.combinationsStructure" (onSaving)="saveImportedData($event[0],$event[1])"
                  [templateFileName]="'Combinations Template.xlsx'" [templateSheetName]="'combination'" [doneSaving]="doneSaving"></app-import-view>
 
 <dx-data-grid
@@ -17,8 +17,8 @@
 
     <dxo-editing
             mode="popup"
-            [allowAdding]="true"
-            [allowUpdating]="true">
+            [allowAdding]="currentUser.permissions.canCreate"
+            [allowUpdating]="currentUser.permissions.canUpdate">
     </dxo-editing>
     <dxo-scrolling mode="virtual" rowRenderingMode="virtual" useNative="false" showScrollbar="Always"></dxo-scrolling>
     <dxo-paging [pageSize]="20"></dxo-paging>
@@ -84,13 +84,13 @@
     <dxi-column [formItem]="{visible: false}" dataField="isActive" datatype="boolean" [allowSearch]="false"
                 [cellTemplate]="'ActiveButton'" [caption]="'Is Active'|translate"></dxi-column>
     <div *dxTemplate="let data of 'ActiveButton'">
-        <button (click)="data.value = !data.value;updateCombinationActivation(data)"
+        <button [disabled]="!currentUser.permissions.canRemove" (click)="data.value = !data.value;updateCombinationActivation(data)"
                 title="Click to {{(data.value ? 'Disable' : 'Active') |translate}}"
                 class="btn btn-xs btn-pill"
                 [ngClass]="data.value ? 'btn-success' : 'btn-dark'">{{(data.value ? 'Is Active' : "Pending" )|translate}}</button>
     </div>
     <div *dxTemplate="let data of 'Upload'">
-        <button class="btn btn-pill btn-xs btn-light"
+        <button [disabled]="!currentUser.permissions.canUpdate" class="btn btn-pill btn-xs btn-light"
                 (click)="pics(data)">{{'Upload'|translate}} {{'Photos'|translate}}  <span
                 [ngClass]="{'text-danger' : !data.data.pics?.length}">( {{data.data.pics?.length || 0}} )</span>
         </button>

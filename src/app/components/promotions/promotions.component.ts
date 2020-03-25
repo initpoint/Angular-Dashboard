@@ -7,7 +7,7 @@ import {LogsService} from '../../shared/services/firebase/logs.service';
 import * as XLSX from 'xlsx';
 import {ToastrService} from 'ngx-toastr';
 import {formatDate} from '@angular/common';
-
+import {Router} from '@angular/router';
 @Component({
     selector: 'app-promotions',
     templateUrl: './promotions.component.html',
@@ -18,6 +18,7 @@ export class PromotionsComponent implements OnInit {
     value: any[] = [];
     lang;
     currentRow;
+    currentUser = JSON.parse(localStorage.getItem('user'));
     promotionsSource: CustomStore;
     columnObjects: any[] = [];
     columnToShow: any[] = [];
@@ -34,6 +35,7 @@ export class PromotionsComponent implements OnInit {
         public itemsService: ItemsService,
         public logsService: LogsService,
         public importService: ImportService,
+        private router:Router
     ) {
         this.promotionsSource = new CustomStore({
             key: 'id',
@@ -62,6 +64,12 @@ export class PromotionsComponent implements OnInit {
 
     ngOnInit() {
         this.lang = localStorage.getItem('lang') == 'ar';
+        this.currentUser.permissions.canUpdate = this.currentUser.permissions.update.includes(this.router.url);
+        this.currentUser.permissions.canCreate = this.currentUser.permissions.create.includes(this.router.url);
+        this.currentUser.permissions.canRemove = this.currentUser.permissions.delete.includes(this.router.url);
+        this.currentUser.permissions.canExport = this.currentUser.permissions.export.includes(this.router.url);
+        this.currentUser.permissions.canImport = this.currentUser.permissions.import.includes(this.router.url);
+        this.currentUser.permissions.canView = this.currentUser.permissions.view.includes(this.router.url);
     }
 
     onFocusedRowChanged($event: any) {

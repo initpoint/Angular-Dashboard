@@ -12,10 +12,10 @@
     <dxi-column dataField="name" [caption]="'Name'|translate"></dxi-column>
     <dxi-column dataField="isActive" dataType="boolean" [caption]="'Is Active'|translate"></dxi-column>
 
-    <dxi-column [formItem]="{visible: false}" [allowSearch]="false" [allowSorting]="false"
+    <dxi-column [allowSearch]="false" [allowSorting]="false"
                 [cellTemplate]="'importPermissionBtn'" [caption]="'Import Invoice'|translate"></dxi-column>
     <div *dxTemplate="let data of 'importPermissionBtn'">
-        <app-import-view [btnText]="'Import Invoice'" [structure]="importService.invoiceStructure" (onSaving)="saveImportedData($event[0],$event[1])"
+        <app-import-view *ngIf="currentUser.permissions.canImport" [btnText]="'Import Invoice'" [structure]="importService.invoiceStructure" (onSaving)="saveImportedData($event[0],$event[1])"
                          [templateFileName]="'Invoices Template.xlsx'" [templateSheetName]="'invoices'" [doneSaving]="doneSaving"></app-import-view>
     </div>
 </dx-data-grid>
@@ -26,7 +26,7 @@
               [columnAutoWidth]="true" [hoverStateEnabled]="true"
               [focusedRowEnabled]="true" [wordWrapEnabled]="true" keyExpr="id">
 
-    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-export [enabled]="currentUser.permissions.canExport"></dxo-export>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
     <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
     <dxo-header-filter [visible]="true"></dxo-header-filter>

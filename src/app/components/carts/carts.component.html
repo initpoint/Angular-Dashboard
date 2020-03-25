@@ -4,7 +4,7 @@
               [hoverStateEnabled]="true" [focusedRowEnabled]="true"
               [wordWrapEnabled]="true" keyExpr="id" height="85vh">
 
-    <dxo-export [enabled]="true"></dxo-export>
+    <dxo-export [enabled]="currentUser.permissions.canImport"></dxo-export>
     <dxo-scrolling mode="virtual"></dxo-scrolling>
     <dxo-column-chooser [enabled]="true" [allowSearch]="true" mode="select"></dxo-column-chooser>
     <dxo-header-filter [visible]="true"></dxo-header-filter>

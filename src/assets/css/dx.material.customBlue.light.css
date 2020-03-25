@@ -11884,11 +11884,11 @@
 }
 
 .dx-datagrid-form-buttons-container .dx-button.dx-state-disabled .dx-icon {
-    opacity: 0.6;
+    /* opacity: 0.6; */
 }
 
 .dx-datagrid-form-buttons-container .dx-button.dx-state-disabled .dx-button-text {
-    color: rgba(0, 0, 0, 0.35);
+    color: rgba(0, 0, 0, 0.94);
 }
 
 .dx-datagrid-form-buttons-container .dx-button .dx-inkripple-wave {

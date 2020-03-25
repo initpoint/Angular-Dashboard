@@ -8,7 +8,7 @@ import * as XLSX from 'xlsx';
 import {CustomerService} from '../../shared/services/firebase/customer.service';
 import CustomStore from 'devextreme/data/custom_store';
 import {TranslateService} from '@ngx-translate/core';
-
+import {Router} from '@angular/router';
 @Component({
     selector: 'app-permission',
     templateUrl: './permissions.component.html',
@@ -20,7 +20,8 @@ export class PermissionComponent implements OnInit {
     lang;
     materialSelectedRows = {};
     rankingSelectedRows = {};
-    currentUser;
+    currentCustomer;
+    currentUser = JSON.parse(localStorage.getItem('user'));
     selectedItems: any;
     showCurrentPermissions = true;
     customerItemsCodes = [];
@@ -32,6 +33,7 @@ export class PermissionComponent implements OnInit {
                 private toastrService: ToastrService,
                 private translateService: TranslateService,
                 private permissionService: PermissionService,
+                private router: Router,
                 public customerService: CustomerService) {
         this.customerService.getCustomers().subscribe(res => {
             this.customersSource = res;
@@ -56,6 +58,12 @@ export class PermissionComponent implements OnInit {
 
     ngOnInit() {
         this.lang = localStorage.getItem('lang') === 'ar';
+        this.currentUser.permissions.canUpdate = this.currentUser.permissions.update.includes(this.router.url);
+        this.currentUser.permissions.canCreate = this.currentUser.permissions.create.includes(this.router.url);
+        this.currentUser.permissions.canRemove = this.currentUser.permissions.delete.includes(this.router.url);
+        this.currentUser.permissions.canExport = this.currentUser.permissions.export.includes(this.router.url);
+        this.currentUser.permissions.canImport = this.currentUser.permissions.import.includes(this.router.url);
+        this.currentUser.permissions.canView = this.currentUser.permissions.view.includes(this.router.url);
     }
 
     materialRowSelected(event, key, items, collapsedItems, component) {
@@ -104,6 +112,8 @@ export class PermissionComponent implements OnInit {
         return this.rankingSelectedRows[ranking.key[0]];
     }
 
+
+
     saveCustomerPermissions() {
         const addedPerms = this.selectedItems.filter(newItem => !this.customerItemsCodes.find(item => item === newItem));
         const removedPerms = this.customerItemsCodes.filter(oldItem => !this.selectedItems.find(item => item === oldItem));
@@ -112,8 +122,9 @@ export class PermissionComponent implements OnInit {
         ${removedPerms.length} Removed Premissions\n
         ${unchangedPerms.length} Unchanged Premissions\n`);
         if (proceed) {
-            this.permissionService.updateUserPermission(this.currentUser.uid, this.selectedItems, addedPerms, removedPerms, unchangedPerms).then(res => {
-                let logData = 'Updated customer Permissions [' + this.currentUser.name + '] data ';
+
+            this.permissionService.updateUserPermission(this.currentCustomer.uid, this.selectedItems, addedPerms, removedPerms, unchangedPerms).then(res => {
+                let logData = 'Updated customer Permissions [' + this.currentCustomer.name + '] data ';
                 if (addedPerms.length != 0) {
                     logData = logData.concat('[added] to [' + addedPerms + ']  & ');
                 }
@@ -129,10 +140,10 @@ export class PermissionComponent implements OnInit {
     }
 
     onFocusedRowChanged(e: any) {
-        this.currentUser = e.row.data;
+        this.currentCustomer = e.row.data;
         this.customerItemsList = [];
         this.customerItemsCodes = [];
-        this.itemsService.getItemsForUser(this.currentUser.uid).subscribe(items => {
+        this.itemsService.getItemsForUser(this.currentCustomer.uid).subscribe(items => {
             this.customerItemsList = items;
             this.customerItemsCodes = this.customerItemsList.map(item => item.code);
             this.allItemsDataGrid.instance.selectRows(this.customerItemsCodes, false);
@@ -162,7 +173,7 @@ export class PermissionComponent implements OnInit {
     }
 
     isNew(data) {
-        if (data.value && this.currentUser && data.value.includes(this.currentUser.uid)) {
+        if (data.value && this.currentCustomer && data.value.includes(this.currentCustomer.uid)) {
             return true;
         }
         return false;
@@ -178,12 +189,14 @@ export class PermissionComponent implements OnInit {
             });
         });
     }
+
     removeAllPermissions() {
-            this.translateService.get('Remove Permissions Message').subscribe(message => {
-                if (confirm(`${message} #${this.customerItemsCodes.length}`)) {
-                    this.selectedItems = [];
-                    this.saveCustomerPermissions();
-                }
-            });
+        this.translateService.get('Remove Permissions Message').subscribe(message => {
+            if (confirm(`${message} #${this.customerItemsCodes.length}`)) {
+                this.selectedItems = [];
+                this.saveCustomerPermissions();
+            }
+        });
     }
+
 }
