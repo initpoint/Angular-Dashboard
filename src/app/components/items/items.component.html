@@ -115,6 +115,7 @@
 
                 <div id="fileuploader-container">
                     <dx-file-uploader
+                            #images
                             selectButtonText="Select photo"
                             labelText=""
                             accept="image/*"
@@ -126,8 +127,8 @@
                     </dx-file-uploader>
                     <ngb-progressbar *ngIf="itemsService.uploadProgress" showValue="true" type="info"
                                      [value]="itemsService.uploadProgress|| 0" [max]="100"></ngb-progressbar>
-                    <button class="mr-2 mt-1 btn btn-primary" type="submit" (click)="uploadImages()">
-                        {{'Submit' |translate}}
+                    <button [disabled]="!images.value.length" class="mr-2 mt-1 btn btn-primary" type="submit" (click)="uploadImages()">
+                        {{'Upload' |translate}}
                     </button>
                 </div>
             </form>

@@ -38,7 +38,7 @@
             </dx-data-grid>
         </div>
     </div>
-    <div class="row">
+    <div *ngIf="fileColumns.length != 0" class="row">
         <ngb-progressbar class="col-12" showValue="true" type="info" [value]="itemsService.uploadProgress|| 0" [max]="100"></ngb-progressbar>
     </div>
     <div class="row">
@@ -47,6 +47,6 @@
                 class="mt-2 btn btn-primary">Save
         </button>
         <button *ngIf="fileColumns.length != 0" (click)="closePopupAndClearData();" class="mt-2 btn btn-default">Cancel</button>
-        <h6 *ngIf="fileColumns.length != 0" class="card-title mt-2 float-right">{{'Data Count'|translate}}: {{rowCounter|number}}</h6>
+        <h6 *ngIf="fileColumns.length != 0" class="mt-3 pull-right"> {{'Data Count'|translate}}: {{rowCounter|number}}</h6>
     </div>
 </dx-popup>
