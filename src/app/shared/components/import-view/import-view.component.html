@@ -1,6 +1,6 @@
 <button class="btn btn-success m-2" (click)="popupVisible = true"><i class="icon-import"></i> {{btnText|translate}}</button>
 
-<dx-popup [showTitle]="true" [title]="'Import Data'|translate" [dragEnabled]="false"
+<dx-popup [height]="'auto'" [showTitle]="true" [title]="'Import Data'|translate" [dragEnabled]="false"
           [closeOnOutsideClick]="false" (onHiding)="closePopupAndClearData()" [(visible)]="popupVisible">
     <div class="loader-wrapper" *ngIf="showLoader">
         <div class="loader bg-white">

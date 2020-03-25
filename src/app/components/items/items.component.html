@@ -81,7 +81,7 @@
         {{'Material'|translate}}: {{material.value}}
     </div>
     <div *dxTemplate="let data of 'Upload'">
-        <button class="btn btn-xs btn-light"
+        <button class="btn btn-pill btn-xs btn-light"
                 (click)="pics(data)">{{'Upload'|translate}} {{'Photos'|translate}}  <span
                 [ngClass]="{'text-danger' : !data.data.pics?.length}">( {{data.data.pics?.length || 0}} )</span>
         </button>
