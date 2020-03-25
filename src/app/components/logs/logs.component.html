@@ -1,26 +1,22 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <dx-data-grid [dataSource]="logSource" [showBorders]="true" [rtlEnabled]="lang" [columnAutoWidth]="true">
-                        <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
-                        <dxo-header-filter [visible]="true"></dxo-header-filter>
-                        <dxo-search-panel [visible]="true"></dxo-search-panel>
-                        <dxo-editing
-                                mode="form"
-                                [useIcons]="true"
-                                [allowDeleting]="true">
-                        </dxo-editing>
-                        <dxo-export [enabled]="true" fileName="Logs" [allowExportSelectedData]="true"></dxo-export>
-                        <dxo-selection mode="multiple"></dxo-selection>
-                        <dxi-column dataField="user" [caption]="'User'|translate"></dxi-column>
-                        <dxi-column dataField="action" [caption]="'Action'|translate"></dxi-column>
-                        <dxi-column dataField="page" [caption]="'Page'|translate"></dxi-column>
-                        <dxi-column dataField="createdAt" [caption]="'Created at'|translate" [format]="'hh:mm dd/MM/yyyy'" dataType="datetime"></dxi-column>
-                       </dx-data-grid>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<button (click)="removeAllSelection()" [disabled]="!selectedRows?.length" class="btn m-2 font-weight-bold"
+        [ngClass]="selectedRows?.length ? 'btn-danger' : 'btn-light'">Delete Selected Items
+</button>
+<dx-data-grid #logsGrid [dataSource]="logSource" [(selectedRowKeys)]="selectedRows" [showBorders]="true"
+              [rtlEnabled]="lang" [columnAutoWidth]="true">
+    <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+    <dxo-header-filter [visible]="true"></dxo-header-filter>
+    <dxo-search-panel [visible]="true"></dxo-search-panel>
+    <dxo-editing
+            mode="form"
+            [useIcons]="true"
+            [allowDeleting]="true">
+    </dxo-editing>
+    <dxo-export [enabled]="true" fileName="Logs" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-selection mode="multiple" showCheckBoxesMode="always"></dxo-selection>
+    <dxi-column dataField="user" [caption]="'User'|translate"></dxi-column>
+    <dxi-column dataField="action" [caption]="'Action'|translate"></dxi-column>
+    <dxi-column dataField="page" [caption]="'Page'|translate"></dxi-column>
+    <dxi-column dataField="createdAt" [caption]="'Created at'|translate" [format]="'hh:mm dd/MM/yyyy'"
+                dataType="datetime"></dxi-column>
+</dx-data-grid>
+
