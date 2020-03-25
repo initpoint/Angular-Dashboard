@@ -4,7 +4,7 @@ import {DxDataGridComponent} from 'devextreme-angular';
 import CustomStore from 'devextreme/data/custom_store';
 import {ImportService} from 'src/app/shared/services/firebase/import.service';
 import {LogsService} from 'src/app/shared/services/firebase/logs.service';
-
+import {ToastrService} from 'ngx-toastr';
 @Component({
     selector: 'app-items',
     templateUrl: './items.component.html',
@@ -21,7 +21,7 @@ export class ItemsComponent implements OnInit {
     value: any[] = [];
     doneSaving = false;
 
-    constructor(public itemsService: ItemsService, public importService: ImportService, public logsService: LogsService) {
+    constructor(public itemsService: ItemsService, public importService: ImportService, public logsService: LogsService,private toastrService:ToastrService) {
         this.itemsService.lastItem = null;
         this.source = new CustomStore({
             key: 'code',
@@ -111,7 +111,13 @@ export class ItemsComponent implements OnInit {
         });
         this.value = [];
     }
-
+    updateCombinationActivation(data) {
+        this.itemsService.updateItem(data.data.id, {isActive: data.value}).then(res => {
+            this.toastrService.success('Combination Updated.');
+            const logData = 'Updated Combination [' + data.data.name + '] data [isActive] to [' + data.value + ']';
+            this.logsService.createLog(logData);
+        });
+    }
     materialRowSelected(event, key, items, collapsedItems, component) {
         this.materialSelectedRows[key[1]] = event.value;
         component.expandRow(key);

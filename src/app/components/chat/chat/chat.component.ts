@@ -91,7 +91,7 @@ export class ChatComponent implements OnInit {
         term = term.toLowerCase();
         let user = [];
         this.users.filter(users => {
-            if (users.name.toLowerCase().includes(term)) {
+            if (users.name != null && users.name.toLowerCase().includes(term)) {
                 user.push(users);
             }
         });

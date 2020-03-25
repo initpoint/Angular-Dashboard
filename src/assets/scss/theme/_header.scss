@@ -329,9 +329,9 @@ $header-size: 80px;
             color: $main-header-right-nav-icon-color;
           }
           .dot{
-            width: 3px;
-            height: 3px;
-            border-radius: 30px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
             background-color: $main-header-right-nav-icon-color;
             position: absolute;
             right: 17px;

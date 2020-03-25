@@ -25,7 +25,7 @@
                                 </div>
                                 <ul class="list">
                                     <ng-container *ngFor="let user of searchUsers">
-                                        <li class="clearfix">
+                                        <li class="clearfix" *ngIf="user.name != null">
                                             <a href="javascript:void(0)" (click)="userChat(user.uid)">
                                                 <div class="status-circle"
                                                      [ngClass]="{'online' : user.online, 'offline' : !user.online}"></div>

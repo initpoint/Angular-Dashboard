@@ -80,7 +80,7 @@
                 </li>
                 <li class="onhover-dropdown">
                     <app-feather-icons [icon]="'bell'"></app-feather-icons>
-                    <span *ngIf="notification.notifications.length > 0" class="dot"></span>
+                    <span *ngIf="notification.notifications.length > 0" class="dot bg-danger"></span>
                     <ul class="notification-dropdown onhover-show-div">
                         <li>{{'Notification'|translate}} <span *ngIf="notification.notifications.length > 0"
                                                class="badge badge-pill badge-primary pull-right">{{notification.notifications.length}}</span>
