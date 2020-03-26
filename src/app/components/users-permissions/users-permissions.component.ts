@@ -56,6 +56,9 @@ export class UsersPermissionsComponent implements OnInit {
 
     onFocusedRowChanged(e: any) {
         this.selectedUser = e.row.data;
+        if (!this.selectedUser.permissions) {
+            this.selectedUser.permissions = {};
+        }
         this.userPermissions = this.selectedUser.permissions;
         this.pages.instance.selectRows(this.userPermissions[this.permissionType.nativeElement.value], false);
     }
