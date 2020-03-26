@@ -62,7 +62,9 @@ export class UsersPermissionsComponent implements OnInit {
 
 
     saveUserPermissions() {
-
+        if (!this.selectedUser.permissions) {
+            this.selectedUser.permissions = {};
+        }
         this.selectedUser.permissions[this.permissionType.nativeElement.value] = this.pages.instance.getSelectedRowsData().map(page => page.path);
         const logData = 'User [' + this.selectedUser.name + '] Permissions Set [' + this.permissionType.nativeElement.value + '] to ' + this.selectedUser.permissions[this.permissionType.nativeElement.value];
         this.logs.createLog(logData);
