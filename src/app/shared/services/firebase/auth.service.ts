@@ -22,11 +22,8 @@ export class AuthService implements OnInit {
 
         this.afAuth.authState.subscribe(user => {
             if (user) {
-                this.afs.doc(`users/${user.uid}`).get().subscribe(userDoc => {
-                    this.currentUser = userDoc.data();
-                    localStorage.setItem('user', JSON.stringify(this.currentUser));
-                    this.showLoader = false;
-                });
+                this.getUserData(user.uid);
+                this.showLoader = false;
             } else {
                 this.currentUser = null;
                 localStorage.clear();
@@ -38,12 +35,20 @@ export class AuthService implements OnInit {
     ngOnInit(): void {
     }
 
+    getUserData(uid) {
+        this.afs.doc(`users/${uid}`).get().subscribe(userDoc => {
+            localStorage.setItem('user', JSON.stringify(userDoc.data()));
+            this.currentUser = userDoc.data();
+        });
+    }
+
     SignIn(email, password) {
         this.showLoader = true;
         return this.afAuth.auth.signInWithEmailAndPassword(email, password).then(async (res) => {
             const token = await res.user.getIdToken();
             localStorage.setItem('token', token);
             localStorage.setItem('userData', JSON.stringify(this.jwtHelper.decodeToken(token)));
+            this.getUserData(res.user.uid);
             this.router.navigate(['/customers']);
             this.toastrService.success('Authentication successful.');
         }).catch((error) => {

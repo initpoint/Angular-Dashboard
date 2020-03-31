@@ -31,7 +31,7 @@ export class UserService {
                     mobile: value.mobile || null,
                     name: value.name || null,
                     code: value.code || null,
-                    permissions: {update: [], create: [], delete: [],view: [],import:[],export:[]}
+                    permissions: {update: [], create: [], delete: [], view: [], import: [], export: []}
                 });
                 return true;
             }).catch(function (err) {
