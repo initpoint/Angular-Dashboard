@@ -13,10 +13,10 @@ export class AdminGuard implements CanActivate {
 
     canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
         const token = localStorage.getItem('token');
-        if (this.jwtHelper.isTokenExpired(token)) {
-            this.router.navigate(['/auth/login']);
-            return false;
-        }
+        //if (this.jwtHelper.isTokenExpired(token)) {
+         //   this.router.navigate(['/auth/login']);
+         //   return false;
+       // }
         return true;
     }
 }
